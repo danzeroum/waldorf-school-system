@@ -1,0 +1,247 @@
+spring:
+  application:
+    name: waldorf-system
+  
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:waldorf_db}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: ${DB_USER:waldorf_user}
+    password: ${DB_PASS:waldorf_pass_2024}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+          time_zone: UTC
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+        generate_statistics: false
+    show-sql: false
+    open-in-view: false
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
+  
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: -1ms
+  
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:waldorf}
+    password: ${RABBIT_PASS:waldorf_rabbit_2024}
+    listener:
+      simple:
+        acknowledge-mode: auto
+        concurrency: 5
+        max-concurrency: 10
+  
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  
+  mail:
+    host: ${MAIL_HOST:smtp.sendgrid.net}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USER:apikey}
+    password: ${MAIL_PASS:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  
+  cache:
+    type: redis
+    redis:
+      time-to-live: 300000
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    db:
+      enabled: true
+    redis:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# OpenAPI/Swagger
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+# Logging
+logging:
+  level:
+    root: INFO
+    br.edu.waldorf: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/waldorf-system.log
+    max-size: 10MB
+    max-history: 30
+
+# Applicação custom properties
+waldorf:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:waldorf-secret-key-change-in-production-min-256-bits-required-for-hs256-algorithm}
+      expiration: ${JWT_EXPIRATION:900000} # 15 minutes
+      refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
+    cors:
+      allowed-origins: ${CORS_ORIGINS:http://localhost:4200,http://localhost:3000}
+      allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+      allowed-headers: "*"
+      allow-credentials: true
+  
+  storage:
+    type: ${STORAGE_TYPE:s3} # s3 or local
+    s3:
+      endpoint: ${S3_ENDPOINT:http://localhost:9000}
+      access-key: ${S3_ACCESS_KEY:waldorf_minio}
+      secret-key: ${S3_SECRET_KEY:waldorf_minio_2024}
+      bucket: ${S3_BUCKET:waldorf-files}
+      region: ${S3_REGION:us-east-1}
+    local:
+      upload-dir: ${LOCAL_UPLOAD_DIR:uploads}
+  
+  notification:
+    email:
+      enabled: ${EMAIL_ENABLED:true}
+      from: ${EMAIL_FROM:noreply@escolawaldorf.edu.br}
+    sms:
+      enabled: ${SMS_ENABLED:false}
+    push:
+      enabled: ${PUSH_ENABLED:true}
+      firebase:
+        credentials-path: ${FIREBASE_CREDENTIALS:}
+
+---
+# Development Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+  
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    br.edu.waldorf: DEBUG
+    org.springframework.security: DEBUG
+
+---
+# Test Profile
+spring:
+  config:
+    activate:
+      on-profile: test
+  
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+    driver-class-name: org.h2.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  
+  flyway:
+    enabled: false
+
+---
+# Docker Profile
+spring:
+  config:
+    activate:
+      on-profile: docker
+  
+  datasource:
+    url: jdbc:mysql://mysql:3306/waldorf_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+  
+  data:
+    redis:
+      host: redis
+  
+  rabbitmq:
+    host: rabbitmq
+
+waldorf:
+  storage:
+    s3:
+      endpoint: http://minio:9000
+
+---
+# Production Profile
+spring:
+  config:
+    activate:
+      on-profile: production
+  
+  jpa:
+    show-sql: false
+  
+  flyway:
+    validate-on-migrate: true
+
+logging:
+  level:
+    root: WARN
+    br.edu.waldorf: INFO
+    org.springframework: WARN
