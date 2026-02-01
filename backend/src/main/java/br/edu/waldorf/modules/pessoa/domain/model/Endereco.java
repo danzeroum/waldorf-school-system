@@ -54,7 +54,7 @@ public class Endereco extends BaseEntity {
     private String cidade;
 
     @Size(max = 2, message = "Estado deve ter 2 caracteres")
-    @Column(name = "estado", length = 2)
+    @Column(name = "estado", columnDefinition = "CHAR(2)", length = 2)
     private String estado;
 
     @Enumerated(EnumType.STRING)
