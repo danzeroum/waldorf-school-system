@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: waldorf-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: waldorf_root_2024
+      MYSQL_DATABASE: waldorf_db
+      MYSQL_USER: waldorf_user
+      MYSQL_PASSWORD: waldorf_pass_2024
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - waldorf-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: waldorf-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - waldorf-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # RabbitMQ Message Queue
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: waldorf-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: waldorf
+      RABBITMQ_DEFAULT_PASS: waldorf_rabbit_2024
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - waldorf-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # MinIO Object Storage (S3 compatible)
+  minio:
+    image: minio/minio:latest
+    container_name: waldorf-minio
+    environment:
+      MINIO_ROOT_USER: waldorf_minio
+      MINIO_ROOT_PASSWORD: waldorf_minio_2024
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    volumes:
+      - minio_data:/data
+    networks:
+      - waldorf-network
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend Spring Boot (será construído na Fase 1)
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: waldorf-backend
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: docker
+  #     DB_HOST: mysql
+  #     DB_USER: waldorf_user
+  #     DB_PASS: waldorf_pass_2024
+  #     REDIS_HOST: redis
+  #     RABBIT_HOST: rabbitmq
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   networks:
+  #     - waldorf-network
+
+  # Frontend Angular (será construído na Fase 3)
+  # frontend:
+  #   build:
+  #     context: ./frontend-web
+  #     dockerfile: Dockerfile
+  #   container_name: waldorf-frontend
+  #   ports:
+  #     - "4200:80"
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - waldorf-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  rabbitmq_data:
+  minio_data:
+
+networks:
+  waldorf-network:
+    driver: bridge
