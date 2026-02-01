@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Sistema Waldorf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 1.8rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .welcome-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .welcome-card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card p {
+            color: #666;
+            font-size: 1rem;
+        }
+        .btn-logout {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            float: right;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn-logout:hover {
+            background: transparent;
+            color: white;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌱 Sistema Waldorf - Gestão Escolar</h1>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn-logout">🚪 Sair</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="success-message">
+            ✅ <strong>Login realizado com sucesso!</strong> Bem-vindo ao Sistema Waldorf.
+        </div>
+
+        <div class="welcome-card">
+            <h2>👋 Bem-vindo, <span sec:authentication="name">Admin</span>!</h2>
+            <p>Você está autenticado no sistema com perfil: <strong sec:authentication="principal.authorities">[ROLE_ADMIN]</strong></p>
+            <p style="margin-top: 1rem; color: #666;">
+                💡 Este é o dashboard principal do sistema. Em breve, aqui estarão disponíveis:
+            </p>
+            <ul style="margin: 1rem 0 0 2rem; color: #666;">
+                <li>Gestão de Alunos e Matrículas</li>
+                <li>Gestão de Professores e Turmas</li>
+                <li>Observações Pedagógicas Waldorf</li>
+                <li>Épocas Pedagógicas e Relatórios Narrativos</li>
+                <li>Gestão de Usuários e Permissões</li>
+            </ul>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>🎓</h3>
+                <p>Módulo de Alunos<br><small>(Em desenvolvimento)</small></p>
+            </div>
+            <div class="stat-card">
+                <h3>👨‍🏫</h3>
+                <p>Módulo de Professores<br><small>(Em desenvolvimento)</small></p>
+            </div>
+            <div class="stat-card">
+                <h3>📚</h3>
+                <p>Pedagogia Waldorf<br><small>(Em desenvolvimento)</small></p>
+            </div>
+            <div class="stat-card">
+                <h3>🔒</h3>
+                <p>Segurança<br><small>✅ Configurado</small></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
