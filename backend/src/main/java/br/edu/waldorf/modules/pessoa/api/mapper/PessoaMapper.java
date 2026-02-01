@@ -25,18 +25,12 @@ public interface PessoaMapper {
 
     /**
      * Converte RequestDTO para Entity
+     * Campos como id, createdAt, updatedAt são ignorados automaticamente (não estão no DTO)
      * 
      * @param dto Request DTO
      * @return Entity Pessoa
      */
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "lgpdConsentimentoGeral", constant = "false")
-    @Mapping(target = "lgpdDataConsentimento", ignore = true)
-    @Mapping(target = "lgpdBaseLegal", ignore = true)
-    @Mapping(target = "classificacaoDados", ignore = true)
-    @Mapping(target = "dataExclusaoPrevista", ignore = true)
     Pessoa toEntity(PessoaRequestDTO dto);
 
     /**
@@ -58,32 +52,23 @@ public interface PessoaMapper {
     /**
      * Atualiza uma Entity existente com dados do RequestDTO
      * Ignora campos null do DTO (update parcial)
+     * Campos imutáveis são ignorados automaticamente
      * 
      * @param dto Request DTO com novos dados
      * @param pessoa Entity existente a ser atualizada
      */
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "lgpdConsentimentoGeral", ignore = true)
-    @Mapping(target = "lgpdDataConsentimento", ignore = true)
-    @Mapping(target = "lgpdBaseLegal", ignore = true)
-    @Mapping(target = "classificacaoDados", ignore = true)
-    @Mapping(target = "dataExclusaoPrevista", ignore = true)
     void updateEntityFromDTO(PessoaRequestDTO dto, @MappingTarget Pessoa pessoa);
 
     // === Mapeamento de Endereço ===
 
     /**
      * Converte EnderecoDTO para Entity
+     * Campos como id, pessoa, createdAt, updatedAt são ignorados automaticamente
      * 
      * @param dto Endereco DTO
      * @return Entity Endereco
      */
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "pessoa", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     Endereco toEnderecoEntity(EnderecoDTO dto);
 
     /**
