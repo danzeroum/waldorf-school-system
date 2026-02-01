@@ -1,8 +1,8 @@
 -- ====================================================================================================
--- Migration V6: Adicionar campos de auditoria em todas as tabelas
+-- Migration V6: Adicionar campos de auditoria em tabelas que NAO possuem
 -- Autor: Daniel Lau
 -- Data: 2026-01-31
--- Descricao: Adiciona created_at e updated_at apenas nas tabelas que NAO possuem esses campos
+-- Descricao: Adiciona created_at e updated_at apenas em tabelas sem esses campos
 -- ====================================================================================================
 
 -- ====================
@@ -81,19 +81,30 @@ ALTER TABLE relatorios_narrativos
 -- ==================================
 -- MODULO SEGURANCA/USUARIOS (V4)
 -- ==================================
+-- NOTA: usuarios JA possui created_at/updated_at
+-- NOTA: usuarios_perfis e refresh_tokens JA possuem created_at
 
--- Tabela USUARIOS
-ALTER TABLE usuarios 
-    ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-
--- Tabela ROLES
-ALTER TABLE roles 
+-- Tabela PERFIS
+ALTER TABLE perfis 
     ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 -- Tabela PERMISSOES
 ALTER TABLE permissoes 
+    ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+-- Tabela PERFIS_PERMISSOES
+ALTER TABLE perfis_permissoes 
+    ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL;
+
+-- Tabela USUARIO_CONTEXTOS
+ALTER TABLE usuario_contextos 
+    ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+-- Tabela LOGS_SISTEMA (ja tem timestamp, adicionar updated_at)
+ALTER TABLE logs_sistema 
     ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
