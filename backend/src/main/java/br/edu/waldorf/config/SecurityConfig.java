@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * Configuração de Segurança do Sistema Waldorf
  * 
  * @author Daniel Lau
- * @version 1.0.0
+ * @version 1.0.1
  * @since 2026-01-31
  */
 @Configuration
@@ -37,7 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/error", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/login", "/error", "/css/**", "/js/**", "/images/**", "/api/diagnostico/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
