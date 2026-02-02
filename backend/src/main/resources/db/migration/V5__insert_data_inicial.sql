@@ -106,7 +106,7 @@ INSERT INTO pessoas (tipo, nome_completo, email, cpf, ativo, lgpd_consentimento_
 ('OUTRO', 'Administrador do Sistema', 'admin@escolawaldorf.edu.br', '00000000000', TRUE, TRUE, 'LEGITIMO_INTERESSE');
 
 INSERT INTO usuarios (pessoa_id, username, password_hash, email, ativo) VALUES
-(1, 'admin', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6', 'admin@escolawaldorf.edu.br', TRUE);
+(1, 'admin', '$2a$10$NJswT0l8hOU7ncyk/ht9w.bMG4x4T7xYgClhk/wTGyTxm8PSvUTRW', 'admin@escolawaldorf.edu.br', TRUE);
 
 INSERT INTO usuarios_perfis (usuario_id, perfil_id, principal) VALUES
 (1, 1, TRUE); -- Admin principal
