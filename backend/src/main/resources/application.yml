@@ -104,9 +104,9 @@ management:
       enabled: true
     redis:
       enabled: true
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
 
 # OpenAPI/Swagger
@@ -138,9 +138,11 @@ logging:
 waldorf:
   security:
     jwt:
-      secret: ${JWT_SECRET:waldorf-secret-key-change-in-production-min-256-bits-required-for-hs256-algorithm}
+      secret: "JWTSECRETyour-512-bit-secret-key-here-512-bit-minimum"
       expiration: ${JWT_EXPIRATION:900000} # 15 minutes
       refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
+      expiration-ms: 900000
+      refresh-expiration-ms: 604800000
     cors:
       allowed-origins: ${CORS_ORIGINS:http://localhost:4200,http://localhost:3000}
       allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
