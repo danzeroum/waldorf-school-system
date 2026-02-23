@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # MySQL Database
   mysql:
@@ -48,8 +46,8 @@ services:
       RABBITMQ_DEFAULT_USER: waldorf
       RABBITMQ_DEFAULT_PASS: waldorf_rabbit_2024
     ports:
-      - "5672:5672"   # AMQP
-      - "15672:15672" # Management UI
+      - "5672:5672"
+      - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
@@ -68,8 +66,8 @@ services:
       MINIO_ROOT_USER: waldorf_minio
       MINIO_ROOT_PASSWORD: waldorf_minio_2024
     ports:
-      - "9000:9000"   # API
-      - "9001:9001"   # Console
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio_data:/data
     networks:
@@ -81,32 +79,44 @@ services:
       timeout: 10s
       retries: 3
 
-  # Backend Spring Boot (será construído na Fase 1)
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   container_name: waldorf-backend
-  #   environment:
-  #     SPRING_PROFILES_ACTIVE: docker
-  #     DB_HOST: mysql
-  #     DB_USER: waldorf_user
-  #     DB_PASS: waldorf_pass_2024
-  #     REDIS_HOST: redis
-  #     RABBIT_HOST: rabbitmq
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  #     rabbitmq:
-  #       condition: service_healthy
-  #   networks:
-  #     - waldorf-network
+  # Backend Spring Boot
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: waldorf-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: waldorf_db
+      DB_USER: waldorf_user
+      DB_PASS: waldorf_pass_2024
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RABBIT_HOST: rabbitmq
+      RABBIT_PORT: 5672
+      RABBIT_USER: waldorf
+      RABBIT_PASS: waldorf_rabbit_2024
+      JWT_SECRET: waldorf_jwt_secret_512bits_minimo_aqui_2024
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - waldorf-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
-  # Frontend Angular (será construído na Fase 3)
+  # Frontend Angular (Fase 3)
   # frontend:
   #   build:
   #     context: ./frontend-web
