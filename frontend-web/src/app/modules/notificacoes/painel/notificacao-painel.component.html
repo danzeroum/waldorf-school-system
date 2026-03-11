@@ -1,0 +1,69 @@
+<div class="space-y-5 animate-fade-in-up">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Notificações</h1>
+      <p class="text-sm text-waldorf-gray-500 mt-0.5">
+        <span *ngIf="naoLidas > 0" class="text-waldorf-green-600 font-medium">{{ naoLidas }} não lida(s)</span>
+        <span *ngIf="naoLidas === 0">Tudo em dia ✅</span>
+      </p>
+    </div>
+    <div class="flex gap-2">
+      <button *ngIf="naoLidas > 0" (click)="marcarTodas()" [disabled]="salvando()"
+              class="btn-secondary flex items-center gap-2 text-sm">
+        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+        <span class="material-icons text-base" *ngIf="!salvando()">done_all</span>
+        Marcar todas como lidas
+      </button>
+      <a [routerLink]="['/notificacoes/preferencias']" class="btn-ghost flex items-center gap-2 text-sm">
+        <span class="material-icons text-base">tune</span>
+        Preferências
+      </a>
+    </div>
+  </div>
+
+  <!-- Skeleton -->
+  <div *ngIf="carregando()" class="space-y-2">
+    <div *ngFor="let i of [1,2,3,4]" class="card flex gap-3 animate-pulse">
+      <div class="skeleton w-9 h-9 rounded-xl flex-shrink-0"></div>
+      <div class="flex-1 space-y-2">
+        <div class="skeleton h-4 w-1/2"></div>
+        <div class="skeleton h-3 w-full"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista -->
+  <div *ngIf="!carregando()" class="space-y-2">
+
+    <div *ngIf="notificacoes().length === 0" class="card text-center py-14">
+      <span class="material-icons text-5xl text-waldorf-gray-200">notifications_none</span>
+      <p class="text-waldorf-gray-500 mt-3">Nenhuma notificação</p>
+    </div>
+
+    <div *ngFor="let n of notificacoes()"
+         (click)="marcarLida(n)"
+         [class]="'card flex items-start gap-3 cursor-pointer transition-colors ' + (n.lida ? 'opacity-60 hover:opacity-80' : 'hover:border-waldorf-green-200')">
+
+      <!-- Ícone -->
+      <div [class]="'w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ' + (n.lida ? 'bg-waldorf-cream-100' : 'bg-waldorf-cream-200')">
+        <span [class]="'material-icons text-base ' + (n.tipo | tipoNotificacao:'css')">
+          {{ n.tipo | tipoNotificacao:'icone' }}
+        </span>
+      </div>
+
+      <!-- Conteúdo -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <p [class]="'text-sm font-medium truncate ' + (n.lida ? 'text-waldorf-gray-600' : 'text-waldorf-gray-900')">{{ n.titulo }}</p>
+          <span *ngIf="!n.lida" class="w-2 h-2 bg-waldorf-green-500 rounded-full flex-shrink-0"></span>
+        </div>
+        <p class="text-xs text-waldorf-gray-500 mt-0.5 line-clamp-2">{{ n.mensagem }}</p>
+        <p class="text-xs text-waldorf-gray-400 mt-1">{{ n.createdAt | date:'dd/MM HH:mm' }}</p>
+      </div>
+
+      <!-- Seta se tem link -->
+      <span *ngIf="n.link && !n.lida" class="material-icons text-waldorf-gray-300 text-base flex-shrink-0 mt-0.5">chevron_right</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none" style="max-width: 380px">
+  <div
+    *ngFor="let t of toastService.toasts()"
+    [class]="'pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border shadow-waldorf-md animate-fade-in-up ' + css(t.tipo)"
+    role="alert"
+  >
+    <span [class]="'material-icons text-xl flex-shrink-0 ' + iconeCss(t.tipo)">{{ icone(t.tipo) }}</span>
+    <p class="text-sm flex-1 leading-snug">{{ t.mensagem }}</p>
+    <button (click)="toastService.remover(t.id)" class="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity">
+      <span class="material-icons text-base">close</span>
+    </button>
+  </div>
+</div>

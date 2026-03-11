@@ -1,0 +1,90 @@
+<div class="max-w-lg mx-auto space-y-6 animate-fade-in-up">
+
+  <div class="flex items-center gap-3">
+    <button (click)="router.navigate(['/notificacoes'])" class="btn-icon">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <h1 class="text-2xl font-serif text-waldorf-gray-900">Preferências de Notificação</h1>
+  </div>
+
+  <div *ngIf="carregando()" class="card space-y-4 animate-pulse">
+    <div *ngFor="let i of [1,2,3,4]" class="flex justify-between">
+      <div class="skeleton h-4 w-32"></div>
+      <div class="skeleton h-5 w-10 rounded-full"></div>
+    </div>
+  </div>
+
+  <form *ngIf="!carregando()" [formGroup]="form" (ngSubmit)="salvar()" class="space-y-5">
+
+    <!-- Canais -->
+    <div class="card space-y-4">
+      <h2 class="text-sm font-semibold text-waldorf-gray-700">Canais de Notificação</h2>
+
+      <label *ngFor="let canal of [
+        { ctrl: 'email', icone: 'email',            label: 'E-mail',           desc: 'Receba notificações por e-mail' },
+        { ctrl: 'push',  icone: 'notifications',    label: 'Push (App)',       desc: 'Notificações push no celular' },
+        { ctrl: 'sms',   icone: 'sms',              label: 'SMS',              desc: 'Mensagens de texto (operadora)' },
+        { ctrl: 'inApp', icone: 'inbox',            label: 'In-App',          desc: 'Dentro do sistema web' }
+      ]" class="flex items-center justify-between gap-4 cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-waldorf-cream-100 rounded-lg flex items-center justify-center">
+            <span class="material-icons text-waldorf-gray-500 text-base">{{ canal.icone }}</span>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-waldorf-gray-800">{{ canal.label }}</p>
+            <p class="text-xs text-waldorf-gray-400">{{ canal.desc }}</p>
+          </div>
+        </div>
+        <!-- Toggle switch -->
+        <div class="relative inline-flex items-center">
+          <input type="checkbox" [formControlName]="canal.ctrl" class="sr-only peer">
+          <div class="w-11 h-6 bg-waldorf-cream-200 peer-focus:outline-none rounded-full peer
+                      peer-checked:bg-waldorf-green-500 transition-colors"></div>
+          <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow
+                      peer-checked:translate-x-5 transition-transform"></div>
+        </div>
+      </label>
+    </div>
+
+    <!-- Agregação -->
+    <div class="card space-y-3">
+      <h2 class="text-sm font-semibold text-waldorf-gray-700">Frequência de Envio</h2>
+      <label *ngFor="let op of [
+        { value: 'IMEDIATO',       label: 'Imediato',      desc: 'Assim que o evento ocorrer' },
+        { value: 'RESUMO_DIARIO',  label: 'Resumo diário', desc: 'Um e-mail por dia às 8h' },
+        { value: 'RESUMO_SEMANAL', label: 'Resumo semanal',desc: 'Um e-mail toda segunda-feira' }
+      ]" class="flex items-center gap-3 cursor-pointer">
+        <input type="radio" formControlName="agregacao" [value]="op.value"
+               class="w-4 h-4 text-waldorf-green-500">
+        <div>
+          <p class="text-sm font-medium text-waldorf-gray-800">{{ op.label }}</p>
+          <p class="text-xs text-waldorf-gray-400">{{ op.desc }}</p>
+        </div>
+      </label>
+    </div>
+
+    <!-- Janela de silêncio -->
+    <div class="card space-y-3">
+      <h2 class="text-sm font-semibold text-waldorf-gray-700">Janela de Silêncio</h2>
+      <p class="text-xs text-waldorf-gray-500">Não enviar notificações neste período (suporta cruzamento de meia-noite)</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="form-label">Início</label>
+          <input type="time" formControlName="silencioInicio" class="form-input">
+        </div>
+        <div>
+          <label class="form-label">Fim</label>
+          <input type="time" formControlName="silencioFim" class="form-input">
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <button type="button" (click)="router.navigate(['/notificacoes'])" class="btn-secondary">Cancelar</button>
+      <button type="submit" [disabled]="salvando()" class="btn-primary flex items-center gap-2">
+        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+        {{ salvando() ? 'Salvando...' : 'Salvar Preferências' }}
+      </button>
+    </div>
+  </form>
+</div>

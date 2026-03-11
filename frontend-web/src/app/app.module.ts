@@ -12,6 +12,7 @@ import { SharedModule } from './shared/shared.module';
 
 import { JwtInterceptor } from './core/auth/jwt.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 
 registerLocaleData(localePt);
 
@@ -23,12 +24,13 @@ registerLocaleData(localePt);
     HttpClientModule,
     CoreModule,
     SharedModule,
-    AppRoutingModule,   // deve ser o último para pegar a rota '**'
+    AppRoutingModule,
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pt-BR' },
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor,   multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor,    multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor,  multi: true },
   ],
   bootstrap: [AppComponent],
 })
