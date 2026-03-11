@@ -1,5 +1,6 @@
 package br.edu.waldorf.modules.pessoa.domain.model;
 
+import br.edu.waldorf.modules.escolar.domain.model.Turma;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -11,16 +12,12 @@ import java.util.List;
 /**
  * Entidade Aluno - especialização de Pessoa
  * Mapeia a tabela 'alunos' com herança JOINED de 'pessoas'
- *
- * @author Sistema Waldorf
- * @version 1.0.0
- * @since 2026-03-11
  */
 @Entity
 @Table(name = "alunos", indexes = {
-    @Index(name = "idx_aluno_matricula",      columnList = "numero_matricula"),
-    @Index(name = "idx_aluno_turma",          columnList = "turma_id"),
-    @Index(name = "idx_aluno_situacao",       columnList = "situacao")
+    @Index(name = "idx_aluno_matricula",  columnList = "numero_matricula"),
+    @Index(name = "idx_aluno_turma",      columnList = "turma_id"),
+    @Index(name = "idx_aluno_situacao",   columnList = "situacao")
 })
 @PrimaryKeyJoinColumn(name = "id")
 @Getter
@@ -65,7 +62,7 @@ public class Aluno extends Pessoa {
 
     // --- Dados Waldorf ---
     @Column(name = "temperamento", length = 20)
-    private String temperamento; // SANGUINEO, COLERICO, MELANCOLICO, FLEUMATICO
+    private String temperamento;
 
     @Column(name = "ano_ingresso")
     private Integer anoIngresso;

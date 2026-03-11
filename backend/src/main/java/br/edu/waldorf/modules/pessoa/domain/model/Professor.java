@@ -1,5 +1,6 @@
 package br.edu.waldorf.modules.pessoa.domain.model;
 
+import br.edu.waldorf.modules.escolar.domain.model.Turma;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,14 +10,10 @@ import java.util.List;
 /**
  * Entidade Professor - especialização de Pessoa
  * Mapeia a tabela 'professores' com herança JOINED de 'pessoas'
- *
- * @author Sistema Waldorf
- * @version 1.0.0
- * @since 2026-03-11
  */
 @Entity
 @Table(name = "professores", indexes = {
-    @Index(name = "idx_professor_registro",   columnList = "registro_profissional"),
+    @Index(name = "idx_professor_registro",  columnList = "registro_profissional"),
     @Index(name = "idx_professor_situacao",   columnList = "situacao")
 })
 @PrimaryKeyJoinColumn(name = "id")
