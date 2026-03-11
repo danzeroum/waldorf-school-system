@@ -34,13 +34,14 @@ spring:
       host: localhost
       port: 6379
 
+  mail:
+    host: localhost
+    port: 25
+
 jwt:
   secret: test-secret-waldorf-at-least-256bits-for-hmac-sha-ok
   expiration: 86400000
   refresh-expiration: 604800000
-
-spring.mail.host: localhost
-spring.mail.port: 25
 
 logging:
   level:
