@@ -1,1827 +1,246 @@
+# 📋 ATUALIZAÇÕES DO SISTEMA ESCOLAR WALDORF
 
-
-# ENTREGA 1: PLANO DE WIREFRAME COMPLETO
-
-## `planoWireframe.md`
-
-Aqui está o documento completo para você adicionar ao projeto:
+> Documento de rastreamento de iterações e status de implementação.
+> Atualizado em: 11/03/2026
 
 ---
 
-```markdown
-# 🖼️ Plano de Wireframe e Fluxos de Navegação - Sistema Escolar Waldorf
+## 🗂️ ARQUIVOS DE PLANO DISPONÍVEIS
 
-## 📋 VISÃO GERAL
-
-Este documento define os wireframes, fluxos de navegação e jornadas de cada persona
-do Sistema Escolar Waldorf. Serve como ponte entre os planos de APIs/Backend e a
-implementação do Frontend (Angular) e Mobile (Flutter).
-
----
-
-## 🎭 PERSONAS E SEUS OBJETIVOS
-
-### Persona 1: SECRETÁRIA / ADMINISTRATIVO (Ana)
-- **Objetivo principal**: Gerenciar cadastros, matrículas e contratos
-- **Frequência de uso**: Diária, 6-8h/dia
-- **Dispositivo**: Desktop (Portal Web Angular)
-- **Dor principal**: Retrabalho com fichas em papel, informações espalhadas
-
-### Persona 2: PROFESSOR(A) TITULAR (João)
-- **Objetivo principal**: Registrar observações, criar relatórios narrativos, planejar épocas
-- **Frequência de uso**: Diária, 1-2h/dia
-- **Dispositivo**: Desktop + Tablet/Mobile
-- **Dor principal**: Falta de tempo para documentar observações no momento
-
-### Persona 3: PAIS / RESPONSÁVEIS (Maria)
-- **Objetivo principal**: Acompanhar desenvolvimento do filho, ver comunicados, pagar mensalidades
-- **Frequência de uso**: 2-3x por semana
-- **Dispositivo**: Mobile (Flutter App)
-- **Dor principal**: Não saber o que acontece na escola no dia a dia
-
-### Persona 4: DIREÇÃO PEDAGÓGICA (Carlos)
-- **Objetivo principal**: Visão geral da escola, aprovar relatórios, acompanhar métricas
-- **Frequência de uso**: Diária, 1-2h/dia
-- **Dispositivo**: Desktop + Mobile
-- **Dor principal**: Dificuldade de ter visão consolidada de todas as turmas
+| Arquivo | Conteúdo |
+|---------|----------|
+| `planoArquitetura.md` | Arquitetura geral, tecnologias, infraestrutura |
+| `planoBancoDadosRelacionais.md` | Modelo relacional completo (MySQL) |
+| `planoAPIs.md` | Endpoints REST, DTOs, contratos de API |
+| `planoFrontend.md` | Angular, estrutura de módulos, design system |
+| `planoWireframe.md` | Wireframes, fluxos por persona, componentes |
+| `matrizRastreabilidade.md` | Mapeamento completo tabela→entity→API→componente |
 
 ---
 
-## 🗺️ MAPA DE NAVEGAÇÃO GLOBAL
+## ✅ HISTÓRICO DE ITERAÇÕES
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         LOGIN                                    │
-│  ┌──────────┐  ┌──────────────┐  ┌─────────────────┐           │
-│  │ Username │  │   Password   │  │  Entrar / MFA   │           │
-│  └──────────┘  └──────────────┘  └────────┬────────┘           │
-│                                            │                    │
-│                    ┌───────────────────────┼──────────────┐     │
-│                    │         RBAC          │              │     │
-│                    ▼                       ▼              ▼     │
-│            ┌──────────────┐    ┌──────────────┐  ┌────────────┐│
-│            │  DASHBOARD   │    │  DASHBOARD   │  │ DASHBOARD  ││
-│            │  SECRETARIA  │    │  PROFESSOR   │  │   PAIS     ││
-│            └──────┬───────┘    └──────┬───────┘  └─────┬──────┘│
-└───────────────────┼───────────────────┼────────────────┼────────┘
-                    │                   │                │
-         ┌──────────┴──────┐   ┌───────┴──────┐  ┌─────┴──────┐
-         │ • Pessoas       │   │ • Observações│  │ • Filho(s) │
-         │ • Alunos        │   │ • Épocas     │  │ • Portfólio│
-         │ • Matrículas    │   │ • Relatórios │  │ • Comunicados│
-         │ • Turmas        │   │ • Portfólio  │  │ • Financeiro│
-         │ • Contratos     │   │ • Turma      │  │ • Eventos  │
-         │ • Financeiro    │   │ • Comunidade │  │ • Perfil   │
-         │ • Relatórios    │   │ • Perfil     │  └────────────┘
-         │ • LGPD          │   └──────────────┘
-         └─────────────────┘
-```
+### Iteração 1 — Setup inicial do projeto
+- Estrutura de diretórios do monorepo (backend, frontend-web, frontend-mobile, infra, docs)
+- `docker-compose.yml` com MySQL 8, Redis, RabbitMQ, MinIO
+- `pom.xml` Spring Boot 3.x com dependências base
+- README inicial
 
----
+### Iteração 2 — Migration V1: Módulo Pessoas
+- `V1__create_pessoas.sql`: tabelas `pessoas`, `enderecos`, `alunos`, `responsaveis`, `professores`, `responsaveis_alunos`, `registro_tratamento_dados`
+- Hierarquia de herança TABLE_PER_CLASS
 
-## 📱 TELA 0: LOGIN (Compartilhada)
+### Iteração 3 — Migration V2 + V3: Estrutura Escolar e Pedagogia
+- `V2__create_estrutura_escolar.sql`: `cursos`, `turmas`, `matriculas`, `disciplinas`, `turma_disciplinas`
+- `V3__create_pedagogia_waldorf.sql`: `desenvolvimento_waldorf`, `epocas_pedagogicas`, `ritmo_diario_semanal`, `observacoes_desenvolvimento`
 
-```
-┌─────────────────────────────────────────────┐
-│                                             │
-│          🌿 ESCOLA WALDORF                  │
-│          [Logo da Escola]                   │
-│                                             │
-│  ┌───────────────────────────────────────┐  │
-│  │  👤 Usuário ou E-mail                 │  │
-│  └───────────────────────────────────────┘  │
-│                                             │
-│  ┌───────────────────────────────────────┐  │
-│  │  🔒 Senha                     [👁️]   │  │
-│  └───────────────────────────────────────┘  │
-│                                             │
-│  □ Lembrar de mim                           │
-│                                             │
-│  ┌───────────────────────────────────────┐  │
-│  │           ENTRAR                      │  │
-│  └───────────────────────────────────────┘  │
-│                                             │
-│  Esqueci minha senha                        │
-│                                             │
-│  ─────────────────────────────────────────  │
-│  Primeiro acesso? Ative sua conta           │
-│                                             │
-└─────────────────────────────────────────────┘
+### Iteração 4 — Migration V4 + V5: Segurança e Dados Seed
+- `V4__create_seguranca_usuarios.sql`: `usuarios`, `perfis`, `permissoes`, `usuarios_perfis`, `perfis_permissoes`, `usuario_contextos`, `refresh_tokens`, `logs_sistema`
+- `V5__insert_data_inicial.sql`: perfis padrão (ADMIN, SECRETARIA, PROFESSOR, PAIS), permissões base, cursos Waldorf, admin inicial
 
-FLUXO:
-  POST /api/auth/login
-  → Sucesso: Redireciona para Dashboard conforme perfil (RBAC)
-  → Erro 401: Mensagem "Credenciais inválidas"
-  → MFA: Abre modal com campo para código TOTP
+### Iteração 5 — Migration V6: Audit Columns
+- `V6__add_audit_columns.sql`: adiciona `created_at`/`updated_at` em tabelas que ainda não tinham auditoria
 
-COMPONENTES ANGULAR:
-  modules/auth/login/login.component.ts
-  → AuthService.login()
-  → Armazena JWT no localStorage
-  → Router.navigate(['/dashboard'])
-```
+### Iteração 6 — Entity `Pessoa` + DDD base
+- `Pessoa.java` com herança, `PessoaRepository`, `PessoaService`
+- `PessoaRequestDTO`, `PessoaResponseDTO`, `PessoaMapper`
+- `PessoaController` com endpoints `GET/POST /api/v1/pessoas`
+- Configuração do pacote DDD: `domain/`, `application/`, `infrastructure/`, `presentation/`
 
----
+### Iteração 7 — Segurança JWT + RBAC
+- `Usuario.java`, `Perfil.java`, `Permissao.java` (entities)
+- `AuthController` com `POST /api/v1/auth/login`
+- `JwtService`, `JwtAuthenticationFilter`
+- `SecurityConfig` (Spring Security 6 + JWT stateless)
+- `LoginRequestDTO`, `LoginResponseDTO`
 
-## 🏠 TELA 1: DASHBOARD - SECRETÁRIA
+### Iteração 8 — Entity `ObservacaoDesenvolvimento`
+- `ObservacaoDesenvolvimento.java` (entity JPA completa)
+- ENUMs: `AspectoDesenvolvimento`, `Temperamento`
+- Relacionamentos com `Aluno`, `Professor`, `Turma`, `EpocaPedagogica`
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 🌿 Waldorf        [🔔 3] [👤 Ana - Secretária ▼]                     │
-├────────────┬────────────────────────────────────────────────────────────┤
-│            │                                                            │
-│ NAVEGAÇÃO  │  BOM DIA, ANA! 📅 16 de Fevereiro, 2026                  │
-│            │                                                            │
-│ 🏠 Início │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐      │
-│            │  │  👥 342      │ │  📝 12       │ │  💰 R$ 8.500 │      │
-│ 👥 Pessoas │  │  Alunos      │ │  Matrículas  │ │  A receber   │      │
-│  └ Alunos  │  │  Ativos      │ │  Pendentes   │ │  Este mês    │      │
-│  └ Profess.│  └──────────────┘ └──────────────┘ └──────────────┘      │
-│  └ Respons.│                                                            │
-│            │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐      │
-│ 📚 Gestão  │  │  ⚠️ 5        │ │  📋 3        │ │  🎉 1        │      │
-│  └ Turmas  │  │  Contratos   │ │  Solicitações│ │  Evento      │      │
-│  └ Matríc. │  │  Vencendo    │ │  LGPD        │ │  Próximo     │      │
-│  └ Cursos  │  └──────────────┘ └──────────────┘ └──────────────┘      │
-│            │                                                            │
-│ 💰 Financ. │  ─────────────── AÇÕES RÁPIDAS ──────────────────        │
-│  └ Contrat.│                                                            │
-│  └ Mensalid│  [+ Nova Matrícula]  [+ Novo Aluno]  [Gerar Boletos]     │
-│            │                                                            │
-│ 📊 Relat.  │  ─────────────── ATIVIDADE RECENTE ─────────────         │
-│            │                                                            │
-│ 🔒 LGPD   │  • 14:30 - Matrícula #2024-089 criada (Classe 3)         │
-│            │  • 13:15 - Contrato #C-456 assinado (Família Silva)      │
-│ ⚙️ Config. │  • 11:00 - Boleto pago: R$ 850,00 (Família Santos)      │
-│            │  • 09:45 - Novo aluno cadastrado: Pedro Oliveira          │
-│            │                                                            │
-└────────────┴────────────────────────────────────────────────────────────┘
+### Iteração 9 — Plano de Wireframe
+- Criado `docs/planoWireframe.md` com:
+  - Tela 0: Login
+  - Tela 1: Dashboard Secretária
+  - Tela 2: Dashboard Professor
+  - Tela 3: Dashboard Pais (Flutter)
+  - Tela 4: Nova Observação (wizard 3 passos)
+  - Tela 5: Gestão de Alunos
+  - Tela 6: Cadastro de Aluno (wizard 4 passos)
+  - Tela 7: Financeiro (Mobile)
+  - Tela 8: Relatório Narrativo
+  - Fluxos completos por persona (A, B, C, D)
 
-APIs CONSUMIDAS:
-  GET /api/students?status=ATIVO (contagem)
-  GET /api/enrollments?status=PENDENTE (contagem)
-  GET /api/finance/dashboard (resumo financeiro)
-  GET /api/lgpd/requests?status=PENDING (contagem)
-  GET /api/audit/logs?limit=10 (atividade recente)
+### Iteração 10 — Migration V7: Tabelas Faltantes
+- Criado `V7__create_tabelas_faltantes.sql` com:
+  - `funcionarios`
+  - `relatorios_narrativos`, `trabalhos_manuais`, `portfolio_artistico`
+  - `planos_mensalidade`, `contratos`, `mensalidades`, `pagamentos`
+  - `canais_comunicacao`, `mensagens_canal`, `festivais_comunitarios`, `mutiroes`, `inscricoes_eventos`
+  - `preferencias_notificacao`, `logs_envio_notificacoes`
+  - `consentimentos_lgpd`, `solicitacoes_titulares`
+  - Views: `vw_dashboard_secretaria`, `vw_resumo_pedagogico_turma`, `vw_financeiro_mensal`
+  - Triggers e Events MySQL
 
-COMPONENTES:
-  modules/dashboard/containers/secretary-dashboard.component.ts
-  → DashboardService.getSecretaryMetrics()
-```
+### Iteração 11 — Módulo Financeiro (Backend)
+- Entities: `Contrato`, `PlanoMensalidade`, `Mensalidade`, `Pagamento`
+- ENUMs: `SituacaoContrato`, `FormaPagamento`, `StatusMensalidade`, `StatusPagamento`
+- `ContratoService`, `MensalidadeService`, `PagamentoService`
+- `FinanceiroController` com endpoints `/api/v1/finance/contracts`, `/invoices`, `/webhooks/payment`
+- DTOs: `ContratoRequestDTO`, `ContratoResponseDTO`, `MensalidadeResponseDTO`
+
+### Iteração 12 — Módulo Comunidade + Comunicação (Backend)
+- Entities: `CanalComunicacao`, `MensagemCanal`, `FestivalComunitario`, `Mutirao`, `InscricaoEvento`
+- ENUMs: `TipoCanal`, `TipoMensagem`, `TipoFestival`, `StatusEvento`
+- `ComunidadeService` com suporte a moderação e fixação de mensagens
+- `ComunidadeController` com endpoints `/api/v1/community/channels`, `/events`, `/messages`
+- WebSocket preparado para chat em tempo real (configuração `@EnableWebSocketMessageBroker`)
+
+### Iteração 13 — Matriz de Rastreabilidade
+- Criado `docs/matrizRastreabilidade.md` com:
+  - Rastreamento de 30+ tabelas → entity → repo → service → controller → endpoint → Angular → Flutter
+  - Status ✅/📋/❌ por camada
+  - Resumo quantitativo por módulo (% de completude)
+  - Gaps críticos identificados
+  - Inconsistências de nomenclatura entre camadas
+  - Roadmap de implementação por sprint (6 sprints × 2 semanas)
+
+### Iteração 14 — Módulo Notificações (Backend)
+- Entities:
+  - `PreferenciaNotificacao.java`: canais (EMAIL/PUSH/SMS/IN_APP), agregação (IMEDIATO/RESUMO_DIARIO/RESUMO_SEMANAL), janela de silêncio noturno com suporte a cruzamento de meia-noite
+  - `LogEnvioNotificacao.java`: 7 tipos de conteúdo, 6 status de envio, rastreio de tentativas e erro
+- `NotificacaoService`:
+  - Supressão automática por preferência e janela de silêncio
+  - Agendamento de notificações para fora do silêncio
+  - `@Scheduled` a cada 2 minutos para processar notificações pendentes
+- `NotificacaoController` com endpoints `/api/v1/notifications`:
+  - `GET /user/{id}` — histórico paginado
+  - `GET /user/{id}/unread-count` — contagem de não lidas
+  - `PATCH /{id}/read` — marcar como lida
+  - `GET/PUT /preferences` — upsert de preferências
+
+### Iteração 15 — Módulo LGPD e Compliance (Backend)
+- Entities:
+  - `ConsentimentoLgpd.java`: registro com IP, versão dos termos, revogação com data
+  - `SolicitacaoTitular.java`: 6 tipos (ACESSO, CORREÇÃO, EXCLUSÃO, PORTABILIDADE, REVOGAÇÃO, INFORMAÇÃO), prazo automático de 15 dias, fluxo ABERTA→EM_ANÁLISE→EM_ATENDIMENTO→CONCLUÍDA/REJEITADA
+- `LgpdService`:
+  - Cálculo automático de prazo (15 dias corridos)
+  - Fluxo de avanço de status com validações
+  - `@Scheduled` diário às 08h para alertar solicitações com prazo expirado
+- `LgpdController` com endpoints `/api/v1/lgpd`:
+  - `GET/POST /consents` — listar/criar consentimentos
+  - `PATCH /consents/{id}/revoke` — revogar consentimento
+  - `GET /requests` — listar solicitações em aberto
+  - `POST /requests` — criar solicitação (prazo 15 dias automático)
+  - `PATCH /requests/{id}/advance` — avançar status
+  - `PATCH /requests/{id}/conclude` — concluir com resposta
+  - `PATCH /requests/{id}/reject` — rejeitar com justificativa
 
 ---
 
-## 🏠 TELA 2: DASHBOARD - PROFESSOR
+## 📊 STATUS ATUAL DO PROJETO (Iteração 15)
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 🌿 Waldorf        [🔔 2] [👤 João - Professor ▼]                     │
-├────────────┬────────────────────────────────────────────────────────────┤
-│            │                                                            │
-│ NAVEGAÇÃO  │  BOM DIA, JOÃO! 📅 Classe 3 - Época: Mitologia Nórdica  │
-│            │                                                            │
-│ 🏠 Início │  ┌─────────────────────────────┐ ┌────────────────────┐   │
-│            │  │  📋 MINHA TURMA: CLASSE 3   │ │ 🌅 RITMO DO DIA   │   │
-│ 👁️ Observ. │  │                             │ │                    │   │
-│  └ Listar  │  │  25 alunos  │  3 pendentes  │ │ 07:30 Verso        │   │
-│  └ Nova    │  │             │  de observação│ │ 08:00 Círculo      │   │
-│            │  │  Época atual: Mitologia     │ │ 08:30 ✅ Época     │   │
-│ 📖 Épocas  │  │  Início: 03/02  Fim: 28/02 │ │ 10:00 Intervalo    │   │
-│  └ Atual   │  │                             │ │ 10:30 Trab. Manual │   │
-│  └ Planejar│  └─────────────────────────────┘ │ 11:30 Brinca Livre │   │
-│            │                                   └────────────────────┘   │
-│ 📝 Relat.  │  ─────────── OBSERVAÇÕES RECENTES ──────────────         │
-│  └ Narrat. │                                                            │
-│  └ Rascunho│  ┌────────────────────────────────────────────────────┐   │
-│            │  │ 🟢 FÍSICO   Ana Clara - 14/02                     │   │
-│ 🎨 Portfól.│  │ "Demonstrou grande coordenação no trabalho de..." │   │
-│  └ Galeria │  ├────────────────────────────────────────────────────┤   │
-│  └ Upload  │  │ 🔵 ANÍMICO  Pedro Santos - 13/02                  │   │
-│            │  │ "Mostrou sensibilidade especial durante a..."      │   │
-│ 💬 Comunid.│  └────────────────────────────────────────────────────┘   │
-│            │                                                            │
-│ 👤 Perfil  │  [+ NOVA OBSERVAÇÃO]   [📊 Relatório Semestral]         │
-│            │                                                            │
-└────────────┴────────────────────────────────────────────────────────────┘
+### Completude por camada
 
-APIs CONSUMIDAS:
-  GET /api/pedagogy/observations?turmaId={ctx.turmaId}&limit=5
-  GET /api/pedagogy/epochs/current?turmaId={ctx.turmaId}
-  GET /api/pedagogy/daily-rhythm?turmaId={ctx.turmaId}&date=today
-  GET /api/students?turmaId={ctx.turmaId} (contagem)
+| Módulo | Banco (MySQL) | Backend (Java) | API REST | Frontend (Angular) | Mobile (Flutter) |
+|--------|:---:|:---:|:---:|:---:|:---:|
+| Pessoas | ✅ 100% | 30% | 25% | 5% | 0% |
+| Estrutura Escolar | ✅ 100% | 5% | 10% | 0% | 0% |
+| Pedagogia Waldorf | ✅ 100% | 25% | 30% | 5% | 0% |
+| Segurança / Auth | ✅ 100% | 65% | 40% | 0% | 0% |
+| Financeiro | ✅ 100% | 50% | 45% | 0% | 0% |
+| Comunidade | ✅ 100% | 40% | 35% | 0% | 0% |
+| Notificações | ✅ 100% | 60% | 50% | 0% | 0% |
+| LGPD | ✅ 100% | 55% | 50% | 0% | 0% |
+| **MÉDIA** | **✅ 100%** | **~41%** | **~36%** | **~1%** | **0%** |
 
-COMPONENTES:
-  modules/dashboard/containers/teacher-dashboard.component.ts
-  → PedagogiaService.getTeacherDashboard()
-```
+### Migrations aplicadas
+
+| Versão | Arquivo | Status |
+|--------|---------|--------|
+| V1 | `V1__create_pessoas.sql` | ✅ Aplicada |
+| V2 | `V2__create_estrutura_escolar.sql` | ✅ Aplicada |
+| V3 | `V3__create_pedagogia_waldorf.sql` | ✅ Aplicada |
+| V4 | `V4__create_seguranca_usuarios.sql` | ✅ Aplicada |
+| V5 | `V5__insert_data_inicial.sql` | ✅ Aplicada |
+| V6 | `V6__add_audit_columns.sql` | ✅ Aplicada |
+| V7 | `V7__create_tabelas_faltantes.sql` | 📋 Criada — executar `./mvnw flyway:migrate` |
 
 ---
 
-## 🏠 TELA 3: DASHBOARD - PAIS (Mobile Flutter)
+## 🔜 PRÓXIMAS ITERAÇÕES PLANEJADAS
+
+### Iteração 16 ✅ (esta) — Atualização do atualizacoes.md
+### Iteração 17 — Frontend Angular: Setup + Auth
+- Setup Angular 17 com lazy loading e standalone components
+- `AuthModule`: login, guards, interceptors JWT
+- Layout principal (sidebar responsiva + header com notificações)
+- `DashboardModule`: 3 variações por perfil (Secretária, Professor, Pais)
+
+### Iteração 18 — Frontend Angular: Módulo Pessoas
+- `PessoaModule`: lista, CRUD, busca
+- `AlunoModule`: wizard 4 passos (cadastro completo)
+- Integração com ViaCEP para busca de endereço
+
+### Iteração 19 — Frontend Angular: Módulo Pedagogia
+- `ObservacaoModule`: wizard 3 passos + lista + detalhe
+- `EpocaModule`: planejamento e visualização
+- `RelatorioModule`: editor narrativo + fluxo de aprovação
+
+### Iteração 20 — Mobile Flutter: Módulo Pais
+- Autenticação + push notifications (FCM)
+- Dashboard de pais com filhos
+- Observações (timeline + detalhe)
+- Financeiro (ver e pagar mensalidades)
+- Offline-first com SQLite
+
+### Iteração 21 — Testes + Deploy
+- Testes unitários (JUnit 5 + Mockito)
+- Testes de integração (Testcontainers)
+- Pipeline CI/CD (GitHub Actions)
+- Deploy em staging (Docker + Kubernetes)
+
+---
+
+## 🗂️ ESTRUTURA DO REPOSITÓRIO
 
 ```
-┌─────────────────────────────┐
-│ 🌿 Waldorf          [🔔 1] │
-│                             │
-│  Olá, Maria!                │
-│  Mãe de: Lucas (Classe 3)  │
-│         Ana (Jardim)        │
-│                             │
-│  ┌─────────┐ ┌─────────┐   │
-│  │ 🧒      │ │ 👧      │   │
-│  │ Lucas   │ │ Ana     │   │
-│  │ Classe 3│ │ Jardim  │   │
-│  │ [Ver ▶] │ │ [Ver ▶] │   │
-│  └─────────┘ └─────────┘   │
-│                             │
-│  ── COMUNICADOS ──          │
-│  📢 Mutirão da Horta 15/03 │
-│  📋 Reunião de Pais 20/02  │
-│                             │
-│  ── ÚLTIMAS OBSERVAÇÕES ──  │
-│  🟢 Lucas: "Demonstrou..."  │
-│     Prof. João - 14/02      │
-│                             │
-│  ── FINANCEIRO ──           │
-│  ✅ Fev/2026: Pago          │
-│  ⏳ Mar/2026: Vence 10/03   │
-│     [Pagar via Pix]         │
-│                             │
-│  ┌──┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐ │
-│  │🏠│ │👶│ │💬│ │💰│ │👤│ │
-│  │  │ │  │ │  │ │  │ │  │ │
-│  └──┘ └──┘ └──┘ └──┘ └──┘ │
-│ Home Filhos Chat  Fin. Perfil│
-└─────────────────────────────┘
-
-APIs CONSUMIDAS:
-  GET /api/students/{alunoId} (contexto: filhos)
-  GET /api/pedagogy/observations?alunoId={filhoId}&limit=3
-  GET /api/community/channels (comunicados)
-  GET /api/finance/invoices?status=PENDING
-
-FLUTTER PAGES:
-  presentation/pages/dashboard/parent_dashboard_page.dart
-  → ParentDashboardBloc
+waldorf-school-system/
+├── backend/                          # Spring Boot 3.x (Java 21)
+│   └── src/main/
+│       ├── java/com/waldorf/
+│       │   ├── domain/               # Entities, Value Objects, Domain Services
+│       │   ├── application/          # Use Cases, DTOs, Mappers
+│       │   ├── infrastructure/       # Repositories, Configs, Integrations
+│       │   └── presentation/         # Controllers, Exception Handlers
+│       └── resources/
+│           └── db/migration/         # Flyway V1-V7
+├── frontend-web/                     # Angular 17+
+│   └── src/app/
+│       ├── core/                     # Auth, Guards, Interceptors
+│       ├── shared/                   # Design System Waldorf
+│       └── modules/                  # Features lazy-loaded
+├── frontend-mobile/                  # Flutter 3.x
+│   └── lib/
+│       ├── core/
+│       ├── presentation/
+│       └── data/
+├── infra/                            # Docker, Kubernetes, Nginx
+├── docs/                             # Planos e documentação
+│   ├── atualizacoes.md               # Este arquivo
+│   ├── planoArquitetura.md
+│   ├── planoBancoDadosRelacionais.md
+│   ├── planoAPIs.md
+│   ├── planoFrontend.md
+│   ├── planoWireframe.md
+│   └── matrizRastreabilidade.md
+├── docker-compose.yml
+├── .env.example
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## 📝 TELA 4: NOVA OBSERVAÇÃO (Professor - Web + Mobile)
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│  ← Voltar                    NOVA OBSERVAÇÃO                           │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  PASSO 1 DE 3: IDENTIFICAÇÃO                                          │
-│  ═══════════════════════════                                           │
-│                                                                         │
-│  Aluno *                                                               │
-│  ┌──────────────────────────────────────┐                              │
-│  │  🔍 Buscar aluno da turma...        │                              │
-│  │  ┌────────────────────────────────┐  │                              │
-│  │  │ 🧒 Ana Clara da Silva         │  │                              │
-│  │  │ 🧒 Pedro Santos Oliveira      │  │                              │
-│  │  │ 🧒 Lucas Ferreira (selecionado)│ │                              │
-│  │  └────────────────────────────────┘  │                              │
-│  └──────────────────────────────────────┘                              │
-│                                                                         │
-│  Aspecto do Desenvolvimento *                                          │
-│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                       │
-│  │🟢    │ │🔵    │ │🟠    │ │🔴    │ │🟣    │                       │
-│  │Físico│ │Anímico│ │Cogn. │ │Social│ │Artíst│                       │
-│  └──────┘ └──────┘ └──────┘ └──────┘ └──────┘                       │
-│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                                 │
-│  │ 🤎   │ │ 🌿   │ │ 📝   │ │      │                                 │
-│  │Manual│ │Natur. │ │Ling. │ │Outro │                                 │
-│  └──────┘ └──────┘ └──────┘ └──────┘                                 │
-│                                                                         │
-│  Época Pedagógica (opcional)                                           │
-│  ┌──────────────────────────────────────┐                              │
-│  │  Mitologia Nórdica (03/02-28/02)  ▼│                              │
-│  └──────────────────────────────────────┘                              │
-│                                                                         │
-│                           [Próximo →]                                   │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  PASSO 2 DE 3: CONTEÚDO                                               │
-│  ═══════════════════════                                               │
-│                                                                         │
-│  Título *                                                              │
-│  ┌──────────────────────────────────────┐                              │
-│  │  Coordenação motora no tear         │                              │
-│  └──────────────────────────────────────┘                              │
-│                                                                         │
-│  Descrição da Observação *                                             │
-│  ┌──────────────────────────────────────┐                              │
-│  │  Durante a atividade de tear,       │                              │
-│  │  Lucas demonstrou evolução          │                              │
-│  │  significativa na coordenação       │                              │
-│  │  bilateral...                       │                              │
-│  │                                     │  Min: 50 caracteres          │
-│  │                                     │  ████████░░ 180/500          │
-│  └──────────────────────────────────────┘                              │
-│                                                                         │
-│  Observação de Temperamento (opcional)                                 │
-│  ┌──────────────────────────────────────┐                              │
-│  │  Aspecto sanguíneo durante a...     │                              │
-│  └──────────────────────────────────────┘                              │
-│                                                                         │
-│  Sugestões de Apoio (opcional)                                         │
-│  ┌──────────────────────────────────────┐                              │
-│  │  Oferecer atividades que...         │                              │
-│  └──────────────────────────────────────┘                              │
-│                                                                         │
-│                    [← Anterior]  [Próximo →]                           │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  PASSO 3 DE 3: EVIDÊNCIAS E CONFIGURAÇÕES                             │
-│  ═════════════════════════════════════════                              │
-│                                                                         │
-│  Evidências (fotos, vídeos)                                            │
-│  ┌──────────────────────────────────────┐                              │
-│  │         📷 Arraste fotos aqui       │                              │
-│  │         ou clique para selecionar   │                              │
-│  │                                     │                              │
-│  │  [foto1.jpg ✕] [foto2.jpg ✕]       │  Max: 5 arquivos, 10MB cada  │
-│  └──────────────────────────────────────┘                              │
-│                                                                         │
-│  Configurações                                                         │
-│  ┌──────────────────────────────────────┐                              │
-│  │  □ Observação privada (só professor)│                              │
-│  │  ☑ Compartilhar com pais            │                              │
-│  │  □ Incluir no relatório narrativo   │                              │
-│  └──────────────────────────────────────┘                              │
-│                                                                         │
-│  Tags de Desenvolvimento                                               │
-│  [coordenação] [tear] [motricidade fina] [+ adicionar]                │
-│                                                                         │
-│          [← Anterior]  [Salvar Rascunho]  [✓ PUBLICAR]                │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-
-API CHAMADA AO PUBLICAR:
-  POST /api/pedagogy/observations
-  Body: CreateObservacaoRequest {
-    alunoId, turmaId, epocaId, aspecto, titulo,
-    descricao, evidencias[], sugestoesApoio,
-    privado, shareWithParents, developmentTags[]
-  }
-
-COMPONENTES:
-  modules/pedagogia/observacoes/create/
-    observacao-step1.component.ts (identificação)
-    observacao-step2.component.ts (conteúdo)
-    observacao-step3.component.ts (evidências)
-    observacao-create.container.ts (orquestra os steps)
-```
-
----
-
-## 👥 TELA 5: GESTÃO DE ALUNOS (Secretária)
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│  ← Dashboard              ALUNOS                    [+ Novo Aluno]     │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  🔍 Buscar por nome, matrícula ou CPF...     Filtros ▼                 │
-│  ┌──────────────────────────────────────┐   ┌──────────────────┐       │
-│  │                                      │   │ Turma: [Todas ▼] │       │
-│  └──────────────────────────────────────┘   │ Situação: [Ativo]│       │
-│                                              │ Série: [Todas ▼] │       │
-│                                              └──────────────────┘       │
-│  Exibindo 342 alunos ativos                                            │
-│                                                                         │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │ 📷 │ NOME              │ MATRÍCULA │ TURMA    │ SIT.   │ AÇÕES │   │
-│  ├──────────────────────────────────────────────────────────────────┤   │
-│  │ 🧒 │ Ana Clara Silva   │ 2024-001  │ Classe 3 │ 🟢Ativo│ ⋮    │   │
-│  │ 🧒 │ Pedro S. Oliveira │ 2024-002  │ Classe 3 │ 🟢Ativo│ ⋮    │   │
-│  │ 🧒 │ Lucas Ferreira    │ 2024-003  │ Jardim   │ 🟢Ativo│ ⋮    │   │
-│  │ 🧒 │ Maria Souza       │ 2024-004  │ Classe 5 │ 🟡Pend.│ ⋮    │   │
-│  │ ...                                                               │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│                                                                         │
-│  ◀ 1 2 3 4 5 ... 14 ▶     │ Mostrando 25 de 342                      │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-
-MENU ⋮ POR ALUNO:
-  → Ver Perfil Completo
-  → Editar Dados
-  → Ver Observações (link para módulo pedagogia)
-  → Ver Contrato
-  → Transferir/Desligar
-
-API: GET /api/students?page=0&size=25&sort=nome&turmaId=&situacao=ATIVO
-COMPONENTE: modules/pessoa/aluno/aluno-list/aluno-list.component.ts
-```
-
----
-
-## 📋 TELA 6: CADASTRO DE ALUNO (Wizard - 4 Passos)
-
-```
-PASSO 1: Dados Pessoais
-  ├── Nome completo*, Data nascimento*, CPF
-  ├── Nome social (opcional)
-  ├── Nome do Pai, Nome da Mãe*
-  ├── Naturalidade, Nacionalidade
-  ├── Foto (upload)
-  └── API: POST /api/people (tipo: ALUNO)
-
-PASSO 2: Dados Médicos e Waldorf
-  ├── Tipo sanguíneo, Plano de saúde
-  ├── Alergias, Medicamentos controlados
-  ├── Necessidades especiais
-  ├── Observações médicas
-  └── API: PUT /api/students/{id} (dados médicos)
-
-PASSO 3: Responsáveis
-  ├── Buscar responsável existente OU criar novo
-  ├── Tipo: Pai/Mãe/Responsável Legal/Outro
-  ├── Autorizado buscar? Emergência? Guarda compartilhada?
-  ├── Prioridade de contato
-  └── API: POST /api/students/{id}/guardians
-
-PASSO 4: Matrícula e Endereço
-  ├── Turma*, Ano letivo*, Forma de ingresso
-  ├── CEP (busca automática via ViaCEP)
-  ├── Endereço completo
-  ├── Aceite LGPD (checkbox obrigatório)
-  └── API: POST /api/enrollments + POST /api/addresses
-
-COMPONENTE: modules/pessoa/aluno/aluno-create/aluno-wizard.component.ts
-```
-
----
-
-## 💰 TELA 7: FINANCEIRO - MENSALIDADES (Pais - Mobile)
-
-```
-┌─────────────────────────────┐
-│  ← Voltar    FINANCEIRO     │
-│                             │
-│  Lucas Ferreira             │
-│  Contrato: #C-2024-089     │
-│  Plano: Anual com Desconto  │
-│  Valor mensal: R$ 750,00    │
-│                             │
-│  ── 2026 ──                 │
-│                             │
-│  ┌─────────────────────┐    │
-│  │ Jan  R$ 750  ✅ Pago│    │
-│  ├─────────────────────┤    │
-│  │ Fev  R$ 750  ✅ Pago│    │
-│  ├─────────────────────┤    │
-│  │ Mar  R$ 750  ⏳ Aberto│  │
-│  │ Vence: 10/03/2026   │    │
-│  │ ┌─────────────────┐ │    │
-│  │ │  Pagar via Pix  │ │    │
-│  │ └─────────────────┘ │    │
-│  │ ┌─────────────────┐ │    │
-│  │ │  Gerar Boleto   │ │    │
-│  │ └─────────────────┘ │    │
-│  ├─────────────────────┤    │
-│  │ Abr  R$ 750  🔲 Futuro│  │
-│  └─────────────────────┘    │
-│                             │
-│  📊 Resumo Anual            │
-│  Pago: R$ 1.500 / R$ 9.000 │
-│  ████░░░░░░░░░░ 16.7%      │
-│                             │
-└─────────────────────────────┘
-
-APIs:
-  GET /api/finance/contracts?alunoId={filhoId}
-  GET /api/finance/invoices?contratoId={id}
-  POST /api/finance/invoices/{id}/payment (gera Pix/Boleto)
-```
-
----
-
-## 📊 TELA 8: RELATÓRIO NARRATIVO (Professor)
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│  ← Voltar        RELATÓRIO NARRATIVO           [Salvar Rascunho] [PDF]│
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  Aluno: Lucas Ferreira  │  Turma: Classe 3  │  Período: 1° Semestre   │
-│  Status: 🟡 RASCUNHO                                                   │
-│                                                                         │
-│  ── Baseado em 23 observações registradas ──                           │
-│                                                                         │
-│  Desenvolvimento Físico                                                │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │ Lucas apresentou evolução notável na coordenação motora fina,   │   │
-│  │ especialmente durante as atividades de tear e modelagem em      │   │
-│  │ cera de abelha...                                               │   │
-│  │                                                ████░░░ 340/1000 │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│  💡 3 observações do aspecto FÍSICO disponíveis [Inserir referência ▼] │
-│                                                                         │
-│  Desenvolvimento Anímico                                               │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │ No plano anímico, Lucas demonstra sensibilidade crescente...    │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│  💡 5 observações do aspecto ANÍMICO disponíveis                       │
-│                                                                         │
-│  Desenvolvimento Cognitivo                                             │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │                                                                  │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│                                                                         │
-│  Relação Social / Observações Artísticas / Trabalhos Manuais /        │
-│  Conclusão e Convite                                                   │
-│                                                                         │
-│  ─────────────────────────────────────────────────────────────────     │
-│  [Salvar Rascunho]  [Enviar para Revisão]  [Finalizar e Assinar]      │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-
-FLUXO DE STATUS:
-  RASCUNHO → REVISÃO → APROVADO → ENTREGUE
-  
-APIs:
-  POST /api/pedagogy/reports (criar)
-  PUT /api/pedagogy/reports/{id}/draft (salvar rascunho)
-  POST /api/pedagogy/reports/{id}/finalize (finalizar + gerar PDF)
-  GET /api/pedagogy/observations?alunoId={id}&aspecto=FISICO (referências)
-```
-
----
-
-## 🔗 FLUXOS COMPLETOS POR PERSONA
-
-### FLUXO A: Secretária matricula novo aluno
-```
-1. Dashboard → [+ Novo Aluno]
-2. Wizard Passo 1: Dados pessoais → POST /api/people
-3. Wizard Passo 2: Dados médicos → PUT /api/students/{id}
-4. Wizard Passo 3: Vincular responsáveis → POST /api/students/{id}/guardians
-5. Wizard Passo 4: Matrícula + Endereço → POST /api/enrollments + POST /api/addresses
-6. Sistema gera contrato automaticamente → POST /api/finance/contracts (background)
-7. Notificação enviada aos pais → RabbitMQ → NotificationService
-8. Redirect → Perfil do Aluno
-```
-
-### FLUXO B: Professor registra observação
-```
-1. Dashboard → [+ Nova Observação] OU Menu lateral → Observações → Nova
-2. Step 1: Seleciona aluno (filtro por turma contextual) + Aspecto + Época
-3. Step 2: Escreve título + descrição + temperamento + sugestões
-4. Step 3: Upload fotos + configurações de privacidade
-5. Publica → POST /api/pedagogy/observations
-6. Se "compartilhar com pais" = true → Notificação assíncrona via RabbitMQ
-7. Trigger DB atualiza desenvolvimento_waldorf do aluno
-8. Redirect → Lista de Observações com a nova no topo
-```
-
-### FLUXO C: Pais acompanham o filho
-```
-1. Abre app → Login → Dashboard de Pais
-2. Seleciona filho (Lucas)
-3. Vê timeline de observações → GET /api/pedagogy/observations?alunoId=X
-4. Toca em observação → Detalhe com evidências
-5. Navega para Portfólio → GET /api/students/{id}/portfolio
-6. Vê galeria de trabalhos manuais e artísticos
-7. Volta → Aba Financeiro → Paga mensalidade via Pix
-8. Recebe notificação push de confirmação
-```
-
-### FLUXO D: Direção revisa relatório
-```
-1. Dashboard Direção → "3 relatórios aguardando revisão"
-2. Clica → Lista de relatórios com status REVISÃO
-3. Abre relatório do Lucas → Lê cada seção
-4. [Aprovar] ou [Devolver com comentários]
-5. Se aprovado → Status = APROVADO, gera PDF assinado
-6. Professor é notificado → Pode entregar aos pais
-7. Pais recebem notificação → Podem ler no app
-```
-
----
-
-## 📐 PRINCÍPIOS DE DESIGN UX WALDORF
-
-1. **Cores quentes e naturais**: Evitar cores muito vibrantes. Palette baseada em
-   tons terrosos, verdes e azuis suaves (já definidos no Design System)
-2. **Tipografia**: Inter para corpo, Playfair Display para títulos
-   (transmite cuidado e artesanalidade)
-3. **Ícones**: Preferir ícones orgânicos/arredondados, não geométricos duros
-4. **Espaçamento generoso**: Não sobrecarregar a tela
-   (reflete o princípio Waldorf de "dar espaço")
-5. **Sem notas numéricas**: Nunca mostrar notas. Sempre observações narrativas
-6. **Linguagem calorosa**: Botões como "Publicar Observação" em vez de "Submeter"
-7. **Offline-first (Mobile)**: Indicador visual de sincronização,
-   permitir rascunhos offline
-
----
-
-## 📱 BREAKPOINTS RESPONSIVOS
-
-| Breakpoint    | Largura    | Layout                        | Dispositivo      |
-|---------------|------------|-------------------------------|------------------|
-| Mobile        | < 576px    | 1 coluna, bottom nav          | Celular          |
-| Tablet        | 576-768px  | 1-2 colunas, sidebar colapsada| Tablet portrait  |
-| Desktop       | 768-1200px | Sidebar + conteúdo            | Tablet landscape |
-| Wide          | > 1200px   | Sidebar + conteúdo expandido  | Desktop          |
-
----
-
-## 📎 MAPEAMENTO WIREFRAME → COMPONENTE → API
-
-| Tela                    | Componente Angular                          | API Principal                          |
-|-------------------------|---------------------------------------------|----------------------------------------|
-| Login                   | auth/login/login.component.ts               | POST /api/auth/login                   |
-| Dashboard Secretária    | dashboard/secretary-dashboard.component.ts  | GET /api/dashboard/secretary            |
-| Dashboard Professor     | dashboard/teacher-dashboard.component.ts    | GET /api/dashboard/teacher              |
-| Dashboard Pais (Flutter)| pages/dashboard/parent_dashboard_page.dart  | GET /api/dashboard/parent               |
-| Lista Alunos            | pessoa/aluno/aluno-list.component.ts        | GET /api/students                      |
-| Cadastro Aluno (Wizard) | pessoa/aluno/aluno-wizard.component.ts      | POST /api/people + POST /api/students  |
-| Nova Observação         | pedagogia/observacoes/create/               | POST /api/pedagogy/observations        |
-| Lista Observações       | pedagogia/observacoes/list/                 | GET /api/pedagogy/observations         |
-| Relatório Narrativo     | pedagogia/relatorios/edit/                  | PUT /api/pedagogy/reports/{id}/draft   |
-| Portfólio               | pedagogia/portfolio/gallery/                | GET /api/students/{id}/portfolio       |
-| Turmas                  | gestao/turmas/turma-list.component.ts       | GET /api/classes                       |
-| Matrículas              | gestao/matriculas/matricula-list.component  | GET /api/enrollments                   |
-| Financeiro (Web)        | financeiro/mensalidades/                    | GET /api/finance/invoices              |
-| Financeiro (Mobile)     | pages/financeiro/payment_page.dart          | POST /api/finance/invoices/{id}/pay    |
-| Comunicados             | comunidade/canais/canal-list.component.ts   | GET /api/community/channels            |
-| Eventos/Mutirões        | comunidade/eventos/evento-list.component    | GET /api/community/events              |
-| LGPD Solicitações       | lgpd/solicitacoes/                          | GET /api/lgpd/requests                 |
-| Perfil                  | perfil/preferences/                         | GET/PUT /api/users/me                  |
-```
-
----
-
-# ENTREGA 2: CORREÇÃO DAS MIGRATIONS V1-V4
-
-Boa notícia: V1 a V4 **já existem** no repositório. Porém, comparando com o `planoBancoDadosRelacionais.md`, identifiquei **tabelas faltantes**. Aqui está a migration complementar que precisa ser criada:
-
-## Arquivo: `backend/src/main/resources/db/migration/V7__create_tabelas_faltantes.sql`
-
-```sql
--- ====================================================================================================
--- Migration V7: Tabelas faltantes identificadas na análise de gap
--- Comparação: planoBancoDadosRelacionais.md vs Migrations V1-V6 existentes
--- Autor: Gerado na análise de gap
--- Data: 2026-02-16
---
--- TABELAS FALTANTES IDENTIFICADAS:
--- V1 (Pessoas): funcionarios ❌ | responsaveis ✅ | responsaveis_alunos ✅
--- V2 (Escolar): disciplinas ✅ | turma_disciplinas ✅
--- V3 (Pedagogia): trabalhos_manuais ❌ | portfolio_artistico ❌ | relatorios_narrativos ❌
--- V4 (Segurança): consentimentos_lgpd ❌ | solicitacoes_titulares ❌
--- Comunidade: canais_comunicacao ❌ | festivais_comunitarios ❌ | mutiroes ❌
--- Financeiro: contratos ❌ | planos_mensalidade ❌ | mensalidades ❌ | pagamentos ❌
--- Notificações: preferencias_notificacao ❌ | logs_envio_notificacoes ❌
--- ====================================================================================================
-
--- =====================
--- 1. MÓDULO PESSOAS (complemento V1)
--- =====================
-
-CREATE TABLE IF NOT EXISTS funcionarios (
-    id BIGINT PRIMARY KEY,
-    cargo VARCHAR(100) NOT NULL,
-    departamento ENUM('SECRETARIA', 'LIMPEZA', 'COZINHA', 'PORTARIA', 'MANUTENCAO', 'ADMINISTRATIVO', 'DIRECAO') NOT NULL,
-    data_admissao DATE,
-    data_demissao DATE,
-    salario_base DECIMAL(10,2),
-    banco VARCHAR(50),
-    agencia VARCHAR(10),
-    conta VARCHAR(20),
-    tipo_conta ENUM('CORRENTE', 'POUPANCA'),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (id) REFERENCES pessoas(id) ON DELETE CASCADE,
-    INDEX idx_departamento (departamento)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- =====================
--- 2. MÓDULO PEDAGOGIA (complemento V3)
--- =====================
-
--- RELATÓRIOS NARRATIVOS
-CREATE TABLE IF NOT EXISTS relatorios_narrativos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    aluno_id BIGINT NOT NULL,
-    professor_id BIGINT NOT NULL,
-    turma_id BIGINT NOT NULL,
-    ciclo VARCHAR(50) NOT NULL,
-    periodo VARCHAR(50) NOT NULL,
-    titulo VARCHAR(200) NOT NULL,
-    -- Estrutura narrativa Waldorf
-    texto_desenvolvimento_fisico TEXT,
-    texto_desenvolvimento_animico TEXT,
-    texto_desenvolvimento_cognitivo TEXT,
-    texto_relacao_social TEXT,
-    texto_observacoes_artisticas TEXT,
-    texto_trabalhos_manuais TEXT,
-    texto_conclusao_convite TEXT,
-    -- Controle
-    data_elaboracao DATE NOT NULL,
-    data_entrega_pais DATE,
-    status ENUM('RASCUNHO', 'REVISAO', 'APROVADO', 'ENTREGUE') DEFAULT 'RASCUNHO',
-    arquivo_pdf_assinado VARCHAR(500),
-    confirmacao_leitura_responsavel BOOLEAN DEFAULT FALSE,
-    data_confirmacao_leitura DATETIME,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (aluno_id) REFERENCES alunos(id),
-    FOREIGN KEY (professor_id) REFERENCES professores(id),
-    FOREIGN KEY (turma_id) REFERENCES turmas(id),
-    INDEX idx_aluno_ciclo (aluno_id, ciclo),
-    INDEX idx_status_data (status, data_elaboracao)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- TRABALHOS MANUAIS (Portfólio)
-CREATE TABLE IF NOT EXISTS trabalhos_manuais (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    aluno_id BIGINT NOT NULL,
-    turma_id BIGINT,
-    titulo VARCHAR(200) NOT NULL,
-    tecnica VARCHAR(100),
-    descricao TEXT,
-    data_inicio DATE,
-    data_conclusao DATE,
-    dificuldade ENUM('BAIXA', 'MEDIA', 'ALTA'),
-    materiais_utilizados TEXT,
-    processo_criativo TEXT,
-    aprendizagens TEXT,
-    foto_1_url VARCHAR(500),
-    foto_2_url VARCHAR(500),
-    foto_3_url VARCHAR(500),
-    observacao_professor TEXT,
-    compartilhar_portfolio BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (aluno_id) REFERENCES alunos(id),
-    FOREIGN KEY (turma_id) REFERENCES turmas(id),
-    INDEX idx_aluno (aluno_id),
-    INDEX idx_turma (turma_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- PORTFÓLIO ARTÍSTICO
-CREATE TABLE IF NOT EXISTS portfolio_artistico (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    aluno_id BIGINT NOT NULL,
-    turma_id BIGINT,
-    tipo ENUM('DESENHO', 'AQUARELA', 'MODELAGEM', 'ESCULTURA', 'TEATRO', 'MUSICA', 'DANCA', 'OUTRO') NOT NULL,
-    titulo VARCHAR(200),
-    descricao TEXT,
-    data_criacao DATE,
-    tecnica VARCHAR(100),
-    dimensoes VARCHAR(50),
-    midia_url VARCHAR(500),
-    thumbnail_url VARCHAR(500),
-    observacoes TEXT,
-    exposicao_publica BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (aluno_id) REFERENCES alunos(id),
-    FOREIGN KEY (turma_id) REFERENCES turmas(id),
-    INDEX idx_aluno_tipo (aluno_id, tipo)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- =====================
--- 3. MÓDULO FINANCEIRO
--- =====================
-
--- PLANOS DE MENSALIDADE
-CREATE TABLE IF NOT EXISTS planos_mensalidade (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    descricao TEXT,
-    valor_base DECIMAL(10,2) NOT NULL,
-    numero_parcelas INT DEFAULT 12,
-    desconto_anual_percentual DECIMAL(5,2) DEFAULT 0,
-    desconto_irmao_percentual DECIMAL(5,2) DEFAULT 0,
-    taxa_matricula DECIMAL(10,2) DEFAULT 0,
-    ativo BOOLEAN DEFAULT TRUE,
-    ano_vigencia YEAR NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    INDEX idx_ano_ativo (ano_vigencia, ativo)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- CONTRATOS
-CREATE TABLE IF NOT EXISTS contratos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    aluno_id BIGINT NOT NULL,
-    responsavel_id BIGINT NOT NULL,
-    plano_id BIGINT NOT NULL,
-    numero_contrato VARCHAR(30) UNIQUE NOT NULL,
-    ano_letivo YEAR NOT NULL,
-    valor_base DECIMAL(10,2) NOT NULL,
-    desconto_total DECIMAL(10,2) DEFAULT 0,
-    valor_final DECIMAL(10,2) NOT NULL,
-    data_assinatura DATE,
-    data_vencimento DATE,
-    data_inicio_vigencia DATE NOT NULL,
-    data_fim_vigencia DATE NOT NULL,
-    situacao ENUM('PENDENTE', 'ATIVO', 'SUSPENSO', 'CANCELADO', 'ENCERRADO') DEFAULT 'PENDENTE',
-    forma_pagamento ENUM('BOLETO', 'PIX', 'CARTAO_CREDITO', 'DEBITO_AUTOMATICO') DEFAULT 'BOLETO',
-    termos_especiais JSON,
-    observacoes TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (aluno_id) REFERENCES alunos(id),
-    FOREIGN KEY (responsavel_id) REFERENCES responsaveis(id),
-    FOREIGN KEY (plano_id) REFERENCES planos_mensalidade(id),
-    INDEX idx_aluno (aluno_id),
-    INDEX idx_situacao_ano (situacao, ano_letivo),
-    INDEX idx_numero (numero_contrato)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- MENSALIDADES
-CREATE TABLE IF NOT EXISTS mensalidades (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    contrato_id BIGINT NOT NULL,
-    numero_parcela INT NOT NULL,
-    mes_referencia INT NOT NULL,
-    ano_referencia YEAR NOT NULL,
-    valor_parcela DECIMAL(10,2) NOT NULL,
-    valor_desconto DECIMAL(10,2) DEFAULT 0,
-    valor_juros DECIMAL(10,2) DEFAULT 0,
-    valor_multa DECIMAL(10,2) DEFAULT 0,
-    valor_pago DECIMAL(10,2),
-    data_vencimento DATE NOT NULL,
-    data_pagamento DATETIME,
-    status ENUM('ABERTA', 'PAGA', 'ATRASADA', 'CANCELADA', 'NEGOCIADA') DEFAULT 'ABERTA',
-    nosso_numero VARCHAR(50),
-    codigo_barras VARCHAR(100),
-    pix_qrcode TEXT,
-    gateway_transaction_id VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (contrato_id) REFERENCES contratos(id),
-    INDEX idx_contrato_parcela (contrato_id, numero_parcela),
-    INDEX idx_vencimento_status (data_vencimento, status),
-    INDEX idx_mes_ano (ano_referencia, mes_referencia)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- PAGAMENTOS (registro individual de pagamento)
-CREATE TABLE IF NOT EXISTS pagamentos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    mensalidade_id BIGINT NOT NULL,
-    valor_pago DECIMAL(10,2) NOT NULL,
-    data_pagamento DATETIME NOT NULL,
-    forma_pagamento ENUM('BOLETO', 'PIX', 'CARTAO_CREDITO', 'DEBITO_AUTOMATICO', 'DINHEIRO', 'TRANSFERENCIA') NOT NULL,
-    gateway_id VARCHAR(100),
-    comprovante_url VARCHAR(500),
-    status ENUM('PENDENTE', 'CONFIRMADO', 'ESTORNADO', 'FALHA') DEFAULT 'PENDENTE',
-    observacoes TEXT,
-    registrado_por BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (mensalidade_id) REFERENCES mensalidades(id),
-    FOREIGN KEY (registrado_por) REFERENCES usuarios(id),
-    INDEX idx_mensalidade (mensalidade_id),
-    INDEX idx_data (data_pagamento),
-    INDEX idx_gateway (gateway_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- =====================
--- 4. MÓDULO COMUNIDADE E COMUNICAÇÃO
--- =====================
-
--- CANAIS DE COMUNICAÇÃO
-CREATE TABLE IF NOT EXISTS canais_comunicacao (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    tipo ENUM('TURMA', 'COMISSAO', 'FESTIVAL', 'GERAL', 'DIRETORIA', 'PAIS', 'PROFESSORES') NOT NULL,
-    descricao TEXT,
-    regras_engajamento TEXT,
-    publico BOOLEAN DEFAULT TRUE,
-    moderado BOOLEAN DEFAULT TRUE,
-    turma_id BIGINT,
-    ativo BOOLEAN DEFAULT TRUE,
-    cor_canal CHAR(7) DEFAULT '#9C27B0',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (turma_id) REFERENCES turmas(id),
-    INDEX idx_tipo_ativo (tipo, ativo)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- MENSAGENS DOS CANAIS
-CREATE TABLE IF NOT EXISTS mensagens_canal (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    canal_id BIGINT NOT NULL,
-    autor_id BIGINT NOT NULL,
-    conteudo TEXT NOT NULL,
-    tipo ENUM('TEXTO', 'AVISO', 'ANUNCIO', 'ENQUETE') DEFAULT 'TEXTO',
-    prioridade ENUM('BAIXA', 'NORMAL', 'ALTA', 'URGENTE') DEFAULT 'NORMAL',
-    fixada BOOLEAN DEFAULT FALSE,
-    editada BOOLEAN DEFAULT FALSE,
-    data_edicao DATETIME,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    FOREIGN KEY (canal_id) REFERENCES canais_comunicacao(id),
-    FOREIGN KEY (autor_id) REFERENCES usuarios(id),
-    INDEX idx_canal_data (canal_id, created_at DESC)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- FESTIVAIS COMUNITÁRIOS
-CREATE TABLE IF NOT EXISTS festivais_comunitarios (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(200) NOT NULL,
-    tipo ENUM('FESTIVAL_SAZONAL', 'BAZAR', 'APRESENTACAO', 'REUNIAO_PAIS', 'FEIRA', 'OUTRO') NOT NULL,
-    data_evento DATE NOT NULL,
-    horario_inicio TIME,
-    horario_fim TIME,
-    local_evento VARCHAR(200),
-    descricao TEXT,
-    responsavel_id BIGINT,
-    limite_participantes INT,
-    aberto_comunidade BOOLEAN DEFAULT TRUE,
-    status ENUM('PLANEJADO', 'CONFIRMADO', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO') DEFAULT 'PLANEJADO',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (responsavel_id) REFERENCES pessoas(id),
-    INDEX idx_data_status (data_evento, status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- MUTIRÕES
-CREATE TABLE IF NOT EXISTS mutiroes (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(200) NOT NULL,
-    descricao TEXT,
-    data_mutirao DATE NOT NULL,
-    horario_inicio TIME,
-    horario_fim TIME,
-    local_mutirao VARCHAR(200),
-    materiais_necessarios TEXT,
-    limite_participantes INT,
-    permite_criancas BOOLEAN DEFAULT TRUE,
-    status ENUM('PLANEJADO', 'CONFIRMADO', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO') DEFAULT 'PLANEJADO',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    INDEX idx_data_status (data_mutirao, status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- INSCRIÇÕES EM EVENTOS/MUTIRÕES
-CREATE TABLE IF NOT EXISTS inscricoes_eventos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    tipo_evento ENUM('FESTIVAL', 'MUTIRAO') NOT NULL,
-    evento_id BIGINT NOT NULL,
-    pessoa_id BIGINT NOT NULL,
-    numero_pessoas INT DEFAULT 1,
-    criancas_incluidas INT DEFAULT 0,
-    materiais_trazidos TEXT,
-    confirmado BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    FOREIGN KEY (pessoa_id) REFERENCES pessoas(id),
-    UNIQUE KEY uk_evento_pessoa (tipo_evento, evento_id, pessoa_id),
-    INDEX idx_evento (tipo_evento, evento_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- =====================
--- 5. MÓDULO NOTIFICAÇÕES
--- =====================
-
--- PREFERÊNCIAS DE NOTIFICAÇÃO
-CREATE TABLE IF NOT EXISTS preferencias_notificacao (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    usuario_id BIGINT NOT NULL,
-    categoria ENUM('PEDAGOGICO', 'ADMINISTRATIVO', 'FINANCEIRO', 'COMUNIDADE', 'EMERGENCIA', 'SISTEMA') NOT NULL,
-    canal_email BOOLEAN DEFAULT TRUE,
-    canal_push BOOLEAN DEFAULT TRUE,
-    canal_sms BOOLEAN DEFAULT FALSE,
-    agregacao ENUM('IMEDIATO', 'RESUMO_DIARIO', 'RESUMO_SEMANAL') DEFAULT 'IMEDIATO',
-    horario_resumo TIME DEFAULT '18:00:00',
-    silencio_inicio TIME DEFAULT '20:00:00',
-    silencio_fim TIME DEFAULT '07:00:00',
-    ativo BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    UNIQUE KEY uk_usuario_categoria (usuario_id, categoria),
-    INDEX idx_usuario (usuario_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- LOGS DE ENVIO DE NOTIFICAÇÕES
-CREATE TABLE IF NOT EXISTS logs_envio_notificacoes (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    usuario_id BIGINT NOT NULL,
-    tipo_conteudo ENUM('OBSERVACAO_NOVA', 'RELATORIO_PRONTO', 'MENSALIDADE_GERADA', 'MENSALIDADE_ATRASADA', 'EVENTO_PROXIMO', 'COMUNICADO_GERAL', 'EMERGENCIA_LOGISTICA') NOT NULL,
-    canal ENUM('EMAIL', 'PUSH', 'SMS', 'IN_APP') NOT NULL,
-    titulo VARCHAR(200) NOT NULL,
-    conteudo TEXT,
-    status_envio ENUM('PENDENTE', 'ENVIADO', 'ENTREGUE', 'LIDO', 'FALHA', 'SUPRIMIDO') DEFAULT 'PENDENTE',
-    motivo_supressao VARCHAR(200),
-    data_hora_envio_planejado DATETIME NOT NULL,
-    data_hora_envio_real DATETIME,
-    data_hora_leitura DATETIME,
-    tentativas INT DEFAULT 0,
-    erro_detalhes TEXT,
-    referencia_tipo VARCHAR(50),
-    referencia_id BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-    INDEX idx_usuario_status (usuario_id, status_envio),
-    INDEX idx_tipo_data (tipo_conteudo, data_hora_envio_planejado),
-    INDEX idx_referencia (referencia_tipo, referencia_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- =====================
--- 6. MÓDULO LGPD (complemento V4)
--- =====================
-
--- CONSENTIMENTOS LGPD (granular por finalidade)
-CREATE TABLE IF NOT EXISTS consentimentos_lgpd (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    pessoa_id BIGINT NOT NULL,
-    finalidade VARCHAR(200) NOT NULL,
-    descricao TEXT,
-    consentido BOOLEAN NOT NULL,
-    data_consentimento DATETIME NOT NULL,
-    data_revogacao DATETIME,
-    ip_consentimento VARCHAR(45),
-    versao_termos VARCHAR(20),
-    coletado_por BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    FOREIGN KEY (pessoa_id) REFERENCES pessoas(id) ON DELETE CASCADE,
-    FOREIGN KEY (coletado_por) REFERENCES usuarios(id),
-    INDEX idx_pessoa_finalidade (pessoa_id, finalidade),
-    INDEX idx_consentido (consentido, data_consentimento)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- SOLICITAÇÕES DOS TITULARES
-CREATE TABLE IF NOT EXISTS solicitacoes_titulares (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    pessoa_id BIGINT NOT NULL,
-    tipo_solicitacao ENUM('ACESSO', 'CORRECAO', 'EXCLUSAO', 'PORTABILIDADE', 'REVOGACAO', 'INFORMACAO') NOT NULL,
-    descricao TEXT NOT NULL,
-    status ENUM('ABERTA', 'EM_ANALISE', 'EM_ATENDIMENTO', 'CONCLUIDA', 'REJEITADA') DEFAULT 'ABERTA',
-    data_solicitacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    prazo_resposta DATE NOT NULL,
-    data_conclusao DATETIME,
-    resposta TEXT,
-    atendido_por BIGINT,
-    justificativa_rejeicao TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (pessoa_id) REFERENCES pessoas(id),
-    FOREIGN KEY (atendido_por) REFERENCES usuarios(id),
-    INDEX idx_pessoa_tipo (pessoa_id, tipo_solicitacao),
-    INDEX idx_status_prazo (status, prazo_resposta)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- =====================
--- 7. VIEWS ESTRATÉGICAS
--- =====================
-
--- View: Dashboard da Secretária
-CREATE OR REPLACE VIEW vw_dashboard_secretaria AS
-SELECT 
-    (SELECT COUNT(*) FROM alunos WHERE situacao = 'ATIVO') AS total_alunos_ativos,
-    (SELECT COUNT(*) FROM matriculas WHERE situacao = 'EM_ANDAMENTO' AND ano_letivo = YEAR(CURDATE())) AS matriculas_ativas,
-    (SELECT COUNT(*) FROM contratos WHERE situacao = 'PENDENTE') AS contratos_pendentes,
-    (SELECT COUNT(*) FROM mensalidades WHERE status = 'ATRASADA') AS mensalidades_atrasadas,
-    (SELECT COUNT(*) FROM solicitacoes_titulares WHERE status IN ('ABERTA', 'EM_ANALISE')) AS lgpd_pendentes;
-
--- View: Resumo Pedagógico por Turma
-CREATE OR REPLACE VIEW vw_resumo_pedagogico_turma AS
-SELECT 
-    t.id AS turma_id,
-    t.nome AS turma_nome,
-    t.ano_letivo,
-    COUNT(DISTINCT m.aluno_id) AS total_alunos,
-    COUNT(DISTINCT o.id) AS total_observacoes,
-    COUNT(DISTINCT CASE WHEN o.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN o.id END) AS observacoes_ultimo_mes,
-    COUNT(DISTINCT r.id) AS total_relatorios,
-    COUNT(DISTINCT CASE WHEN r.status = 'RASCUNHO' THEN r.id END) AS relatorios_rascunho,
-    (SELECT ep.titulo FROM epocas_pedagogicas ep 
-     WHERE ep.turma_id = t.id AND ep.status = 'EM_ANDAMENTO' LIMIT 1) AS epoca_atual
-FROM turmas t
-LEFT JOIN matriculas m ON m.turma_id = t.id AND m.situacao = 'EM_ANDAMENTO'
-LEFT JOIN observacoes_desenvolvimento o ON o.turma_id = t.id
-LEFT JOIN relatorios_narrativos r ON r.turma_id = t.id
-WHERE t.situacao IN ('ABERTA', 'EM_ANDAMENTO')
-GROUP BY t.id, t.nome, t.ano_letivo;
-
--- View: Financeiro Mensal
-CREATE OR REPLACE VIEW vw_financeiro_mensal AS
-SELECT 
-    m.ano_referencia,
-    m.mes_referencia,
-    COUNT(*) AS total_mensalidades,
-    SUM(m.valor_parcela) AS valor_total_esperado,
-    SUM(CASE WHEN m.status = 'PAGA' THEN m.valor_pago ELSE 0 END) AS valor_total_recebido,
-    SUM(CASE WHEN m.status = 'ATRASADA' THEN m.valor_parcela ELSE 0 END) AS valor_inadimplente,
-    ROUND(SUM(CASE WHEN m.status = 'ATRASADA' THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) AS percentual_inadimplencia
-FROM mensalidades m
-GROUP BY m.ano_referencia, m.mes_referencia
-ORDER BY m.ano_referencia DESC, m.mes_referencia DESC;
-
-
--- =====================
--- 8. TRIGGERS IMPORTANTES
--- =====================
-
--- Trigger: Atualizar vagas da turma ao criar matrícula
-DELIMITER $$
-CREATE TRIGGER trg_atualizar_vagas_after_matricula
-AFTER INSERT ON matriculas
-FOR EACH ROW
-BEGIN
-    UPDATE turmas 
-    SET vagas_disponiveis = capacidade_maxima - (
-        SELECT COUNT(*) FROM matriculas 
-        WHERE turma_id = NEW.turma_id AND situacao IN ('ATIVA', 'EM_ANDAMENTO')
-    )
-    WHERE id = NEW.turma_id;
-END$$
-DELIMITER ;
-
--- Trigger: Marcar mensalidade como atrasada automaticamente
-DELIMITER $$
-CREATE EVENT evt_atualizar_mensalidades_atrasadas
-ON SCHEDULE EVERY 1 DAY STARTS CURRENT_DATE + INTERVAL 1 DAY + INTERVAL 6 HOUR
-DO
-BEGIN
-    UPDATE mensalidades 
-    SET status = 'ATRASADA',
-        updated_at = NOW()
-    WHERE status = 'ABERTA' 
-    AND data_vencimento < CURDATE();
-END$$
-DELIMITER ;
-```
-
----
-
-## Mapa completo de Migrations (estado final)
-
-```
-backend/src/main/resources/db/migration/
-├── V1__create_pessoas.sql              ✅ Existe (pessoas, enderecos, alunos, responsaveis,
-│                                          professores, responsaveis_alunos, registro_tratamento_dados)
-├── V2__create_estrutura_escolar.sql    ✅ Existe (cursos, turmas, matriculas, disciplinas, turma_disciplinas)
-├── V3__create_pedagogia_waldorf.sql    ✅ Existe (desenvolvimento_waldorf, epocas_pedagogicas,
-│                                          ritmo_diario_semanal, observacoes_desenvolvimento)
-├── V4__create_seguranca_usuarios.sql   ✅ Existe (usuarios, perfis, usuarios_perfis, permissoes,
-│                                          perfis_permissoes, usuario_contextos, refresh_tokens, logs_sistema)
-├── V5__insert_data_inicial.sql         ✅ Existe (dados seed: perfis, permissões, cursos, disciplinas, admin)
-├── V6__add_audit_columns.sql           ✅ Existe (created_at/updated_at em tabelas que não tinham)
-└── V7__create_tabelas_faltantes.sql    🆕 CRIAR (funcionarios, relatorios_narrativos, trabalhos_manuais,
-                                           portfolio_artistico, planos_mensalidade, contratos, mensalidades,
-                                           pagamentos, canais_comunicacao, mensagens_canal,
-                                           festivais_comunitarios, mutiroes, inscricoes_eventos,
-                                           preferencias_notificacao, logs_envio_notificacoes,
-                                           consentimentos_lgpd, solicitacoes_titulares,
-                                           + views + triggers + events)
-```
-
----
-
-# ENTREGA 3: GUIA PRÁTICO PARA CORRIGIR/PUBLICAR O REPOSITÓRIO GITHUB
-
-Crie o arquivo `GITHUB_SETUP.md` na raiz do projeto e execute os passos:
-
-```markdown
-# 🔧 Guia de Configuração do Repositório GitHub
-
-## Problema Identificado
-O README referencia `https://github.com/danzeroum/waldorf-school-system.git`
-mas o repositório não está acessível publicamente.
-
-## Passo 1: Verificar se o repositório existe
-
-```bash
-# No terminal, na pasta do projeto:
-git remote -v
-# Se não retornar nada, o remote não está configurado
-```
-
-## Passo 2A: Se o repositório NÃO existe no GitHub — Criar
-
-```bash
-# 1. Vá para https://github.com/new
-# 2. Preencha:
-#    - Repository name: waldorf-school-system
-#    - Description: Sistema completo de gestão escolar baseado nos princípios Waldorf
-#    - Visibility: Public (ou Private se preferir)
-#    - NÃO marque "Initialize with README" (você já tem)
-# 3. Clique "Create repository"
-
-# 4. No terminal, na raiz do projeto:
-cd /caminho/para/waldorf-school-system
-
-# Se NÃO é um repositório git ainda:
-git init
-git add .
-git commit -m "feat: initial commit - estrutura completa do projeto
-
-- Backend: Spring Boot 3.x com DDD
-- Frontend: Angular 17+ com Design System Waldorf
-- Mobile: Flutter (estrutura)
-- Database: MySQL 8.0 com migrations V1-V7
-- Infraestrutura: Docker Compose + Kubernetes
-- Documentação: Planos completos (Arquitetura, APIs, BD, Frontend, Wireframe)"
-
-# Conectar ao GitHub:
-git remote add origin https://github.com/danzeroum/waldorf-school-system.git
-git branch -M main
-git push -u origin main
-```
-
-## Passo 2B: Se o repositório EXISTE mas está privado — Tornar público
-
-```bash
-# 1. Vá para https://github.com/danzeroum/waldorf-school-system/settings
-# 2. Role até "Danger Zone"
-# 3. Clique "Change visibility"
-# 4. Selecione "Public"
-# 5. Confirme digitando o nome do repositório
-```
-
-## Passo 3: Configurar .gitignore (IMPORTANTE - segurança)
-
-Crie/atualize o `.gitignore` na raiz:
-
-```gitignore
-# === AMBIENTE ===
-.env
-.env.local
-.env.production
-*.env
-
-# === JAVA / SPRING BOOT ===
-backend/target/
-backend/.mvn/wrapper/maven-wrapper.jar
-backend/*.jar
-backend/*.war
-
-# === NODE / ANGULAR ===
-frontend-web/node_modules/
-frontend-web/dist/
-frontend-web/.angular/
-
-# === FLUTTER ===
-frontend-mobile/.dart_tool/
-frontend-mobile/build/
-frontend-mobile/.flutter-plugins
-
-# === IDEs ===
-.idea/
-.vscode/settings.json
-*.iml
-*.swp
-
-# === OS ===
-.DS_Store
-Thumbs.db
-
-# === DOCKER VOLUMES (dados locais) ===
-mysql_data/
-redis_data/
-rabbitmq_data/
-minio_data/
-
-# === LOGS ===
-*.log
-logs/
-```
-
-## Passo 4: Criar .env.example (remover senhas hardcoded)
-
-```bash
-# .env.example (commitado - template para o time)
-
-# MySQL
-MYSQL_ROOT_PASSWORD=TROCAR_EM_PRODUCAO
-MYSQL_DATABASE=waldorf_db
-MYSQL_USER=waldorf_user
-MYSQL_PASSWORD=TROCAR_EM_PRODUCAO
-
-# RabbitMQ
-RABBITMQ_DEFAULT_USER=waldorf
-RABBITMQ_DEFAULT_PASS=TROCAR_EM_PRODUCAO
-
-# MinIO
-MINIO_ROOT_USER=waldorf_minio
-MINIO_ROOT_PASSWORD=TROCAR_EM_PRODUCAO
-
-# JWT
-JWT_SECRET=TROCAR_EM_PRODUCAO_usar_chave_256bits
-
-# App
-SPRING_PROFILES_ACTIVE=development
-```
-
-## Passo 5: Atualizar docker-compose.yml para usar .env
-
-Substituir as senhas hardcoded por variáveis:
-
-```yaml
-# No docker-compose.yml, trocar:
-#   MYSQL_ROOT_PASSWORD: waldorf_root_2024
-# Por:
-#   MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-# E assim para todos os serviços
-```
-
-## Passo 6: Primeiro push com tudo organizado
-
-```bash
-# Copiar .env.example para .env (local, não commitado)
-cp .env.example .env
-# Editar .env com suas senhas locais
-
-# Adicionar tudo
-git add .
-git commit -m "chore: configuração do repositório
-
-- Adicionado .gitignore completo
-- Adicionado .env.example (senhas parametrizadas)
-- Docker-compose usando variáveis de ambiente
-- Migration V7 com tabelas faltantes
-- Plano de Wireframe completo"
-
-git push origin main
-```
-
-## Passo 7: Configurar branch protection (recomendado)
-
-```
-GitHub → Settings → Branches → Add rule:
-  Branch name pattern: main
-  ☑ Require pull request reviews before merging
-  ☑ Require status checks to pass before merging
-  ☑ Require branches to be up to date before merging
-```
-```
-
----
-
-# ENTREGA 4: RENOMEAR O ARQUIVO
-
-## Instruções práticas
-
-```bash
-# Na raiz do projeto, execute:
-git mv planoFrontenf.md planoFrontend.md
-
-# Atualizar referências internas (se houver):
-# Buscar em todos os arquivos por "planoFrontenf" e trocar para "planoFrontend"
-grep -rl "planoFrontenf" . --include="*.md" | xargs sed -i 's/planoFrontenf/planoFrontend/g'
-
-# No macOS, use sed -i '' em vez de sed -i:
-# grep -rl "planoFrontenf" . --include="*.md" | xargs sed -i '' 's/planoFrontenf/planoFrontend/g'
-
-# Commitar:
-git add .
-git commit -m "fix: renomear planoFrontenf.md → planoFrontend.md (correção de typo)"
-git push origin main
-```
-
-### Verificação: onde o nome aparece
-
-Nos documentos do projeto, o nome `planoFrontenf.md` é referenciado implicitamente nos planos. Após a renomeação, confirme que nenhum link está quebrado procurando por `Frontenf` com `grep -ri "frontenf" .`.
-
----
-
-# RESUMO: CHECKLIST DE EXECUÇÃO
-
-Execute nesta ordem:
-
-```
-□ 1. Renomear arquivo
-      git mv planoFrontenf.md planoFrontend.md
-
-□ 2. Criar .gitignore e .env.example
-      (copiar conteúdo da Entrega 3)
-
-□ 3. Criar V7__create_tabelas_faltantes.sql
-      Copiar para: backend/src/main/resources/db/migration/
-      (conteúdo completo da Entrega 2)
-
-□ 4. Criar planoWireframe.md
-      Copiar para: raiz do projeto (junto aos outros planos)
-      (conteúdo completo da Entrega 1)
-
-□ 5. Configurar/publicar GitHub
-      Seguir Entrega 3 passo a passo
-
-□ 6. Commit final
-      git add .
-      git commit -m "feat: resolve gaps identificados na análise
-
-      - Plano de Wireframe completo com fluxos por persona
-      - Migration V7: 17 tabelas faltantes + views + triggers
-      - .gitignore e .env.example (segurança)
-      - Renomeação planoFrontenf → planoFrontend
-      - Documentação de setup do repositório"
-      
-      git push origin main
-
-□ 7. Testar migrations
-      docker-compose up -d mysql
-      cd backend && ./mvnw flyway:migrate
-      # Verificar que V1 a V7 rodam sem erro
-```
-
-Vou reunir todas as informações dos planos para construir a matriz completa.Agora tenho toda a informação necessária. Aqui está a **Matriz de Rastreabilidade Completa**:
-
----
-
-# `matrizRastreabilidade.md`
-
-```markdown
-# 🔗 Matriz de Rastreabilidade Completa — Sistema Escolar Waldorf
-
-## 📋 COMO LER ESTA MATRIZ
-
-Cada linha rastreia um conceito de domínio desde a tabela no banco até o componente
-visual no frontend. Os status indicam:
-
-  ✅ Implementado (código existe no repositório)
-  📋 Planejado (descrito em documento de plano, sem código)
-  ❌ Ausente (nem plano nem código — GAP real)
-
----
-
-## MÓDULO 1: PESSOAS E CADASTROS
-
-| # | Tabela (MySQL) | Migration | Entity (JPA) | Repository | Domain Service | App Service | DTO Request | DTO Response | Mapper | Controller | Endpoint REST | Angular Service | Angular Component | Flutter Page | Wireframe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1.1 | `pessoas` | V1 ✅ | `Pessoa.java` ✅ | `PessoaRepository` ✅ | `PessoaService` ✅ | `PessoaAppService` 📋 | `PessoaRequestDTO` ✅ | `PessoaResponseDTO` ✅ | `PessoaMapper` ✅ | `PessoaController` ✅ | `GET/POST /api/v1/pessoas` ✅ | `api.service.ts → endpoints/pessoa` 📋 | `modules/pessoa/` 📋 | — | Tela 5, Tela 6 ✅ |
-| 1.2 | `enderecos` | V1 ✅ | `Endereco.java` ✅ | (via PessoaRepo) ✅ | (via PessoaService) ✅ | (via PessoaAppService) 📋 | `EnderecoDTO` ✅ | `EnderecoDTO` ✅ | `PessoaMapper` ✅ | `PessoaController` ✅ | `GET/POST /api/v1/pessoas/{id}/enderecos` ✅ | (via pessoa service) 📋 | Wizard Passo 4 📋 | — | Tela 6 ✅ |
-| 1.3 | `alunos` | V1 ✅ | `Aluno.java` 📋 | `AlunoRepository` 📋 | 📋 | 📋 | `AlunoDTO` 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/students` 📋 | 📋 | `modules/pessoa/aluno/` 📋 | `pages/dashboard/` 📋 | Tela 5, Tela 6 ✅ |
-| 1.4 | `responsaveis` | V1 ✅ | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/people/{id}/guardians` 📋 | 📋 | `modules/pessoa/responsavel/` 📋 | — | Tela 6 Passo 3 ✅ |
-| 1.5 | `professores` | V1 ✅ | `Professor.java` 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/teachers` 📋 | 📋 | `modules/pessoa/professor/` 📋 | — | ❌ |
-| 1.6 | `funcionarios` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/staff` 📋 | 📋 | ❌ | — | ❌ |
-| 1.7 | `responsaveis_alunos` | V1 ✅ | (via Aluno/Resp) 📋 | 📋 | 📋 | 📋 | — | — | — | — | Embutido em students/guardians 📋 | — | — | — | — |
-| 1.8 | `registro_tratamento_dados` | V1 ✅ | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET /api/lgpd/data-processing` 📋 | 📋 | `modules/lgpd/` 📋 | — | ❌ |
-
-
-## MÓDULO 2: ESTRUTURA ESCOLAR
-
-| # | Tabela (MySQL) | Migration | Entity (JPA) | Repository | Domain Service | App Service | DTO Request | DTO Response | Mapper | Controller | Endpoint REST | Angular Service | Angular Component | Flutter Page | Wireframe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 2.1 | `cursos` | V2 ✅ | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET /api/v1/courses` 📋 | 📋 | `modules/gestao/cursos/` 📋 | — | ❌ |
-| 2.2 | `turmas` | V2 ✅ | `Turma.java` 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/classes` 📋 | 📋 | `modules/gestao/turmas/` 📋 | — | Mapa Nav ✅ |
-| 2.3 | `matriculas` | V2 ✅ | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/enrollments` 📋 | 📋 | `modules/gestao/matriculas/` 📋 | — | Tela 6 Passo 4 ✅ |
-| 2.4 | `disciplinas` | V2 ✅ | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET /api/v1/subjects` 📋 | 📋 | ❌ | — | ❌ |
-| 2.5 | `turma_disciplinas` | V2 ✅ | 📋 | 📋 | 📋 | 📋 | — | — | — | — | Embutido em classes 📋 | — | — | — | — |
-
-
-## MÓDULO 3: PEDAGOGIA WALDORF
-
-| # | Tabela (MySQL) | Migration | Entity (JPA) | Repository | Domain Service | App Service | DTO Request | DTO Response | Mapper | Controller | Endpoint REST | Angular Service | Angular Component | Flutter Page | Wireframe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 3.1 | `desenvolvimento_waldorf` | V3 ✅ | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET /api/v1/students/{id}/development` 📋 | 📋 | ❌ | 📋 | ❌ |
-| 3.2 | `observacoes_desenvolvimento` | V3 ✅ | `ObservacaoDesenvolvimento` ✅ | 📋 | `ObservacaoService` 📋 | `PedagogiaAppService` 📋 | `ObservacaoRequest` 📋 | `ObservacaoResponse` 📋 | 📋 | `PedagogiaController` 📋 | `GET/POST /api/v1/pedagogia/observacoes` 📋 | `ObservacaoService` 📋 | `observacoes-list` 📋, `observacao-create` 📋 | `ObservacoesBloc` 📋 | Tela 4 ✅ |
-| 3.3 | `epocas_pedagogicas` | V3 ✅ | `EpocaPedagogica` 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/pedagogy/epochs` 📋 | 📋 | `modules/pedagogia/epocas/` 📋 | — | Dashboard Prof ✅ |
-| 3.4 | `ritmo_diario_semanal` | V3 ✅ | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET /api/v1/pedagogy/daily-rhythm` 📋 | 📋 | ❌ | — | Dashboard Prof ✅ |
-| 3.5 | `relatorios_narrativos` | V7 📋 | `RelatorioNarrativo` 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/pedagogy/reports` 📋 | 📋 | `modules/pedagogia/relatorios/` 📋 | — | Tela 8 ✅ |
-| 3.6 | `trabalhos_manuais` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `POST /api/v1/portfolio/items` 📋 | 📋 | `modules/pedagogia/portfolio/` 📋 | — | ❌ |
-| 3.7 | `portfolio_artistico` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET /api/v1/students/{id}/portfolio` 📋 | 📋 | `modules/pedagogia/portfolio/` 📋 | 📋 | ❌ |
-
-
-## MÓDULO 4: SEGURANÇA E AUTENTICAÇÃO
-
-| # | Tabela (MySQL) | Migration | Entity (JPA) | Repository | Domain Service | App Service | DTO Request | DTO Response | Mapper | Controller | Endpoint REST | Angular Service | Angular Component | Flutter Page | Wireframe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 4.1 | `usuarios` | V4 ✅ | `Usuario.java` ✅ | `UsuarioRepository` ✅ | 📋 | `AuthService` ✅ | `LoginRequestDTO` ✅ | `LoginResponseDTO` ✅ | — | `AuthController` ✅ | `POST /api/v1/auth/login` ✅ | `AuthService` 📋 | `modules/auth/login/` 📋 | `auth_service.dart` 📋 | Tela 0 ✅ |
-| 4.2 | `perfis` | V4 ✅ | `Perfil.java` ✅ | 📋 | 📋 | 📋 | — | — | — | — | (interno ao auth) | — | — | — | — |
-| 4.3 | `permissoes` | V4 ✅ | `Permissao.java` ✅ | 📋 | `RbacService` 📋 | 📋 | — | — | — | — | `POST /api/auth/check-permission` 📋 | `RbacService` 📋 | `permission.directive.ts` 📋 | — | — |
-| 4.4 | `usuarios_perfis` | V4 ✅ | (via Usuario/Perfil) ✅ | — | — | — | — | — | — | — | — | — | — | — | — |
-| 4.5 | `perfis_permissoes` | V4 ✅ | (via Perfil/Permissao) ✅ | — | — | — | — | — | — | — | — | — | — | — | — |
-| 4.6 | `usuario_contextos` | V4 ✅ | 📋 | 📋 | 📋 | 📋 | — | — | — | — | (interno ao RBAC) | — | — | — | — |
-| 4.7 | `refresh_tokens` | V4 ✅ | 📋 | 📋 | 📋 | 📋 | — | — | — | `AuthController` ✅ | `POST /api/v1/auth/refresh` 📋 | `JwtService` 📋 | — | — | — |
-| 4.8 | `logs_sistema` | V4 ✅ | 📋 | 📋 | 📋 | 📋 | — | — | — | 📋 | `GET /api/audit/logs` 📋 | 📋 | ❌ | — | — |
-
-
-## MÓDULO 5: FINANCEIRO
-
-| # | Tabela (MySQL) | Migration | Entity (JPA) | Repository | Domain Service | App Service | DTO Request | DTO Response | Mapper | Controller | Endpoint REST | Angular Service | Angular Component | Flutter Page | Wireframe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 5.1 | `planos_mensalidade` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET /api/v1/finance/plans` 📋 | 📋 | `modules/financeiro/` 📋 | — | ❌ |
-| 5.2 | `contratos` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/finance/contracts` 📋 | 📋 | `modules/financeiro/contratos/` 📋 | — | Tela 7 ✅ |
-| 5.3 | `mensalidades` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/finance/invoices` 📋 | 📋 | `modules/financeiro/mensalidades/` 📋 | `payment_page.dart` 📋 | Tela 7 ✅ |
-| 5.4 | `pagamentos` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `POST /api/v1/finance/webhooks/payment` 📋 | 📋 | — | — | Tela 7 ✅ |
-
-
-## MÓDULO 6: COMUNIDADE E COMUNICAÇÃO
-
-| # | Tabela (MySQL) | Migration | Entity (JPA) | Repository | Domain Service | App Service | DTO Request | DTO Response | Mapper | Controller | Endpoint REST | Angular Service | Angular Component | Flutter Page | Wireframe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 6.1 | `canais_comunicacao` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET /api/v1/community/channels` 📋 | 📋 | `modules/comunidade/canais/` 📋 | 📋 | Dashboard Pais ✅ |
-| 6.2 | `mensagens_canal` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `POST /api/v1/community/channels/{id}/messages` 📋 | 📋 | 📋 | 📋 | ❌ |
-| 6.3 | `festivais_comunitarios` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/community/events` 📋 | 📋 | `modules/comunidade/eventos/` 📋 | 📋 | ❌ |
-| 6.4 | `mutiroes` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/community/events` (tipo MUTIRAO) 📋 | 📋 | `modules/comunidade/eventos/` 📋 | 📋 | Dashboard Pais ✅ |
-| 6.5 | `inscricoes_eventos` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `POST /api/v1/community/events/{id}/register` 📋 | 📋 | 📋 | 📋 | ❌ |
-
-
-## MÓDULO 7: NOTIFICAÇÕES
-
-| # | Tabela (MySQL) | Migration | Entity (JPA) | Repository | Domain Service | App Service | DTO Request | DTO Response | Mapper | Controller | Endpoint REST | Angular Service | Angular Component | Flutter Page | Wireframe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 7.1 | `preferencias_notificacao` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/PUT /api/v1/notifications/preferences` 📋 | `NotificationService` 📋 | `modules/notificacoes/preferences/` 📋 | `notification_service.dart` 📋 | ❌ |
-| 7.2 | `logs_envio_notificacoes` | V7 📋 | 📋 | 📋 | `NotificationService` 📋 | 📋 | — | 📋 | — | 📋 | `GET /api/v1/notifications/history` 📋 | 📋 | `modules/notificacoes/history/` 📋 | 📋 | ❌ |
-
-
-## MÓDULO 8: LGPD E COMPLIANCE
-
-| # | Tabela (MySQL) | Migration | Entity (JPA) | Repository | Domain Service | App Service | DTO Request | DTO Response | Mapper | Controller | Endpoint REST | Angular Service | Angular Component | Flutter Page | Wireframe |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 8.1 | `consentimentos_lgpd` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/lgpd/consents` 📋 | 📋 | `modules/lgpd/consentimentos/` 📋 | — | ❌ |
-| 8.2 | `solicitacoes_titulares` | V7 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | 📋 | `GET/POST /api/v1/lgpd/requests` 📋 | 📋 | `modules/lgpd/solicitacoes/` 📋 | — | ❌ |
-
-
----
-
-## 📊 RESUMO QUANTITATIVO
-
-### Contagem por camada
-
-| Camada | Total | ✅ Implementado | 📋 Planejado | ❌ Ausente |
-|--------|-------|----------------|-------------|-----------|
-| Tabelas (MySQL) | 30 | 20 (V1-V4) | 10 (V7) | 0 |
-| Migrations | 7 | 6 (V1-V6) | 1 (V7) | 0 |
-| Entities (JPA) | 30 | 7 | 23 | 0 |
-| Repositories | 30 | 3 | 27 | 0 |
-| Domain Services | 10 | 1 | 9 | 0 |
-| App Services | 10 | 1 | 9 | 0 |
-| DTOs (Request) | 20 | 3 | 17 | 0 |
-| DTOs (Response) | 20 | 3 | 17 | 0 |
-| Mappers | 10 | 1 | 9 | 0 |
-| Controllers | 10 | 2 | 8 | 0 |
-| Endpoints REST | 45+ | 12 | 33+ | 0 |
-| Angular Services | 10 | 0 | 10 | 0 |
-| Angular Components | 25+ | 0 | 22+ | 3 |
-| Flutter Pages | 8 | 0 | 7 | 1 |
-| Wireframe Telas | 15 | 9 | 0 | 6 |
-
-### Completude por módulo
-
-| Módulo | Banco | Backend | API | Frontend Web | Mobile | Wireframe | Total |
-|--------|-------|---------|-----|-------------|--------|-----------|-------|
-| 1. Pessoas | 100% | 45% | 35% | 5% | 0% | 75% | **43%** |
-| 2. Estrutura Escolar | 100% | 5% | 10% | 0% | 0% | 30% | **24%** |
-| 3. Pedagogia Waldorf | 85% | 20% | 30% | 10% | 5% | 60% | **35%** |
-| 4. Segurança | 100% | 60% | 25% | 5% | 0% | 50% | **40%** |
-| 5. Financeiro | 0%→100% | 0% | 15% | 0% | 0% | 50% | **28%** |
-| 6. Comunidade | 0%→100% | 0% | 15% | 0% | 0% | 20% | **22%** |
-| 7. Notificações | 0%→100% | 0% | 10% | 0% | 0% | 0% | **18%** |
-| 8. LGPD | 50%→100% | 0% | 10% | 0% | 0% | 0% | **18%** |
-| **MÉDIA GERAL** | **85%** | **16%** | **19%** | **3%** | **1%** | **36%** | **~28%** |
-
-*Nota: "0%→100%" indica que passa de 0% para 100% após aplicar V7.*
-
-
----
-
-## 🎯 GAPS CRÍTICOS IDENTIFICADOS NA MATRIZ
-
-### A. Entities JPA que PRECISAM ser criadas (próximas do caminho crítico)
-
-Ordenadas pela prioridade de implementação conforme o faseamento do projeto:
-
-```
-FASE 1 (Semanas 1-2) — Já parcialmente feito:
-  ✅ Pessoa.java          → FEITO
-  ✅ Endereco.java        → FEITO
-  ✅ Usuario.java         → FEITO
-  ✅ Perfil.java          → FEITO
-  ✅ Permissao.java       → FEITO
-  ✅ ObservacaoDesenv.java → FEITO (entity, sem repo/service)
-  📋 Aluno.java           → CRIAR (herda de Pessoa, @PrimaryKeyJoinColumn)
-  📋 Professor.java       → CRIAR (herda de Pessoa, @PrimaryKeyJoinColumn)
-  📋 Responsavel.java     → CRIAR (herda de Pessoa, @PrimaryKeyJoinColumn)
-
-FASE 2 (Semanas 3-4):
-  📋 Curso.java
-  📋 Turma.java
-  📋 Matricula.java
-  📋 Disciplina.java
-
-FASE 3 (Semanas 5-6):
-  📋 DesenvolvimentoWaldorf.java
-  📋 EpocaPedagogica.java
-  📋 RitmoDiarioSemanal.java
-  📋 RelatorioNarrativo.java
-  📋 TrabalhoManual.java
-  📋 PortfolioArtistico.java
-
-FASE 4 (Semanas 7-8):
-  📋 Contrato.java
-  📋 PlanoMensalidade.java
-  📋 Mensalidade.java
-  📋 Pagamento.java
-
-FASE 5 (Semanas 9-10):
-  📋 CanalComunicacao.java
-  📋 MensagemCanal.java
-  📋 FestivalComunitario.java
-  📋 Mutirao.java
-  📋 InscricaoEvento.java
-
-FASE 6 (Semanas 11-12):
-  📋 PreferenciaNotificacao.java
-  📋 LogEnvioNotificacao.java
-  📋 ConsentimentoLgpd.java
-  📋 SolicitacaoTitular.java
-```
-
-### B. Wireframes faltantes (❌)
-
-```
-PRIORIDADE ALTA (necessário para UX):
-  ❌ Tela Professor: Gestão de Turma (lista alunos, presenças)
-  ❌ Tela Portfólio: Galeria + Upload de trabalhos
-  ❌ Tela Notificações: Preferências e histórico
-
-PRIORIDADE MÉDIA:
-  ❌ Tela Disciplinas: CRUD (secretária)
-  ❌ Tela Canais: Chat de comunidade
-  ❌ Tela Eventos: Inscrição em festivais/mutirões
-
-PRIORIDADE BAIXA (pode esperar):
-  ❌ Tela Funcionários: CRUD (RH)
-  ❌ Tela LGPD: Consentimentos e solicitações (admin)
-  ❌ Tela Relatórios BI: Dashboards analíticos
-```
-
-### C. Inconsistências de nomenclatura entre camadas
-
-| Conceito | Tabela | API Endpoint | Angular Model | Observação |
-|----------|--------|-------------|--------------|------------|
-| Observação | `observacoes_desenvolvimento` | `/pedagogy/observations` | `Observacao` | API em inglês, banco em PT — **OK, padrão aceito** |
-| Turma | `turmas` | `/classes` | — | API em inglês, banco em PT — **consistente** |
-| Matrícula | `matriculas` | `/enrollments` | — | API em inglês, banco em PT — **consistente** |
-| Aluno | `alunos` | `/students` | — | API em inglês, banco em PT — **consistente** |
-| Aspecto | ENUM `aspecto` no banco: `ARTISTICO` | Angular type: `ARTISTIC` | **INCONSISTENTE** — Angular usa `ARTISTIC` em inglês, banco usa `ARTISTICO` em PT. Corrigir para `ARTISTICO` no Angular ou `ARTISTIC` no banco. |
-| Época | `epocas_pedagogicas` | `/pedagogy/epochs` | — | **OK** |
-| Controller path | — | `PessoaController: /api/v1/pessoas` | `planoAPIs: /api/v1/people` | **INCONSISTENTE** — Controller real usa `/pessoas` (PT), plano de API usa `/people` (EN). Padronizar. |
-
-
----
-
-## 🛤️ ROADMAP DE IMPLEMENTAÇÃO BASEADO NA MATRIZ
-
-### Sprint 1 (Semanas 1-2): Core — Completar módulos 1 + 4
-
-```
-BACKEND (o que falta):
-  □ Criar Aluno.java extends Pessoa
-  □ Criar Professor.java extends Pessoa
-  □ Criar Responsavel.java extends Pessoa
-  □ Criar AlunoRepository, ProfessorRepository, ResponsavelRepository
-  □ Criar AlunoService, ProfessorService
-  □ Criar AlunoController (/api/v1/students)
-  □ Criar ProfessorController (/api/v1/teachers)
-  □ Completar AuthController (refresh, logout)
-
-FRONTEND:
-  □ Setup Angular 17 com lazy loading
-  □ Auth module (login, guards, interceptors)
-  □ Layout principal (sidebar + header)
-  □ Dashboard vazio por perfil
-
-BANCO:
-  □ Executar V7 migration
-  □ Validar todas V1-V7 em sequência
-```
-
-### Sprint 2 (Semanas 3-4): Estrutura Escolar
-
-```
-BACKEND:
-  □ Criar Curso, Turma, Matricula, Disciplina entities
-  □ Criar repos, services, controllers para cada
-  □ Testes de integração
-
-FRONTEND:
-  □ Módulo gestão: turmas (lista, CRUD)
-  □ Módulo gestão: matrículas (wizard)
-  □ Dashboard secretária com dados reais
-```
-
-### Sprint 3 (Semanas 5-6): Pedagogia Waldorf
-
-```
-BACKEND:
-  □ Completar ObservacaoDesenvolvimento (repo, service, controller)
-  □ Criar EpocaPedagogica, RitmoDiario entities + stack completa
-  □ Criar RelatorioNarrativo entity + stack completa
-  □ Criar Portfolio entities (TrabalhoManual, PortfolioArtistico)
-  □ FileStorageService integrado com MinIO
-
-FRONTEND:
-  □ Módulo pedagogia: observações (lista, criação wizard 3 passos)
-  □ Módulo pedagogia: épocas (planejamento, visualização)
-  □ Módulo pedagogia: relatórios narrativos (editor)
-  □ Dashboard professor com dados reais
-```
-
-### Sprint 4 (Semanas 7-8): Financeiro + Comunidade
-
-```
-BACKEND:
-  □ Criar stack completa: Contrato, Mensalidade, Pagamento
-  □ Criar stack completa: Canal, Mensagem, Festival, Mutirão
-  □ Integração com gateway de pagamento (webhook)
-
-FRONTEND:
-  □ Módulo financeiro: contratos, mensalidades
-  □ Módulo comunidade: canais, eventos
-```
-
-### Sprint 5 (Semanas 9-10): Notificações + LGPD
-
-```
-BACKEND:
-  □ Criar stack completa: PreferenciaNotificacao, LogEnvio
-  □ RabbitMQ consumers para notificações assíncronas
-  □ Criar stack completa: ConsentimentoLgpd, SolicitacaoTitular
-
-FRONTEND:
-  □ Módulo notificações: preferências
-  □ Módulo LGPD: consentimentos, solicitações
-```
-
-### Sprint 6 (Semanas 11-14): Mobile + Polimento
-
-```
-FLUTTER:
-  □ Login + Auth
-  □ Dashboard pais
-  □ Observações (visualização)
-  □ Financeiro (pagamento)
-  □ Offline-first com SQLite
-
-GERAL:
-  □ Testes E2E
-  □ Performance tuning
-  □ Deploy em staging
-```
-
-
----
-
-## 📎 COMO MANTER ESTA MATRIZ ATUALIZADA
-
-Ao implementar qualquer item:
-
-1. Mude o status de 📋 para ✅
-2. Adicione o caminho real do arquivo se diferir do planejado
-3. Se criar algo novo não previsto, adicione uma nova linha
-4. A cada sprint review, revisar os % de completude por módulo
-
-Comando útil para verificar o que existe vs. o que não existe:
-
-```bash
-# Verificar entities existentes
-find backend/src -name "*.java" -path "*/model/*" | sort
-
-# Verificar controllers existentes
-find backend/src -name "*Controller.java" | sort
-
-# Verificar repositories existentes
-find backend/src -name "*Repository.java" | sort
-
-# Verificar components Angular existentes
-find frontend-web/src -name "*.component.ts" | sort
-
-# Contar implementações por camada
-echo "Entities: $(find backend/src -name '*.java' -path '*/model/*' | wc -l)"
-echo "Repos:    $(find backend/src -name '*Repository.java' | wc -l)"
-echo "Services: $(find backend/src -name '*Service.java' | wc -l)"
-echo "Controllers: $(find backend/src -name '*Controller.java' | wc -l)"
-echo "Angular Components: $(find frontend-web/src -name '*.component.ts' 2>/dev/null | wc -l)"
-```
-```
-
----
-
-Essa matriz dá uma visão completa de cada camada do sistema, do banco de dados até o componente visual, com status real de implementação e um roadmap prático para fechar os gaps. 
+*Última atualização: Iteração 16 — 11/03/2026*
