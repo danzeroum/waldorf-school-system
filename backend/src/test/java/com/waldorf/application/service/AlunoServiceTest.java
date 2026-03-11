@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,7 +89,8 @@ class AlunoServiceTest {
         AlunoResponseDTO resp = alunoService.criar(dto);
         assertThat(resp.nome()).isEqualTo("Ana Clara");
         assertThat(resp.matricula()).startsWith("2026");
-        verify(alunoRepository).save(any(Aluno.class));
+        // service agora chama save apenas 1 vez
+        verify(alunoRepository, times(1)).save(any(Aluno.class));
     }
 
     @Test
@@ -108,7 +109,10 @@ class AlunoServiceTest {
     @DisplayName("listar deve aplicar filtros e retornar página")
     void listarComFiltros() {
         var page = new PageImpl<>(List.of(aluno));
-        when(alunoRepository.findWithFilters("Pedro", null, true, any(Pageable.class))).thenReturn(page);
+        // todos os argumentos precisam usar matchers quando qualquer um usa matcher
+        when(alunoRepository.findWithFilters(
+                eq("Pedro"), isNull(), eq(true), any(Pageable.class)))
+                .thenReturn(page);
 
         var resultado = alunoService.listar("Pedro", null, true, Pageable.unpaged());
         assertThat(resultado.getContent()).hasSize(1);

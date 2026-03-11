@@ -46,9 +46,11 @@ public class AlunoService {
         if (dto.turmaId() != null) {
             aluno.setTurma(turmaRepository.findById(dto.turmaId()).orElse(null));
         }
+        // salva uma única vez: a matrícula é gerada com o ID retornado pelo próprio save
         aluno = alunoRepository.save(aluno);
         aluno.setMatricula(gerarMatricula(aluno.getId()));
-        return toDTO(alunoRepository.save(aluno));
+        // segundo save removido — a transação @Transactional persiste a alteração de matrícula no flush
+        return toDTO(aluno);
     }
 
     @Transactional
