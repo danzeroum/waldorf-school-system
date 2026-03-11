@@ -28,209 +28,159 @@
 
 ### Iteração 2 — Migration V1: Módulo Pessoas
 - `V1__create_pessoas.sql`: tabelas `pessoas`, `enderecos`, `alunos`, `responsaveis`, `professores`, `responsaveis_alunos`, `registro_tratamento_dados`
-- Hierarquia de herança TABLE_PER_CLASS
 
 ### Iteração 3 — Migration V2 + V3: Estrutura Escolar e Pedagogia
-- `V2__create_estrutura_escolar.sql`: `cursos`, `turmas`, `matriculas`, `disciplinas`, `turma_disciplinas`
-- `V3__create_pedagogia_waldorf.sql`: `desenvolvimento_waldorf`, `epocas_pedagogicas`, `ritmo_diario_semanal`, `observacoes_desenvolvimento`
+- `V2__create_estrutura_escolar.sql`, `V3__create_pedagogia_waldorf.sql`
 
 ### Iteração 4 — Migration V4 + V5: Segurança e Dados Seed
-- `V4__create_seguranca_usuarios.sql`: `usuarios`, `perfis`, `permissoes`, `usuarios_perfis`, `perfis_permissoes`, `usuario_contextos`, `refresh_tokens`, `logs_sistema`
-- `V5__insert_data_inicial.sql`: perfis padrão (ADMIN, SECRETARIA, PROFESSOR, PAIS), permissões base, cursos Waldorf, admin inicial
+- `V4__create_seguranca_usuarios.sql`, `V5__insert_data_inicial.sql`
 
 ### Iteração 5 — Migration V6: Audit Columns
-- `V6__add_audit_columns.sql`: adiciona `created_at`/`updated_at` em tabelas que ainda não tinham auditoria
+- `V6__add_audit_columns.sql`: `created_at` / `updated_at` em todas as tabelas
 
 ### Iteração 6 — Entity `Pessoa` + DDD base
-- `Pessoa.java` com herança, `PessoaRepository`, `PessoaService`
-- `PessoaRequestDTO`, `PessoaResponseDTO`, `PessoaMapper`
-- `PessoaController` com endpoints `GET/POST /api/v1/pessoas`
-- Configuração do pacote DDD: `domain/`, `application/`, `infrastructure/`, `presentation/`
+- `Pessoa.java`, `PessoaService`, `PessoaController` — GET/POST `/api/v1/pessoas`
 
 ### Iteração 7 — Segurança JWT + RBAC
-- `Usuario.java`, `Perfil.java`, `Permissao.java` (entities)
-- `AuthController` com `POST /api/v1/auth/login`
-- `JwtService`, `JwtAuthenticationFilter`
-- `SecurityConfig` (Spring Security 6 + JWT stateless)
-- `LoginRequestDTO`, `LoginResponseDTO`
+- `AuthController`, `JwtService`, `JwtAuthenticationFilter`, `SecurityConfig`
 
 ### Iteração 8 — Entity `ObservacaoDesenvolvimento`
-- `ObservacaoDesenvolvimento.java` (entity JPA completa)
-- ENUMs: `AspectoDesenvolvimento`, `Temperamento`
-- Relacionamentos com `Aluno`, `Professor`, `Turma`, `EpocaPedagogica`
+- Entity JPA completa com ENUMs `AspectoDesenvolvimento`, `Temperamento`
 
 ### Iteração 9 — Plano de Wireframe
-- Criado `docs/planoWireframe.md` com wireframes completos por tela e fluxos por persona
+- `docs/planoWireframe.md`: 8 telas + fluxos por persona (A, B, C, D)
 
 ### Iteração 10 — Migration V7: Tabelas Faltantes
-- `V7__create_tabelas_faltantes.sql` com 15+ tabelas, views, triggers e events MySQL
+- `V7__create_tabelas_faltantes.sql`: 15+ tabelas, views, triggers, events
 
 ### Iteração 11 — Módulo Financeiro (Backend)
-- Entities: `Contrato`, `PlanoMensalidade`, `Mensalidade`, `Pagamento`
-- `ContratoService`, `MensalidadeService`, `PagamentoService`
-- `FinanceiroController` com endpoints `/api/v1/finance`
+- Entities, Services e Controller: `/api/v1/finance`
 
 ### Iteração 12 — Módulo Comunidade + Comunicação (Backend)
-- Entities: `CanalComunicacao`, `MensagemCanal`, `FestivalComunitario`, `Mutirao`, `InscricaoEvento`
-- `ComunidadeController` com endpoints `/api/v1/community`
-- WebSocket configurado para chat em tempo real
+- Entities, Services e Controller: `/api/v1/community` + WebSocket
 
 ### Iteração 13 — Matriz de Rastreabilidade
-- `docs/matrizRastreabilidade.md` com 30+ tabelas rastreadas e roadmap de 6 sprints
+- `docs/matrizRastreabilidade.md`: 30+ tabelas rastreadas, roadmap 6 sprints
 
 ### Iteração 14 — Módulo Notificações (Backend)
-- `PreferenciaNotificacao.java`, `LogEnvioNotificacao.java`
-- `NotificacaoService` com supressoão por janela de silêncio e `@Scheduled`
-- `NotificacaoController` com endpoints `/api/v1/notifications`
+- `PreferenciaNotificacao`, `LogEnvioNotificacao`, `NotificacaoService` com `@Scheduled`
 
-### Iteração 15 — Módulo LGPD e Compliance (Backend)
-- `ConsentimentoLgpd.java`, `SolicitacaoTitular.java`
-- `LgpdService` com prazo automático de 15 dias e fluxo de estados
-- `LgpdController` com endpoints `/api/v1/lgpd`
+### Iteração 15 — Módulo LGPD (Backend)
+- `ConsentimentoLgpd`, `SolicitacaoTitular`, `LgpdService`, `LgpdController`
 
 ### Iteração 16 — Atualização de atualizacoes.md (iterações 1–15)
 
 ### Iteração 17 — Frontend Angular: Setup + Auth + Layout
-- Setup Angular 17 com lazy loading
-- `AuthModule`: login, guards `AuthGuard`/`RoleGuard`, interceptor JWT
-- `LayoutModule`: sidebar responsiva, header com notificações badge, overlay mobile
-- `SharedModule`: design system Waldorf (tokens Tailwind, classes utilititárias)
+- Angular 17, lazy loading, `AuthModule` (login, guards, interceptor JWT)
+- `LayoutModule`: sidebar responsiva, header com badge de notificações
+- `SharedModule`: design system Waldorf (tokens Tailwind)
 
 ### Iteração 18 — Frontend Angular: Dashboard (3 perfis)
-- `DashboardModule` com 3 componentes: Secretaria, Professor, Pais
-- Cards de métricas, atividades recentes, atalhos rápidos
-- Roteamento condicional por perfil
+- `DashboardModule` com variantes Secretaria, Professor e Pais
+- Cards de métricas, atividades recentes, atalhos rápidos por perfil
 
-### Iteração 19 — Frontend Angular: Módulo Pedagogía
-- `PedagogiaModule`: Turmas, Épocas, Observações Pedagógicas
+### Iteração 19 — Frontend Angular: Módulo Pedagogia
+- `PedagogiaModule`: Turmas, Épocas, Observações
 - `PedagogiaService`, `EpocaService`, `ObservacaoService`
 - Pipes: `AspectoPipe`, `DuracaoEpocaPipe`
 
 ### Iteração 20 — Frontend Angular: Módulo Financeiro
 - `FinanceiroModule`: Dashboard, Contratos, Parcelas
-- Preview de parcelas em tempo real via `computed()`
-- Modal de baixa de pagamento
-- Pipes: `StatusContratoPipe`, `StatusParcelaPipe`
+- Preview de parcelas em tempo real, modal de baixa, pipes de status
 
 ### Iteração 21 — Frontend Angular: Comunidade + LGPD
-- `ComunidadeModule`: Mural, Comunicados, Portal dos Pais
-- `LgpdModule`: Consentimentos, Solicitações, Relatório LGPD
-- `AvisoService`, `ComunicadoService`, `LgpdService`
-- Pipes: `TipoAvisoPipe`, `StatusConsentimentoPipe`
+- `ComunidadeModule`: Mural (avisos fixados, filtro por tipo), Comunicados, Portal dos Pais
+- `LgpdModule`: Consentimentos, Solicitações (modal de resposta), Relatório (gráfico SVG)
 
 ### Iteração 22 — Frontend Angular: Integração final
-- `AppModule` com registro de locale `pt-BR`, interceptors registrados
-- `AppRoutingModule`: roteamento lazy de todos os módulos com `AuthGuard` + `RoleGuard` por perfil
-- `ErrorInterceptor`: trata 401 (logout) e 403 (redireciona dashboard)
-- Models TypeScript centralizados em `src/app/@models/`:
-  - `auth.models.ts`: `TokenPayload`, `LoginRequest`, `LoginResponse`, `UsuarioLogado`
-  - `pessoa.models.ts`: `Pessoa`, `Aluno`, `Responsavel`, `Professor`
-  - `pedagogia.models.ts`: `Turma`, `EpocaPedagogica`, `ObservacaoPedagogica`
-  - `financeiro.models.ts`: `Contrato`, `Parcela` com tipos de status
-- `tsconfig.json` com path aliases: `@models`, `@environments`, `@core`, `@shared`
+- `AppModule` com locale `pt-BR` e interceptors registrados
+- `AppRoutingModule`: roteamento lazy completo com `AuthGuard` + `RoleGuard`
+- `ErrorInterceptor`: trata 401 (logout) e 403 (redireciona)
+- Models TypeScript centralizados em `@models/`: auth, pessoa, pedagogia, financeiro
+- `tsconfig.json` com path aliases: `@models`, `@core`, `@shared`, `@environments`
+
+### Iteração 23 — Frontend Angular: Notificações + Polimento UX
+- `NotificacoesModule`: painel, marcar como lida, preferências (toggle, agregação, silêncio)
+- `ToastService` + `ToastComponent`: success/error/info/warning com auto-dismiss
+- `LoadingService` + `LoadingOverlayComponent` + `LoadingInterceptor`
+- `EmptyStateComponent` reutilizável com `@Input()` e `<ng-content>`
+
+### Iteração 24 — Backend: Endpoints faltantes + Swagger
+- `AlunoController`: CRUD + vínculo de responsáveis + filtros paginados
+- `ResponsavelController`: CRUD completo
+- `TurmaController`: CRUD + `GET /{id}/alunos`
+- `EpocaController`: CRUD + `POST /{id}/encerrar`
+- `ObservacaoController`: CRUD por aluno
+- `OpenApiConfig` + SpringDoc: Swagger UI em `/swagger-ui.html`, JWT Authorize
+- `application.yml` completo com HikariCP, Flyway, Redis, SpringDoc
+
+### Iteração 25 — Mobile Flutter: Setup + Auth + Dashboard + Filhos + Financeiro
+- `pubspec.yaml`: Riverpod, GoRouter, Dio, sqflite, firebase_messaging, jwt_decoder
+- `AppTheme`: design system Waldorf (verde, creme, serif fonts)
+- `TokenStorage` com `flutter_secure_storage` (criptografado no Android)
+- `AuthService`: verifica expiração JWT sem rede, login, logout
+- `ApiClient` (Dio): interceptor de JWT + refresh automático em 401
+- `LoginScreen`: form com validação, toggle senha, card de erro
+- `HomeScreen`: dashboard com grid de atalhos e feed de notificações
+- `FilhosScreen` + `FilhoDetalheScreen`: lista shimmer, detalhe com temperamento
+- `FinanceiroScreen`: filtros por status, offline-first via `FinanceiroLocalDb` (SQLite)
+
+### Iteração 26 — Testes + CI/CD
+- Testes unitários: `AuthServiceTest`, `AlunoServiceTest`, `LgpdServiceTest`, `FinanceiroServiceTest`
+- Testes de integração: `AlunoControllerIT`, `FinanceiroControllerIT` (H2 in-memory)
+- `application-test.yml`: H2 modo MySQL, Flyway desativado
+- `.github/workflows/ci.yml`: build + test backend (JDK 21) + lint/build frontend (Node 20)
+- `.github/workflows/docker.yml`: build + push para GHCR com tags semânticas
+- `backend/Dockerfile`: multi-stage (JDK→JRE), usuário não-root, HEALTHCHECK
+- `frontend-web/Dockerfile`: multi-stage (Node→Nginx) + `nginx.conf` com proxy, gzip, cache
+
+### Iteração 27 — Documentação final
+- `README.md` completo: arquitetura (diagrama ASCII), setup, endpoints, RBAC, testes
+- `.env.example` atualizado com todas as variáveis necessárias
+- `docs/atualizacoes.md` consolidado com todas as 27 iterações
 
 ---
 
-## 📊 STATUS ATUAL DO PROJETO (Iteração 22)
+## 📊 STATUS FINAL DO PROJETO (Iteração 27)
 
 ### Completude por camada
 
-| Módulo | Banco (MySQL) | Backend (Java) | API REST | Frontend (Angular) | Mobile (Flutter) |
+| Módulo | Banco (MySQL) | Backend (Java) | API REST | Frontend Angular | Mobile Flutter |
 |--------|:---:|:---:|:---:|:---:|:---:|
-| Pessoas | ✅ 100% | 30% | 25% | ✅ 90% | 0% |
-| Estrutura Escolar | ✅ 100% | 5% | 10% | ✅ 85% | 0% |
-| Pedagogia Waldorf | ✅ 100% | 25% | 30% | ✅ 90% | 0% |
-| Segurança / Auth | ✅ 100% | 65% | 40% | ✅ 95% | 0% |
-| Financeiro | ✅ 100% | 50% | 45% | ✅ 90% | 0% |
-| Comunidade | ✅ 100% | 40% | 35% | ✅ 85% | 0% |
-| Notificações | ✅ 100% | 60% | 50% | 20% | 0% |
-| LGPD | ✅ 100% | 55% | 50% | ✅ 90% | 0% |
-| **MÉDIA** | **✅ 100%** | **~41%** | **~36%** | **✅ ~78%** | **0%** |
+| Pessoas | ✅ 100% | ✅ 85% | ✅ 90% | ✅ 90% | 0% |
+| Estrutura Escolar | ✅ 100% | ✅ 80% | ✅ 85% | ✅ 85% | 0% |
+| Pedagogia Waldorf | ✅ 100% | ✅ 80% | ✅ 85% | ✅ 90% | 0% |
+| Segurança / Auth | ✅ 100% | ✅ 90% | ✅ 90% | ✅ 95% | ✅ 90% |
+| Financeiro | ✅ 100% | ✅ 70% | ✅ 70% | ✅ 90% | ✅ 80% |
+| Comunidade | ✅ 100% | ✅ 60% | ✅ 60% | ✅ 85% | 0% |
+| Notificações | ✅ 100% | ✅ 70% | ✅ 70% | ✅ 95% | 0% |
+| LGPD | ✅ 100% | ✅ 75% | ✅ 75% | ✅ 90% | 0% |
+| **MÉDIA** | **✅ 100%** | **✅ ~76%** | **✅ ~78%** | **✅ ~91%** | **~34%** |
 
 ### Migrations aplicadas
 
 | Versão | Arquivo | Status |
 |--------|---------|--------|
-| V1 | `V1__create_pessoas.sql` | ✅ Aplicada |
-| V2 | `V2__create_estrutura_escolar.sql` | ✅ Aplicada |
-| V3 | `V3__create_pedagogia_waldorf.sql` | ✅ Aplicada |
-| V4 | `V4__create_seguranca_usuarios.sql` | ✅ Aplicada |
-| V5 | `V5__insert_data_inicial.sql` | ✅ Aplicada |
-| V6 | `V6__add_audit_columns.sql` | ✅ Aplicada |
-| V7 | `V7__create_tabelas_faltantes.sql` | 📋 Criada — executar `./mvnw flyway:migrate` |
+| V1–V6 | Módulos base | ✅ Aplicadas |
+| V7 | `V7__create_tabelas_faltantes.sql` | 📋 Executar `./mvnw flyway:migrate` |
+
+### CI/CD
+
+| Pipeline | Gatilho | Status |
+|----------|---------|--------|
+| `ci.yml` | push main/develop + PRs | ✅ Configurado |
+| `docker.yml` | push main + tags `v*` | ✅ Configurado |
 
 ---
 
-## 🔜 PRÓXIMAS ITERAÇÕES PLANEJADAS
+## 🔜 PRÓXIMAS EVOLUÇÕES SUGERIDAS
 
-### Iteração 23 — Frontend: Módulo Notificações + Ajustes
-- `NotificacoesModule`: painel de notificações, marcar como lida, preferências
-- Polimento geral de UX: estados vazios, toasts de sucesso/erro, loading global
-
-### Iteração 24 — Backend: Endpoints faltantes
-- Completar endpoints de Pessoas (`/alunos`, `/responsaveis`, `/professores`)
-- Completar endpoints de Pedagogia (`/turmas`, `/epocas`, `/observacoes`)
-- Swagger/OpenAPI atualizado
-
-### Iteração 25 — Mobile Flutter: Setup + Auth + Dashboard Pais
-- Autenticação + push notifications (FCM)
-- Dashboard de pais com filhos
-- Financeiro: ver e pagar mensalidades
-- Offline-first com SQLite
-
-### Iteração 26 — Testes + CI/CD
-- Testes unitários (JUnit 5 + Mockito)
-- Testes de integração (Testcontainers)
-- Pipeline GitHub Actions (build + test + docker push)
-- Deploy em staging (Docker + Kubernetes)
+- **Mobile Flutter**: módulos Pedagogia e Comunidade para os pais
+- **Backend**: completar endpoints de Comunidade e Notificações
+- **Testes**: aumentar cobertura para 80%+ (Jacoco)
+- **Deploy Staging**: Kubernetes + Helm charts
+- **Monitoring**: Prometheus + Grafana + Sentry
 
 ---
 
-## 🗂️ ESTRUTURA DO REPOSITÓRIO
-
-```
-waldorf-school-system/
-├── backend/                          # Spring Boot 3.x (Java 21)
-│   └── src/main/
-│       ├── java/com/waldorf/
-│       │   ├── domain/               # Entities, Value Objects, Domain Services
-│       │   ├── application/          # Use Cases, DTOs, Mappers
-│       │   ├── infrastructure/       # Repositories, Configs, Integrations
-│       │   └── presentation/         # Controllers, Exception Handlers
-│       └── resources/
-│           └── db/migration/         # Flyway V1-V7
-├── frontend-web/                     # Angular 17+
-│   └── src/app/
-│       ├── @models/              # Interfaces/tipos TypeScript centralizados
-│       ├── core/                     # Auth, Guards, Interceptors
-│       ├── shared/                   # Design System Waldorf
-│       ├── layout/                   # Shell, Sidebar, Header
-│       └── modules/                  # Features lazy-loaded
-│           ├── auth/
-│           ├── dashboard/
-│           ├── pessoas/
-│           ├── pedagogia/
-│           ├── financeiro/
-│           ├── comunidade/
-│           ├── lgpd/
-│           └── notificacoes/
-├── frontend-mobile/                  # Flutter 3.x
-│   └── lib/
-├── infra/                            # Docker, Kubernetes, Nginx
-├── docs/
-│   ├── atualizacoes.md               # Este arquivo
-│   ├── planoArquitetura.md
-│   ├── planoBancoDadosRelacionais.md
-│   ├── planoAPIs.md
-│   ├── planoFrontend.md
-│   ├── planoWireframe.md
-│   └── matrizRastreabilidade.md
-├── docker-compose.yml
-├── .env.example
-├── .gitignore
-└── README.md
-```
-
----
-
-*Última atualização: Iteração 22 — 11/03/2026*
+*Última atualização: Iteração 27 — 11/03/2026*
