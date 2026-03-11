@@ -1,0 +1,206 @@
+<div class="space-y-5 animate-fade-in-up" (click)="fecharMenus()">
+
+  <!-- Cabeçalho -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Alunos</h1>
+      <p class="text-sm text-waldorf-gray-500 mt-0.5">
+        {{ totalElements() }} aluno{{ totalElements() !== 1 ? 's' : '' }} encontrado{{ totalElements() !== 1 ? 's' : '' }}
+      </p>
+    </div>
+    <button (click)="novoAluno()" class="btn-primary flex items-center gap-2">
+      <span class="material-icons text-base">person_add</span>
+      Novo Aluno
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card p-4 flex flex-col sm:flex-row gap-3">
+    <!-- Busca -->
+    <div class="relative flex-1">
+      <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-waldorf-gray-400 text-xl pointer-events-none">
+        search
+      </span>
+      <input
+        type="search"
+        [formControl]="buscaCtrl"
+        placeholder="Buscar por nome, matrícula ou CPF..."
+        class="form-input pl-10"
+      >
+    </div>
+    <!-- Situação -->
+    <select
+      [value]="filtroSituacao()"
+      (change)="mudarSituacao(($event.target as HTMLSelectElement).value)"
+      class="form-input w-full sm:w-44"
+    >
+      <option value="">Todas as situações</option>
+      <option value="ATIVO">Ativo</option>
+      <option value="PENDENTE">Pendente</option>
+      <option value="TRANSFERIDO">Transferido</option>
+      <option value="DESLIGADO">Desligado</option>
+      <option value="INATIVO">Inativo</option>
+    </select>
+  </div>
+
+  <!-- Tabela -->
+  <div class="card p-0 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr>
+            <th class="table-header text-left">Aluno</th>
+            <th class="table-header text-left hidden md:table-cell">Matrícula</th>
+            <th class="table-header text-left hidden sm:table-cell">Turma</th>
+            <th class="table-header text-left">Situação</th>
+            <th class="table-header text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Skeleton -->
+          <ng-container *ngIf="carregando()">
+            <tr *ngFor="let i of [1,2,3,4,5]" class="table-row-hover">
+              <td class="table-cell">
+                <div class="flex items-center gap-3">
+                  <div class="skeleton w-8 h-8 rounded-full"></div>
+                  <div class="skeleton h-4 w-32"></div>
+                </div>
+              </td>
+              <td class="table-cell hidden md:table-cell"><div class="skeleton h-4 w-24"></div></td>
+              <td class="table-cell hidden sm:table-cell"><div class="skeleton h-4 w-20"></div></td>
+              <td class="table-cell"><div class="skeleton h-5 w-16 rounded-full"></div></td>
+              <td class="table-cell text-right"><div class="skeleton h-8 w-8 rounded ml-auto"></div></td>
+            </tr>
+          </ng-container>
+
+          <!-- Dados -->
+          <ng-container *ngIf="!carregando()">
+            <tr
+              *ngFor="let aluno of alunos()"
+              class="table-row-hover cursor-pointer"
+              (click)="verDetalhe(aluno.id)"
+            >
+              <!-- Nome + avatar -->
+              <td class="table-cell">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-waldorf-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="material-icons text-waldorf-green-600 text-base">child_care</span>
+                  </div>
+                  <div>
+                    <p class="font-medium text-waldorf-gray-800">{{ aluno.nomeCompleto }}</p>
+                    <p class="text-xs text-waldorf-gray-400" *ngIf="aluno.nomeSocial">
+                      {{ aluno.nomeSocial }}
+                    </p>
+                  </div>
+                </div>
+              </td>
+              <!-- Matrícula -->
+              <td class="table-cell hidden md:table-cell text-waldorf-gray-500 font-mono text-xs">
+                {{ aluno.matricula || '—' }}
+              </td>
+              <!-- Turma -->
+              <td class="table-cell hidden sm:table-cell">
+                <span *ngIf="aluno.turmaAtual" class="badge badge-info">
+                  {{ aluno.turmaAtual.nome }}
+                </span>
+                <span *ngIf="!aluno.turmaAtual" class="text-waldorf-gray-400 text-xs">Sem turma</span>
+              </td>
+              <!-- Situação -->
+              <td class="table-cell">
+                <span [class]="'badge ' + (aluno.situacao | situacaoAluno:'css')">
+                  {{ aluno.situacao | situacaoAluno }}
+                </span>
+              </td>
+              <!-- Ações -->
+              <td class="table-cell text-right">
+                <div class="relative inline-block">
+                  <button
+                    class="btn-icon"
+                    (click)="toggleMenu(aluno.id, $event)"
+                    [attr.aria-label]="'Ações para ' + aluno.nomeCompleto"
+                  >
+                    <span class="material-icons text-xl">more_vert</span>
+                  </button>
+                  <!-- Dropdown de ações -->
+                  <div
+                    *ngIf="menuAbertoId() === aluno.id"
+                    class="absolute right-0 mt-1 w-48 bg-white rounded-xl border border-waldorf-cream-200
+                           shadow-waldorf-md z-20 py-1 animate-fade-in"
+                  >
+                    <button
+                      (click)="verDetalhe(aluno.id)"
+                      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-waldorf-gray-600
+                             hover:bg-waldorf-cream-50"
+                    >
+                      <span class="material-icons text-base">visibility</span> Ver perfil
+                    </button>
+                    <button
+                      (click)="editarAluno(aluno.id)"
+                      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-waldorf-gray-600
+                             hover:bg-waldorf-cream-50"
+                    >
+                      <span class="material-icons text-base">edit</span> Editar
+                    </button>
+                    <button
+                      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-waldorf-gray-600
+                             hover:bg-waldorf-cream-50"
+                    >
+                      <span class="material-icons text-base">swap_horiz</span> Transferir
+                    </button>
+                    <div class="border-t border-waldorf-cream-100 my-1"></div>
+                    <button
+                      class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600
+                             hover:bg-red-50"
+                    >
+                      <span class="material-icons text-base">person_off</span> Desligar
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Empty state -->
+            <tr *ngIf="alunos().length === 0">
+              <td colspan="5" class="py-16 text-center">
+                <span class="material-icons text-4xl text-waldorf-gray-300">search_off</span>
+                <p class="text-waldorf-gray-500 mt-2">Nenhum aluno encontrado</p>
+                <button (click)="novoAluno()" class="btn-primary mt-4 text-sm">Cadastrar primeiro aluno</button>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <div *ngIf="totalPages() > 1"
+         class="flex items-center justify-between px-4 py-3 border-t border-waldorf-cream-100">
+      <p class="text-xs text-waldorf-gray-500">
+        Página {{ paginaAtual() + 1 }} de {{ totalPages() }} &bull; {{ totalElements() }} registros
+      </p>
+      <div class="flex gap-1">
+        <button
+          (click)="irParaPagina(paginaAtual() - 1)"
+          [disabled]="paginaAtual() === 0"
+          class="btn-icon disabled:opacity-40"
+        >
+          <span class="material-icons text-xl">chevron_left</span>
+        </button>
+        <button
+          *ngFor="let p of paginasVisiveis"
+          (click)="irParaPagina(p)"
+          [class]="p === paginaAtual()
+            ? 'px-3 py-1 text-sm rounded-lg bg-waldorf-green-500 text-white font-medium'
+            : 'px-3 py-1 text-sm rounded-lg hover:bg-waldorf-cream-100 text-waldorf-gray-600'"
+        >{{ p + 1 }}</button>
+        <button
+          (click)="irParaPagina(paginaAtual() + 1)"
+          [disabled]="paginaAtual() === totalPages() - 1"
+          class="btn-icon disabled:opacity-40"
+        >
+          <span class="material-icons text-xl">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

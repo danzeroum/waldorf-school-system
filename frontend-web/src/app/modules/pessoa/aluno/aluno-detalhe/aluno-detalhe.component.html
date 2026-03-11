@@ -1,0 +1,134 @@
+<div class="space-y-5 animate-fade-in-up">
+
+  <!-- Loading -->
+  <div *ngIf="carregando()" class="card text-center py-16">
+    <span class="material-icons text-4xl text-waldorf-gray-300 animate-spin">refresh</span>
+    <p class="text-waldorf-gray-500 mt-2">Carregando perfil...</p>
+  </div>
+
+  <!-- Erro -->
+  <div *ngIf="erro()" class="card text-center py-16">
+    <span class="material-icons text-4xl text-red-300">error_outline</span>
+    <p class="text-red-500 mt-2">{{ erro() }}</p>
+    <button (click)="voltar()" class="btn-secondary mt-4">Voltar para a lista</button>
+  </div>
+
+  <ng-container *ngIf="!carregando() && !erro() && aluno()">
+
+    <!-- Header do perfil -->
+    <div class="card flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div class="w-16 h-16 bg-waldorf-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+        <span class="material-icons text-waldorf-green-600 text-3xl">child_care</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap items-center gap-2">
+          <h1 class="text-xl font-serif text-waldorf-gray-900">{{ aluno()!.nomeCompleto }}</h1>
+          <span [class]="'badge ' + (aluno()!.situacao | situacaoAluno:'css')">
+            {{ aluno()!.situacao | situacaoAluno }}
+          </span>
+        </div>
+        <p class="text-sm text-waldorf-gray-500 mt-0.5" *ngIf="aluno()!.nomeSocial">
+          Chamado(a) de: <strong>{{ aluno()!.nomeSocial }}</strong>
+        </p>
+        <div class="flex flex-wrap gap-3 mt-2 text-xs text-waldorf-gray-500">
+          <span *ngIf="aluno()!.turmaAtual" class="flex items-center gap-1">
+            <span class="material-icons text-sm">school</span>
+            {{ aluno()!.turmaAtual!.nome }}
+          </span>
+          <span *ngIf="aluno()!.dataNascimento" class="flex items-center gap-1">
+            <span class="material-icons text-sm">cake</span>
+            {{ calcularIdade(aluno()!.dataNascimento) }} anos
+          </span>
+          <span *ngIf="aluno()!.matricula" class="flex items-center gap-1 font-mono">
+            <span class="material-icons text-sm">badge</span>
+            {{ aluno()!.matricula }}
+          </span>
+        </div>
+      </div>
+      <button (click)="editar()" class="btn-secondary flex items-center gap-2 text-sm flex-shrink-0">
+        <span class="material-icons text-base">edit</span>
+        Editar
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="border-b border-waldorf-cream-200">
+      <nav class="flex gap-1 overflow-x-auto">
+        <button
+          *ngFor="let tab of tabs"
+          (click)="tabAtiva.set(tab.id)"
+          [class]="tabAtiva() === tab.id
+            ? 'flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-waldorf-green-600 border-b-2 border-waldorf-green-500 whitespace-nowrap'
+            : 'flex items-center gap-1.5 px-4 py-2.5 text-sm text-waldorf-gray-500 hover:text-waldorf-gray-700 whitespace-nowrap'"
+        >
+          <span class="material-icons text-base">{{ tab.icone }}</span>
+          {{ tab.label }}
+        </button>
+      </nav>
+    </div>
+
+    <!-- Conteúdo da tab ativa -->
+
+    <!-- Tab: Perfil -->
+    <div *ngIf="tabAtiva() === 'perfil'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <div class="card space-y-3">
+        <h3 class="text-sm font-semibold text-waldorf-gray-700">Dados Pessoais</h3>
+        <dl class="space-y-2">
+          <div *ngIf="aluno()!.dataNascimento">
+            <dt class="text-xs text-waldorf-gray-500">Nascimento</dt>
+            <dd class="text-sm text-waldorf-gray-800">{{ aluno()!.dataNascimento | date:'dd/MM/yyyy' }}</dd>
+          </div>
+          <div *ngIf="aluno()!.cpf">
+            <dt class="text-xs text-waldorf-gray-500">CPF</dt>
+            <dd class="text-sm font-mono text-waldorf-gray-800">{{ aluno()!.cpf }}</dd>
+          </div>
+          <div *ngIf="aluno()!.email">
+            <dt class="text-xs text-waldorf-gray-500">E-mail</dt>
+            <dd class="text-sm text-waldorf-gray-800">{{ aluno()!.email }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="card space-y-3" *ngIf="aluno()!.dadosMedicos">
+        <h3 class="text-sm font-semibold text-waldorf-gray-700">Dados de Saúde</h3>
+        <dl class="space-y-2">
+          <div *ngIf="aluno()!.dadosMedicos?.tipoSanguineo">
+            <dt class="text-xs text-waldorf-gray-500">Tipo Sanguíneo</dt>
+            <dd class="text-sm font-medium text-waldorf-gray-800 badge badge-info">{{ aluno()!.dadosMedicos?.tipoSanguineo }}</dd>
+          </div>
+          <div *ngIf="aluno()!.dadosMedicos?.alergias">
+            <dt class="text-xs text-waldorf-gray-500">Alergias</dt>
+            <dd class="text-sm text-waldorf-gray-800">{{ aluno()!.dadosMedicos?.alergias }}</dd>
+          </div>
+          <div *ngIf="aluno()!.dadosMedicos?.planoSaude">
+            <dt class="text-xs text-waldorf-gray-500">Plano de Saúde</dt>
+            <dd class="text-sm text-waldorf-gray-800">{{ aluno()!.dadosMedicos?.planoSaude }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="card space-y-3 sm:col-span-2" *ngIf="aluno()!.responsaveis?.length">
+        <h3 class="text-sm font-semibold text-waldorf-gray-700">Responsáveis</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div *ngFor="let resp of aluno()!.responsaveis" class="p-3 rounded-lg bg-waldorf-cream-50 border border-waldorf-cream-200">
+            <p class="font-medium text-waldorf-gray-800 text-sm">{{ resp.nomeCompleto }}</p>
+            <p class="text-xs text-waldorf-gray-500">{{ resp.parentesco | parentesco }}</p>
+            <div class="flex gap-2 mt-2">
+              <span *ngIf="resp.autorizadoBuscar" class="badge badge-success text-xs">✓ Autorizado buscar</span>
+              <span *ngIf="resp.contatoEmergencia" class="badge badge-warning text-xs">⚡ Emergência</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs em construção -->
+    <div *ngIf="tabAtiva() !== 'perfil'" class="card text-center py-16">
+      <span class="material-icons text-4xl text-waldorf-gray-300">construction</span>
+      <p class="text-waldorf-gray-500 mt-2">Módulo em desenvolvimento</p>
+      <p class="text-xs text-waldorf-gray-400 mt-1">Será implementado nas próximas iterações</p>
+    </div>
+
+  </ng-container>
+</div>

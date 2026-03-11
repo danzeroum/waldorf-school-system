@@ -1,0 +1,343 @@
+<div class="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
+
+  <!-- Cabeçalho -->
+  <div class="flex items-center gap-3">
+    <button (click)="router.navigate(['/pessoas/alunos'])" class="btn-icon">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <div>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">
+        {{ modoEdicao() ? 'Editar Aluno' : 'Novo Aluno' }}
+      </h1>
+      <p class="text-sm text-waldorf-gray-500">Passo {{ passoAtual() + 1 }} de {{ totalPassos }}</p>
+    </div>
+  </div>
+
+  <!-- Indicador de passos -->
+  <div class="card p-4">
+    <div class="flex items-center justify-between mb-3">
+      <div
+        *ngFor="let passo of passos; let i = index"
+        class="flex flex-col items-center gap-1 flex-1"
+      >
+        <div
+          [class]="i < passoAtual()
+            ? 'w-9 h-9 rounded-full flex items-center justify-center bg-waldorf-green-500 text-white'
+            : i === passoAtual()
+            ? 'w-9 h-9 rounded-full flex items-center justify-center bg-waldorf-green-500 text-white ring-4 ring-waldorf-green-100'
+            : 'w-9 h-9 rounded-full flex items-center justify-center bg-waldorf-cream-200 text-waldorf-gray-500'"
+        >
+          <span class="material-icons text-base" *ngIf="i < passoAtual()">check</span>
+          <span class="material-icons text-base" *ngIf="i >= passoAtual()">{{ passo.icone }}</span>
+        </div>
+        <span class="text-xs text-waldorf-gray-500 hidden sm:block text-center">{{ passo.titulo }}</span>
+      </div>
+    </div>
+    <!-- Barra de progresso -->
+    <div class="h-1.5 bg-waldorf-cream-200 rounded-full overflow-hidden">
+      <div
+        class="h-full bg-waldorf-green-500 rounded-full transition-all duration-500"
+        [style.width.%]="progresso"
+      ></div>
+    </div>
+  </div>
+
+  <!-- Erro global -->
+  <div *ngIf="erroSalvar()" class="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-700">
+    <span class="material-icons text-base">error_outline</span>
+    {{ erroSalvar() }}
+  </div>
+
+  <!-- === PASSO 1: DADOS PESSOAIS === -->
+  <div *ngIf="passoAtual() === 0" class="card space-y-4" [formGroup]="formPasso1">
+    <h2 class="text-lg font-semibold text-waldorf-gray-800">Dados Pessoais</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="sm:col-span-2">
+        <label class="form-label">Nome Completo *</label>
+        <input type="text" formControlName="nomeCompleto" placeholder="Nome completo do aluno"
+               [class]="formPasso1.get('nomeCompleto')?.invalid && formPasso1.get('nomeCompleto')?.touched ? 'form-input-error' : 'form-input'">
+        <p class="form-error" *ngIf="formPasso1.get('nomeCompleto')?.hasError('required') && formPasso1.get('nomeCompleto')?.touched">Obrigatório</p>
+      </div>
+
+      <div>
+        <label class="form-label">Nome Social</label>
+        <input type="text" formControlName="nomeSocial" placeholder="Opcional" class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Data de Nascimento *</label>
+        <input type="date" formControlName="dataNascimento"
+               [class]="formPasso1.get('dataNascimento')?.invalid && formPasso1.get('dataNascimento')?.touched ? 'form-input-error' : 'form-input'">
+        <p class="form-error" *ngIf="formPasso1.get('dataNascimento')?.invalid && formPasso1.get('dataNascimento')?.touched">Obrigatório</p>
+      </div>
+
+      <div>
+        <label class="form-label">CPF</label>
+        <input type="text" formControlName="cpf" placeholder="000.000.000-00" class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Nome da Mãe *</label>
+        <input type="text" formControlName="nomeMae" placeholder="Nome completo"
+               [class]="formPasso1.get('nomeMae')?.invalid && formPasso1.get('nomeMae')?.touched ? 'form-input-error' : 'form-input'">
+        <p class="form-error" *ngIf="formPasso1.get('nomeMae')?.invalid && formPasso1.get('nomeMae')?.touched">Obrigatório</p>
+      </div>
+
+      <div>
+        <label class="form-label">Nome do Pai</label>
+        <input type="text" formControlName="nomePai" placeholder="Nome completo" class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Naturalidade</label>
+        <input type="text" formControlName="naturalidade" placeholder="Cidade de nascimento" class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Nacionalidade</label>
+        <input type="text" formControlName="nacionalidade" class="form-input">
+      </div>
+    </div>
+  </div>
+
+  <!-- === PASSO 2: DADOS MÉDICOS === -->
+  <div *ngIf="passoAtual() === 1" class="card space-y-4" [formGroup]="formPasso2">
+    <h2 class="text-lg font-semibold text-waldorf-gray-800">Saúde e Dados Médicos
+      <span class="text-sm font-normal text-waldorf-gray-500 ml-2">(todos opcionais)</span>
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="form-label">Tipo Sanguíneo</label>
+        <select formControlName="tipoSanguineo" class="form-input">
+          <option value="">Não informado</option>
+          <option *ngFor="let t of ['A+','A-','B+','B-','AB+','AB-','O+','O-']" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label">Plano de Saúde</label>
+        <input type="text" formControlName="planoSaude" placeholder="Ex: Unimed, Amil..." class="form-input">
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="form-label">Alergias</label>
+        <textarea formControlName="alergias" rows="2" placeholder="Descreva alergias conhecidas..." class="form-input"></textarea>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="form-label">Medicamentos Controlados</label>
+        <textarea formControlName="medicamentosControlados" rows="2" placeholder="Nome, dosagem, horário..." class="form-input"></textarea>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="form-label">Necessidades Especiais / Diagnósticos</label>
+        <textarea formControlName="necessidadesEspeciais" rows="2" placeholder="TEA, TDAH, deficiências, laudos..." class="form-input"></textarea>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="form-label">Observações Médicas Gerais</label>
+        <textarea formControlName="observacoesMedicas" rows="3" placeholder="Informações relevantes para a escola..." class="form-input"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- === PASSO 3: RESPONSÁVEIS === -->
+  <div *ngIf="passoAtual() === 2" class="card space-y-4" [formGroup]="formPasso3">
+    <h2 class="text-lg font-semibold text-waldorf-gray-800">Responsável Principal</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="sm:col-span-2">
+        <label class="form-label">Nome Completo *</label>
+        <input type="text" formControlName="resp1Nome" placeholder="Nome completo"
+               [class]="formPasso3.get('resp1Nome')?.invalid && formPasso3.get('resp1Nome')?.touched ? 'form-input-error' : 'form-input'">
+        <p class="form-error" *ngIf="formPasso3.get('resp1Nome')?.invalid && formPasso3.get('resp1Nome')?.touched">Obrigatório</p>
+      </div>
+
+      <div>
+        <label class="form-label">Parentesco *</label>
+        <select formControlName="resp1Parentesco" class="form-input">
+          <option value="MAE">Mãe</option>
+          <option value="PAI">Pai</option>
+          <option value="RESPONSAVEL_LEGAL">Responsável Legal</option>
+          <option value="AVO_MATERNA">Avó Materna</option>
+          <option value="AVO_MATERNO">Avô Materno</option>
+          <option value="AVO_PATERNA">Avó Paterna</option>
+          <option value="AVO_PATERNO">Avô Paterno</option>
+          <option value="OUTRO">Outro</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label">CPF</label>
+        <input type="text" formControlName="resp1Cpf" placeholder="000.000.000-00" class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Celular *</label>
+        <input type="tel" formControlName="resp1Celular" placeholder="(00) 00000-0000"
+               [class]="formPasso3.get('resp1Celular')?.invalid && formPasso3.get('resp1Celular')?.touched ? 'form-input-error' : 'form-input'">
+        <p class="form-error" *ngIf="formPasso3.get('resp1Celular')?.invalid && formPasso3.get('resp1Celular')?.touched">Obrigatório</p>
+      </div>
+
+      <div>
+        <label class="form-label">E-mail</label>
+        <input type="email" formControlName="resp1Email" placeholder="email@exemplo.com" class="form-input">
+      </div>
+
+      <div class="sm:col-span-2 flex flex-col gap-2">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" formControlName="resp1Buscar" class="w-4 h-4 rounded text-waldorf-green-500">
+          <span class="text-sm text-waldorf-gray-700">Autorizado a buscar o aluno</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" formControlName="resp1Emergencia" class="w-4 h-4 rounded text-waldorf-green-500">
+          <span class="text-sm text-waldorf-gray-700">Contato de emergência</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- === PASSO 4: MATRÍCULA + ENDEREÇO === -->
+  <div *ngIf="passoAtual() === 3" class="card space-y-4" [formGroup]="formPasso4">
+    <h2 class="text-lg font-semibold text-waldorf-gray-800">Matrícula e Endereço</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="form-label">Turma *</label>
+        <select formControlName="turmaId"
+                [class]="formPasso4.get('turmaId')?.invalid && formPasso4.get('turmaId')?.touched ? 'form-input-error' : 'form-input'">
+          <option value="">Selecionar turma...</option>
+          <option value="1">Jardim de Infância</option>
+          <option value="2">Classe 1</option>
+          <option value="3">Classe 2</option>
+          <option value="4">Classe 3</option>
+          <option value="5">Classe 4</option>
+          <option value="6">Classe 5</option>
+          <option value="7">Classe 6</option>
+          <option value="8">Classe 7</option>
+          <option value="9">Classe 8</option>
+        </select>
+        <p class="form-error" *ngIf="formPasso4.get('turmaId')?.invalid && formPasso4.get('turmaId')?.touched">Selecione uma turma</p>
+      </div>
+
+      <div>
+        <label class="form-label">Forma de Ingresso *</label>
+        <select formControlName="formaIngresso" class="form-input">
+          <option value="NOVO">Aluno Novo</option>
+          <option value="REMATRICULA">Rematrícula</option>
+          <option value="TRANSFERENCIA">Transferência</option>
+          <option value="RETORNO">Retorno</option>
+        </select>
+      </div>
+
+      <!-- Endereço -->
+      <div class="sm:col-span-2">
+        <div class="divider"></div>
+        <h3 class="text-sm font-semibold text-waldorf-gray-700 mb-3">Endereço</h3>
+      </div>
+
+      <div>
+        <label class="form-label">CEP</label>
+        <div class="relative">
+          <input type="text" formControlName="cep" placeholder="00000-000" class="form-input pr-10"
+                 (blur)="onCepChange(formPasso4.get('cep')?.value || '')">
+          <span *ngIf="buscandoCep()" class="material-icons absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-waldorf-gray-400 text-xl">refresh</span>
+        </div>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="form-label">Logradouro</label>
+        <input type="text" formControlName="logradouro" placeholder="Rua, Av., Travessa..." class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Número</label>
+        <input type="text" formControlName="numero" placeholder="123" class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Complemento</label>
+        <input type="text" formControlName="complemento" placeholder="Apto, Bloco..." class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Bairro</label>
+        <input type="text" formControlName="bairro" class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Cidade</label>
+        <input type="text" formControlName="cidade" class="form-input">
+      </div>
+
+      <div>
+        <label class="form-label">Estado</label>
+        <input type="text" formControlName="estado" maxlength="2" placeholder="SP" class="form-input">
+      </div>
+
+      <!-- Aceite LGPD -->
+      <div class="sm:col-span-2">
+        <div class="divider"></div>
+        <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-waldorf-cream-50 border border-waldorf-cream-200">
+          <input type="checkbox" formControlName="aceiteTermosLgpd"
+                 class="w-4 h-4 mt-0.5 rounded text-waldorf-green-500 flex-shrink-0">
+          <span class="text-sm text-waldorf-gray-700">
+            Declaro que li e aceito os
+            <a href="#" class="text-waldorf-green-600 font-medium">Termos de Uso e Política de Privacidade</a>,
+            em conformidade com a LGPD (Lei 13.709/2018), autorizando o tratamento dos dados pessoais
+            do aluno para as finalidades escolares descritas.
+          </span>
+        </label>
+        <p class="form-error mt-1" *ngIf="formPasso4.get('aceiteTermosLgpd')?.invalid && formPasso4.get('aceiteTermosLgpd')?.touched">
+          É necessário aceitar os termos para concluir a matrícula
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botões de navegação -->
+  <div class="flex justify-between gap-3">
+    <button
+      *ngIf="passoAtual() > 0"
+      (click)="anterior()"
+      class="btn-secondary flex items-center gap-2"
+    >
+      <span class="material-icons text-base">arrow_back</span>
+      Anterior
+    </button>
+    <div class="flex-1"></div>
+
+    <button
+      *ngIf="passoAtual() === 2"
+      (click)="passoAtual.set(3)"
+      class="btn-ghost text-sm"
+    >
+      Pular por agora
+    </button>
+
+    <button
+      *ngIf="passoAtual() < 3"
+      (click)="proximo()"
+      [disabled]="salvando()"
+      class="btn-primary flex items-center gap-2"
+    >
+      <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+      <span>{{ salvando() ? 'Salvando...' : 'Próximo' }}</span>
+      <span class="material-icons text-base" *ngIf="!salvando()">arrow_forward</span>
+    </button>
+
+    <button
+      *ngIf="passoAtual() === 3"
+      (click)="concluir()"
+      [disabled]="salvando()"
+      class="btn-primary flex items-center gap-2"
+    >
+      <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+      <span>{{ salvando() ? 'Salvando...' : 'Concluir Matrícula' }}</span>
+      <span class="material-icons text-base" *ngIf="!salvando()">check_circle</span>
+    </button>
+  </div>
+
+</div>
