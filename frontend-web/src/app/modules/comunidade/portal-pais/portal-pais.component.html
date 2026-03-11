@@ -1,0 +1,51 @@
+<div class="space-y-5 animate-fade-in-up">
+  <h1 class="text-2xl font-serif text-waldorf-gray-900">Portal dos Pais</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="card card-hover cursor-pointer flex items-center gap-3">
+      <div class="w-10 h-10 bg-waldorf-green-100 rounded-xl flex items-center justify-center">
+        <span class="material-icons text-waldorf-green-600">child_care</span>
+      </div>
+      <div>
+        <p class="font-semibold text-waldorf-gray-800">Meus Filhos</p>
+        <p class="text-xs text-waldorf-gray-500">Ver perfis e boletins</p>
+      </div>
+    </div>
+    <div class="card card-hover cursor-pointer flex items-center gap-3" [routerLink]="['/financeiro']">
+      <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+        <span class="material-icons text-amber-600">payments</span>
+      </div>
+      <div>
+        <p class="font-semibold text-waldorf-gray-800">Financeiro</p>
+        <p class="text-xs text-waldorf-gray-500">Mensalidades e contratos</p>
+      </div>
+    </div>
+    <div class="card card-hover cursor-pointer flex items-center gap-3">
+      <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+        <span class="material-icons text-blue-600">calendar_month</span>
+      </div>
+      <div>
+        <p class="font-semibold text-waldorf-gray-800">Calendário</p>
+        <p class="text-xs text-waldorf-gray-500">Eventos e épocas</p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="text-base font-semibold text-waldorf-gray-800 mb-3">Avisos Recentes</h2>
+    <div *ngIf="carregando()" class="space-y-2">
+      <div *ngFor="let i of [1,2]" class="card animate-pulse space-y-2">
+        <div class="skeleton h-4 w-1/2"></div>
+        <div class="skeleton h-3 w-full"></div>
+      </div>
+    </div>
+    <div class="space-y-3" *ngIf="!carregando()">
+      <div *ngFor="let a of avisos().slice(0,5)" class="card">
+        <p class="font-medium text-waldorf-gray-800 text-sm">{{ a.titulo }}</p>
+        <p class="text-xs text-waldorf-gray-500 mt-1 line-clamp-2">{{ a.conteudo }}</p>
+        <p class="text-xs text-waldorf-gray-400 mt-2">{{ a.dataPublicacao | date:'dd/MM/yyyy' }}</p>
+      </div>
+      <p *ngIf="avisos().length === 0" class="text-waldorf-gray-400 text-sm text-center py-6">Nenhum aviso no momento</p>
+    </div>
+  </div>
+</div>

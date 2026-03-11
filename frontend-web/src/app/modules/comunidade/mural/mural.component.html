@@ -1,0 +1,99 @@
+<div class="space-y-5 animate-fade-in-up">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Mural de Avisos</h1>
+      <p class="text-sm text-waldorf-gray-500 mt-0.5">{{ avisosFiltrados.length }} aviso(s)</p>
+    </div>
+    <button *ngIf="podePublicar"
+            (click)="exibirForm.set(!exibirForm())"
+            class="btn-primary flex items-center gap-2">
+      <span class="material-icons text-base">{{ exibirForm() ? 'close' : 'add' }}</span>
+      {{ exibirForm() ? 'Cancelar' : 'Novo Aviso' }}
+    </button>
+  </div>
+
+  <!-- Formulário inline -->
+  <div *ngIf="exibirForm()" class="card border-2 border-waldorf-green-200 space-y-4" [formGroup]="form">
+    <h2 class="text-sm font-semibold text-waldorf-gray-700">Publicar Aviso</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="sm:col-span-2">
+        <label class="form-label">Título *</label>
+        <input type="text" formControlName="titulo" placeholder="Título do aviso"
+               [class]="form.get('titulo')?.invalid && form.get('titulo')?.touched ? 'form-input-error' : 'form-input'">
+      </div>
+      <div>
+        <label class="form-label">Tipo *</label>
+        <select formControlName="tipo" class="form-input">
+          <option *ngFor="let t of tipos" [value]="t">{{ t | tipoAviso }}</option>
+        </select>
+      </div>
+      <div class="flex items-end">
+        <label class="flex items-center gap-2 cursor-pointer pb-2">
+          <input type="checkbox" formControlName="fixado" class="w-4 h-4 rounded text-waldorf-green-500">
+          <span class="text-sm text-waldorf-gray-700">Fixar no topo</span>
+        </label>
+      </div>
+      <div class="sm:col-span-2">
+        <label class="form-label">Conteúdo *</label>
+        <textarea formControlName="conteudo" rows="4" placeholder="Texto do aviso..."
+                  [class]="form.get('conteudo')?.invalid && form.get('conteudo')?.touched ? 'form-input-error' : 'form-input'"></textarea>
+        <p class="form-error" *ngIf="form.get('conteudo')?.hasError('minlength') && form.get('conteudo')?.touched">Mínimo 10 caracteres</p>
+      </div>
+    </div>
+    <div class="flex justify-end gap-3">
+      <button type="button" (click)="exibirForm.set(false)" class="btn-secondary">Cancelar</button>
+      <button type="button" (click)="salvar()" [disabled]="salvando()" class="btn-primary flex items-center gap-2">
+        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+        {{ salvando() ? 'Publicando...' : 'Publicar' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros por tipo -->
+  <div class="flex gap-2 flex-wrap">
+    <button (click)="filtroTipo.set('')" [class]="!filtroTipo() ? 'btn-primary text-sm' : 'btn-ghost text-sm'">Todos</button>
+    <button *ngFor="let t of tipos" (click)="filtroTipo.set(t)"
+            [class]="filtroTipo() === t ? 'btn-primary text-sm' : 'btn-ghost text-sm'">
+      {{ t | tipoAviso }}
+    </button>
+  </div>
+
+  <!-- Cards de avisos -->
+  <div class="space-y-3">
+    <ng-container *ngIf="carregando()">
+      <div *ngFor="let i of [1,2,3]" class="card space-y-2 animate-pulse">
+        <div class="skeleton h-5 w-2/3"></div>
+        <div class="skeleton h-4 w-full"></div>
+        <div class="skeleton h-4 w-3/4"></div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!carregando()">
+      <div *ngFor="let aviso of avisosFiltrados"
+           [class]="'card space-y-2 ' + (aviso.fixado ? 'border-l-4 border-waldorf-green-400' : '') + (aviso.tipo === 'URGENTE' ? ' border-l-4 border-red-400' : '')">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <div [class]="'w-7 h-7 rounded-lg flex items-center justify-center ' + (aviso.tipo | tipoAviso:'css')">
+              <span class="material-icons text-white text-sm">{{ aviso.tipo | tipoAviso:'icone' }}</span>
+            </div>
+            <h3 class="font-semibold text-waldorf-gray-800">{{ aviso.titulo }}</h3>
+            <span *ngIf="aviso.fixado" class="badge badge-success text-xs flex items-center gap-0.5">
+              <span class="material-icons text-xs">push_pin</span> Fixado
+            </span>
+            <span *ngIf="aviso.turmaNome" class="badge badge-info text-xs">{{ aviso.turmaNome }}</span>
+          </div>
+          <span class="text-xs text-waldorf-gray-400 flex-shrink-0">{{ aviso.dataPublicacao | date:'dd/MM' }}</span>
+        </div>
+        <p class="text-sm text-waldorf-gray-700 leading-relaxed">{{ aviso.conteudo }}</p>
+        <p class="text-xs text-waldorf-gray-400">{{ aviso.autorNome }}</p>
+      </div>
+
+      <div *ngIf="avisosFiltrados.length === 0" class="card text-center py-12">
+        <span class="material-icons text-4xl text-waldorf-gray-300">campaign</span>
+        <p class="text-waldorf-gray-500 mt-2">Nenhum aviso publicado</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

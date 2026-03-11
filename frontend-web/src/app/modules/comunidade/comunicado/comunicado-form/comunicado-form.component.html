@@ -1,0 +1,44 @@
+<div class="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
+  <div class="flex items-center gap-3">
+    <button (click)="router.navigate(['/comunidade/comunicados'])" class="btn-icon">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <h1 class="text-2xl font-serif text-waldorf-gray-900">Novo Comunicado</h1>
+  </div>
+
+  <div *ngIf="erro()" class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex gap-2">
+    <span class="material-icons text-base">error_outline</span> {{ erro() }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="enviar()" class="card space-y-4">
+    <div>
+      <label class="form-label">Assunto *</label>
+      <input type="text" formControlName="assunto" placeholder="Assunto do comunicado"
+             [class]="form.get('assunto')?.invalid && form.get('assunto')?.touched ? 'form-input-error' : 'form-input'">
+      <p class="form-error" *ngIf="form.get('assunto')?.invalid && form.get('assunto')?.touched">Mínimo 5 caracteres</p>
+    </div>
+    <div>
+      <label class="form-label">Destinatários *</label>
+      <select formControlName="destinatarios" class="form-input">
+        <option value="TODOS">Toda a escola</option>
+        <option value="RESPONSAVEIS">Apenas responsáveis</option>
+        <option value="PROFESSORES">Apenas professores</option>
+        <option value="TURMA">Turma específica</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Mensagem *</label>
+      <textarea formControlName="corpo" rows="8" placeholder="Texto do comunicado..."
+                [class]="form.get('corpo')?.invalid && form.get('corpo')?.touched ? 'form-input-error' : 'form-input'"></textarea>
+      <p class="form-error" *ngIf="form.get('corpo')?.hasError('minlength') && form.get('corpo')?.touched">Mínimo 20 caracteres</p>
+    </div>
+    <div class="flex justify-end gap-3">
+      <button type="button" (click)="router.navigate(['/comunidade/comunicados'])" class="btn-secondary">Cancelar</button>
+      <button type="submit" [disabled]="salvando()" class="btn-primary flex items-center gap-2">
+        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+        <span class="material-icons text-base" *ngIf="!salvando()">send</span>
+        {{ salvando() ? 'Enviando...' : 'Enviar Comunicado' }}
+      </button>
+    </div>
+  </form>
+</div>
