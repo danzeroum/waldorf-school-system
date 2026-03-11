@@ -21,20 +21,16 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Make mvnw executable
-        working-directory: ./backend
-        run: chmod +x mvnw
-
       - name: Run tests
         working-directory: ./backend
-        run: ./mvnw -B clean test --no-transfer-progress 2>&1 | tee /tmp/maven-test.log; exit ${PIPESTATUS[0]}
+        run: mvn -B clean test --no-transfer-progress 2>&1 | tee /tmp/maven-test.log; exit ${PIPESTATUS[0]}
         env:
           SPRING_PROFILES_ACTIVE: test
           JWT_SECRET: test-secret-waldorf-at-least-256bits-for-hmac-sha-ok
 
-      - name: Show last 150 lines of Maven log on failure
+      - name: Show last 200 lines of Maven log on failure
         if: failure()
-        run: tail -150 /tmp/maven-test.log
+        run: tail -200 /tmp/maven-test.log || true
 
       - name: Upload test reports
         if: always()
@@ -60,13 +56,9 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Make mvnw executable
-        working-directory: ./backend
-        run: chmod +x mvnw
-
       - name: Build JAR (skip tests)
         working-directory: ./backend
-        run: ./mvnw -B clean package -DskipTests --no-transfer-progress
+        run: mvn -B clean package -DskipTests --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
           JWT_SECRET: test-secret-waldorf-at-least-256bits-for-hmac-sha-ok
