@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:waldorf_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL;NON_KEYWORDS=VALUE
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
     username: sa
     password:
-    driver-class-name: org.h2.Driver
 
   jpa:
     hibernate:
@@ -16,19 +16,38 @@ spring:
   flyway:
     enabled: false
 
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
-      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+  # Desabilita autoconfiguracao de Redis
+  data:
+    redis:
+      repositories:
+        enabled: false
+  redis:
+    host: localhost
+    port: 6379
+
+  # Desabilita autoconfiguracao de RabbitMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+
+  # Desabilita autoconfiguracao de Mail
+  mail:
+    host: localhost
+    port: 25
+
+spring.autoconfigure.exclude:
+  - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+  - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+  - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+  - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+  - org.springframework.boot.autoconfigure.mail.MailSenderValidatorAutoConfiguration
 
 jwt:
-  secret: test-secret-waldorf-256bits-testing-only-not-for-production
+  secret: test-jwt-secret-waldorf-256bits-testing-only-ci-ok
   expiration: 86400000
   refresh-expiration: 604800000
 
 logging:
   level:
-    com.waldorf: DEBUG
-    org.springframework.security: WARN
+    com.waldorf: WARN
+    org.hibernate.SQL: WARN
