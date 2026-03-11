@@ -2,7 +2,9 @@ package br.edu.waldorf.core.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,18 +12,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * Classe base para todas as entidades do sistema.
- * Fornece campos comuns de auditoria e identificação.
- * 
- * @author Daniel Lau
- * @version 1.0.0
- * @since 2026-01-31
- */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
 public abstract class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,11 +35,6 @@ public abstract class BaseEntity implements Serializable {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    /**
-     * Método auxiliar para verificar se a entidade é nova (não persistida)
-     * 
-     * @return true se id é null, false caso contrário
-     */
     @Transient
     public boolean isNew() {
         return this.id == null;
