@@ -2,29 +2,20 @@ package br.edu.waldorf.modules.pessoa.domain.model;
 
 import br.edu.waldorf.modules.escolar.domain.model.Turma;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Entidade Aluno - especialização de Pessoa
- * Mapeia a tabela 'alunos' com herança JOINED de 'pessoas'
- */
 @Entity
 @Table(name = "alunos", indexes = {
-    @Index(name = "idx_aluno_matricula",  columnList = "numero_matricula"),
-    @Index(name = "idx_aluno_turma",      columnList = "turma_id"),
-    @Index(name = "idx_aluno_situacao",   columnList = "situacao")
+    @Index(name = "idx_aluno_matricula", columnList = "numero_matricula"),
+    @Index(name = "idx_aluno_turma",    columnList = "turma_id"),
+    @Index(name = "idx_aluno_situacao", columnList = "situacao")
 })
 @PrimaryKeyJoinColumn(name = "id")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @SuperBuilder
 public class Aluno extends Pessoa {
 
     @Column(name = "numero_matricula", unique = true, length = 20)
@@ -38,7 +29,6 @@ public class Aluno extends Pessoa {
     @Builder.Default
     private SituacaoAluno situacao = SituacaoAluno.ATIVO;
 
-    // --- Dados Médicos ---
     @Column(name = "tipo_sanguineo", length = 5)
     private String tipoSanguineo;
 
@@ -60,7 +50,6 @@ public class Aluno extends Pessoa {
     @Column(name = "observacoes_medicas", columnDefinition = "TEXT")
     private String observacoesMedicas;
 
-    // --- Dados Waldorf ---
     @Column(name = "temperamento", length = 20)
     private String temperamento;
 
@@ -84,7 +73,6 @@ public class Aluno extends Pessoa {
     @Column(name = "nome_mae", length = 200)
     private String nomeMae;
 
-    // --- Relacionamentos ---
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "turma_id")
     private Turma turmaAtual;
@@ -93,32 +81,15 @@ public class Aluno extends Pessoa {
     @Builder.Default
     private List<ResponsavelAluno> responsaveis = new ArrayList<>();
 
-    // --- Métodos de negócio ---
+    public void transferir(Turma novaTurma) { this.turmaAtual = novaTurma; }
 
-    public void transferir(Turma novaTurma) {
-        this.turmaAtual = novaTurma;
-    }
-
-    public void desligar() {
-        this.situacao = SituacaoAluno.DESLIGADO;
-        this.inativar();
-    }
-
-    // --- Enums ---
+    public void desligar() { this.situacao = SituacaoAluno.DESLIGADO; this.inativar(); }
 
     public enum SituacaoAluno {
-        ATIVO,
-        INATIVO,
-        TRANCADO,
-        DESLIGADO,
-        CONCLUIDO,
-        PENDENTE_MATRICULA
+        ATIVO, INATIVO, TRANCADO, DESLIGADO, CONCLUIDO, PENDENTE_MATRICULA
     }
 
     public enum FormaIngresso {
-        MATRICULA_NOVA,
-        TRANSFERENCIA_INTERNA,
-        TRANSFERENCIA_EXTERNA,
-        REINGRESSANTE
+        MATRICULA_NOVA, TRANSFERENCIA_INTERNA, TRANSFERENCIA_EXTERNA, REINGRESSANTE
     }
 }

@@ -43,6 +43,7 @@ public class Usuario implements UserDetails {
     @JoinTable(name = "usuario_perfis",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "perfil_id"))
+    @Builder.Default
     private Set<Perfil> perfis = new HashSet<>();
 
     @PrePersist
@@ -56,7 +57,10 @@ public class Usuario implements UserDetails {
                 .map(p -> new SimpleGrantedAuthority("ROLE_" + p.getNome()))
                 .collect(Collectors.toSet());
     }
-    @Override public String getPassword()  { return senha; }
-    @Override public String getUsername()  { return email; }
-    @Override public boolean isEnabled()   { return ativo; }
+    @Override public String  getPassword()              { return senha; }
+    @Override public String  getUsername()              { return email; }
+    @Override public boolean isEnabled()                { return ativo; }
+    @Override public boolean isAccountNonExpired()      { return true; }
+    @Override public boolean isAccountNonLocked()       { return true; }
+    @Override public boolean isCredentialsNonExpired()  { return true; }
 }

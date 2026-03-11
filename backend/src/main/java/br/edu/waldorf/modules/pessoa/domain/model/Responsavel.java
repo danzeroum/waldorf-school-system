@@ -2,28 +2,17 @@ package br.edu.waldorf.modules.pessoa.domain.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Entidade Responsável - especialização de Pessoa
- * Mapeia a tabela 'responsaveis' com herança JOINED de 'pessoas'
- *
- * @author Sistema Waldorf
- * @version 1.0.0
- * @since 2026-03-11
- */
 @Entity
 @Table(name = "responsaveis", indexes = {
     @Index(name = "idx_responsavel_situacao", columnList = "situacao")
 })
 @PrimaryKeyJoinColumn(name = "id")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @SuperBuilder
 public class Responsavel extends Pessoa {
 
     @Enumerated(EnumType.STRING)
@@ -60,32 +49,15 @@ public class Responsavel extends Pessoa {
     @Builder.Default
     private Integer prioridadeContato = 1;
 
-    // --- Relacionamentos ---
     @OneToMany(mappedBy = "responsavel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<ResponsavelAluno> alunos = new ArrayList<>();
 
-    // --- Métodos de negócio ---
-
-    public boolean isPrincipal() {
-        return this.prioridadeContato != null && this.prioridadeContato == 1;
-    }
-
-    // --- Enums ---
+    public boolean isPrincipal() { return this.prioridadeContato != null && this.prioridadeContato == 1; }
 
     public enum TipoRelacao {
-        PAI,
-        MAE,
-        AVO,
-        AVO_MATERNO,
-        AVO_PATERNO,
-        TIO,
-        RESPONSAVEL_LEGAL,
-        OUTRO
+        PAI, MAE, AVO, AVO_MATERNO, AVO_PATERNO, TIO, RESPONSAVEL_LEGAL, OUTRO
     }
 
-    public enum SituacaoResponsavel {
-        ATIVO,
-        INATIVO
-    }
+    public enum SituacaoResponsavel { ATIVO, INATIVO }
 }

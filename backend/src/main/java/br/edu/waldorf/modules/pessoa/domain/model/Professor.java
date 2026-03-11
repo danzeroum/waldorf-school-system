@@ -3,25 +3,18 @@ package br.edu.waldorf.modules.pessoa.domain.model;
 import br.edu.waldorf.modules.escolar.domain.model.Turma;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Entidade Professor - especialização de Pessoa
- * Mapeia a tabela 'professores' com herança JOINED de 'pessoas'
- */
 @Entity
 @Table(name = "professores", indexes = {
-    @Index(name = "idx_professor_registro",  columnList = "registro_profissional"),
-    @Index(name = "idx_professor_situacao",   columnList = "situacao")
+    @Index(name = "idx_professor_registro", columnList = "registro_profissional"),
+    @Index(name = "idx_professor_situacao", columnList = "situacao")
 })
 @PrimaryKeyJoinColumn(name = "id")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @SuperBuilder
 public class Professor extends Pessoa {
 
     @Column(name = "registro_profissional", unique = true, length = 30)
@@ -50,17 +43,9 @@ public class Professor extends Pessoa {
     @Column(name = "data_demissao")
     private java.time.LocalDate dataDemissao;
 
-    // --- Relacionamentos ---
     @OneToMany(mappedBy = "professorTitular", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Turma> turmasTitular = new ArrayList<>();
 
-    // --- Enums ---
-
-    public enum SituacaoProfessor {
-        ATIVO,
-        INATIVO,
-        AFASTADO,
-        DESLIGADO
-    }
+    public enum SituacaoProfessor { ATIVO, INATIVO, AFASTADO, DESLIGADO }
 }

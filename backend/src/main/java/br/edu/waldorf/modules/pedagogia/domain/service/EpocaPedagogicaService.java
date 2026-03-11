@@ -8,13 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Service de domínio para Época Pedagógica
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -57,7 +53,7 @@ public class EpocaPedagogicaService {
         existente.setNarrativaIntrodutoria(dados.getNarrativaIntrodutoria());
         existente.setAtividadesPrincipais(dados.getAtividadesPrincipais());
         existente.setMateriaisNecessarios(dados.getMateriaisNecessarios());
-        existente.setObjetivoDesenvolvimento(dados.getObjetivosDesenvolvimento());
+        existente.setObjetivosDesenvolvimento(dados.getObjetivosDesenvolvimento()); // corrigido: era setObjetivoDesenvolvimento
         existente.setCorEpoca(dados.getCorEpoca());
         return repository.save(existente);
     }
@@ -65,12 +61,10 @@ public class EpocaPedagogicaService {
     @Transactional
     public void iniciar(Long id) {
         EpocaPedagogica epoca = buscarPorId(id);
-        // Garante que não há outra em andamento na mesma turma
         repository.findEmAndamentoByTurma(epoca.getTurma().getId())
                 .ifPresent(e -> {
-                    if (!e.getId().equals(id)) {
+                    if (!e.getId().equals(id))
                         throw new IllegalStateException("Já existe uma época em andamento nesta turma: id=" + e.getId());
-                    }
                 });
         epoca.iniciar();
         repository.save(epoca);
@@ -86,8 +80,7 @@ public class EpocaPedagogicaService {
     }
 
     private void validarPeriodo(EpocaPedagogica epoca) {
-        if (epoca.getDataFim().isBefore(epoca.getDataInicio())) {
+        if (epoca.getDataFim().isBefore(epoca.getDataInicio()))
             throw new IllegalArgumentException("Data fim não pode ser anterior à data início");
-        }
     }
 }
