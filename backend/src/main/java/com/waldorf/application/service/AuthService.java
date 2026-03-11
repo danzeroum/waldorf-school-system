@@ -1,0 +1,47 @@
+package com.waldorf.application.service;
+
+import com.waldorf.application.dto.auth.LoginRequestDTO;
+import com.waldorf.application.dto.auth.LoginResponseDTO;
+import com.waldorf.application.dto.auth.UsuarioResponseDTO;
+import com.waldorf.infrastructure.repository.UsuarioRepository;
+import com.waldorf.infrastructure.security.JwtService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+
+    private final AuthenticationManager authManager;
+    private final UsuarioRepository usuarioRepository;
+    private final JwtService jwtService;
+
+    public LoginResponseDTO login(LoginRequestDTO dto) {
+        authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
+
+        var usuario = usuarioRepository.findByEmail(dto.email())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        if (!usuario.isAtivo()) {
+            throw new IllegalStateException("Usuário inativo");
+        }
+
+        String accessToken  = jwtService.gerarToken(usuario);
+        String refreshToken = jwtService.gerarRefreshToken(usuario);
+
+        var usuarioDTO = new UsuarioResponseDTO(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getPerfis().stream().map(p -> p.getNome()).collect(Collectors.toSet())
+        );
+
+        return new LoginResponseDTO(accessToken, refreshToken, usuarioDTO);
+    }
+}

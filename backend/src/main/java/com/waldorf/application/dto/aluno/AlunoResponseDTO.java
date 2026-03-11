@@ -1,11 +1,9 @@
 package com.waldorf.application.dto.aluno;
 
 import com.waldorf.domain.enums.Genero;
-import com.waldorf.domain.enums.Temperamento;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public record AlunoResponseDTO(
         Long id,
@@ -14,21 +12,10 @@ public record AlunoResponseDTO(
         LocalDate dataNascimento,
         Genero genero,
         String email,
-        String telefone,
-        Long turmaId,
+        int anoIngresso,
         String turmaNome,
-        Integer anoIngresso,
-        Temperamento temperamento,
+        String temperamento,
         boolean ativo,
-        List<ResponsavelResumoDTO> responsaveis,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
-) {
-    public record ResponsavelResumoDTO(
-            Long id,
-            String nome,
-            String parentesco,
-            String telefone,
-            String email
-    ) {}
-}
+) {}
