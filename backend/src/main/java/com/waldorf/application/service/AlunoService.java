@@ -4,6 +4,7 @@ import com.waldorf.application.dto.aluno.AlunoRequestDTO;
 import com.waldorf.application.dto.aluno.AlunoResponseDTO;
 import com.waldorf.domain.entity.Aluno;
 import com.waldorf.infrastructure.repository.AlunoRepository;
+import com.waldorf.infrastructure.repository.ResponsavelRepository;
 import com.waldorf.infrastructure.repository.TurmaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,9 @@ import java.time.Year;
 @RequiredArgsConstructor
 public class AlunoService {
 
-    private final AlunoRepository alunoRepository;
-    private final TurmaRepository turmaRepository;
+    private final AlunoRepository       alunoRepository;
+    private final TurmaRepository       turmaRepository;
+    private final ResponsavelRepository responsavelRepository;
 
     public Page<AlunoResponseDTO> listar(String nome, Long turmaId, Boolean ativo, Pageable pageable) {
         return alunoRepository.findWithFilters(nome, turmaId, ativo, pageable)
