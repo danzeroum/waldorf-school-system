@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "turmas")
+@Table(name = "professores")
 @Getter @Setter
-public class Turma {
+public class Professor {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,21 +19,16 @@ public class Turma {
     @Column(nullable = false)
     private String nome;
 
-    @Column(name = "ano_letivo", nullable = false)
-    private Integer anoLetivo;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-    @Column(name = "ano_escolar")
-    private Integer anoEscolar;
+    private String especialidade;
 
-    @Column(name = "capacidade_maxima")
-    private Integer capacidadeMaxima;
+    @Column(nullable = false)
+    private boolean ativo = true;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "professor_id")
-    private Professor professor;
-
-    @OneToMany(mappedBy = "turma", fetch = FetchType.LAZY)
-    private List<Aluno> alunos = new ArrayList<>();
+    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Turma> turmas = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

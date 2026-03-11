@@ -10,12 +10,13 @@ public record ContratoResponseDTO(
         Long id,
         Long alunoId,
         String alunoNome,
-        int anoLetivo,
+        Integer anoLetivo,
         BigDecimal valorMensalidade,
-        BigDecimal valorMatricula,
-        int totalParcelas,
-        int diaVencimento,
+        BigDecimal desconto,
+        Integer totalParcelas,
+        Integer diaVencimento,
         LocalDate dataInicio,
+        LocalDate dataFim,
         SituacaoContrato situacao,
         LocalDateTime createdAt
 ) {}

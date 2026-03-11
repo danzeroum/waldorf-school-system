@@ -8,13 +8,13 @@ import java.time.LocalDate;
 
 public record ContratoRequestDTO(
         @NotNull Long alunoId,
-        Long responsavelId,
+        Long responsavelFinanceiroId,
         @NotNull Integer anoLetivo,
         @NotNull @Positive BigDecimal valorMensalidade,
-        BigDecimal valorMatricula,
-        @NotNull @Positive Integer totalParcelas,
-        @NotNull Integer diaVencimento,
+        BigDecimal desconto,
+        @NotNull Integer totalParcelas,
+        Integer diaVencimento,
         @NotNull LocalDate dataInicio,
-        String observacoes,
-        String desconto
+        LocalDate dataFim,
+        String observacoes
 ) {}
