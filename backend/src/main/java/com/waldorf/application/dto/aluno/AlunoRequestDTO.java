@@ -12,14 +12,7 @@ public record AlunoRequestDTO(
         Genero genero,
         String email,
         String telefone,
-        String cpf,
-        @NotNull Integer anoIngresso,
         Long turmaId,
-        String rua,
-        String numero,
-        String complemento,
-        String bairro,
-        String cidade,
-        String estado,
-        String cep
+        int anoIngresso,
+        String temperamento
 ) {}

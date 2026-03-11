@@ -27,6 +27,9 @@ public class Contrato {
     @Column(name = "valor_mensalidade", nullable = false, precision = 10, scale = 2)
     private BigDecimal valorMensalidade;
 
+    @Column(name = "desconto", precision = 10, scale = 2)
+    private BigDecimal desconto;
+
     @Column(name = "valor_matricula", precision = 10, scale = 2)
     private BigDecimal valorMatricula;
 
@@ -38,6 +41,9 @@ public class Contrato {
 
     @Column(name = "data_inicio")
     private LocalDate dataInicio;
+
+    @Column(name = "data_fim")
+    private LocalDate dataFim;
 
     @Enumerated(EnumType.STRING)
     private SituacaoContrato situacao = SituacaoContrato.ATIVO;

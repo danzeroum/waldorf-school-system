@@ -30,6 +30,8 @@ public class Aluno {
 
     private String email;
 
+    private String telefone;
+
     @Column(name = "ano_ingresso")
     private int anoIngresso;
 

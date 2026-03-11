@@ -4,7 +4,6 @@ import com.waldorf.application.dto.aluno.AlunoRequestDTO;
 import com.waldorf.application.dto.aluno.AlunoResponseDTO;
 import com.waldorf.domain.entity.Aluno;
 import com.waldorf.infrastructure.repository.AlunoRepository;
-import com.waldorf.infrastructure.repository.ResponsavelRepository;
 import com.waldorf.infrastructure.repository.TurmaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +18,8 @@ import java.time.Year;
 @RequiredArgsConstructor
 public class AlunoService {
 
-    private final AlunoRepository       alunoRepository;
-    private final TurmaRepository       turmaRepository;
-    private final ResponsavelRepository responsavelRepository;
+    private final AlunoRepository alunoRepository;
+    private final TurmaRepository turmaRepository;
 
     public Page<AlunoResponseDTO> listar(String nome, Long turmaId, Boolean ativo, Pageable pageable) {
         return alunoRepository.findWithFilters(nome, turmaId, ativo, pageable)
@@ -39,7 +37,9 @@ public class AlunoService {
         aluno.setDataNascimento(dto.dataNascimento());
         aluno.setGenero(dto.genero());
         aluno.setEmail(dto.email());
-        aluno.setAnoIngresso(dto.anoIngresso());
+        aluno.setTelefone(dto.telefone());
+        aluno.setAnoIngresso(dto.anoIngresso() > 0 ? dto.anoIngresso() : Year.now().getValue());
+        aluno.setTemperamento(dto.temperamento());
         aluno.setAtivo(true);
         if (dto.turmaId() != null) {
             aluno.setTurma(turmaRepository.findById(dto.turmaId()).orElse(null));
