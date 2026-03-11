@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -13,18 +13,18 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "paths": {
-      "@core/*": ["app/core/*"],
-      "@shared/*": ["app/shared/*"],
-      "@modules/*": ["app/modules/*"],
-      "@environments/*": ["environments/*"],
-      "@models/*": ["app/shared/models/*"]
+      "@models":          ["src/app/@models/index.ts"],
+      "@models/*":        ["src/app/@models/*"],
+      "@environments/*": ["src/environments/*"],
+      "@core/*":          ["src/app/core/*"],
+      "@shared/*":        ["src/app/shared/*"]
     }
   },
   "angularCompilerOptions": {

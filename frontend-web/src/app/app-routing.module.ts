@@ -1,98 +1,83 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './core/guards/auth.guard';
-import { GuestGuard } from './core/guards/guest.guard';
-import { RoleGuard } from './core/guards/role.guard';
+import { AuthGuard } from './core/auth/auth.guard';
+import { RoleGuard } from './core/auth/role.guard';
 
-export const routes: Routes = [
-  // Redirecionar raiz
-  {
-    path: '',
-    redirectTo: '/dashboard',
-    pathMatch: 'full',
-  },
-
-  // Módulo de autenticação (apenas para não autenticados)
+const routes: Routes = [
+  // --- Pública ---
   {
     path: 'auth',
-    canActivate: [GuestGuard],
-    loadChildren: () =>
-      import('./modules/auth/auth.module').then(m => m.AuthModule),
+    loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
   },
 
-  // Layout principal (requer autenticação)
+  // --- Área autenticada (layout principal) ---
   {
     path: '',
     canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./modules/layout/layout.module').then(m => m.LayoutModule),
+    loadChildren: () => import('./layout/layout.module').then(m => m.LayoutModule),
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule),
+      },
+
+      // Pessoas
+      {
+        path: 'pessoas',
+        loadChildren: () => import('./modules/pessoas/pessoas.module').then(m => m.PessoasModule),
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMIN', 'SECRETARIA', 'DIRETOR'] },
+      },
+
+      // Pedagógico
+      {
+        path: 'pedagogia',
+        loadChildren: () => import('./modules/pedagogia/pedagogia.module').then(m => m.PedagogiaModule),
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMIN', 'SECRETARIA', 'DIRETOR', 'PROFESSOR'] },
+      },
+
+      // Financeiro
+      {
+        path: 'financeiro',
+        loadChildren: () => import('./modules/financeiro/financeiro.module').then(m => m.FinanceiroModule),
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMIN', 'SECRETARIA', 'DIRETOR', 'PAIS'] },
+      },
+
+      // Comunidade
+      {
+        path: 'comunidade',
+        loadChildren: () => import('./modules/comunidade/comunidade.module').then(m => m.ComunidadeModule),
+      },
+
+      // LGPD
+      {
+        path: 'lgpd',
+        loadChildren: () => import('./modules/lgpd/lgpd.module').then(m => m.LgpdModule),
+        canActivate: [RoleGuard],
+        data: { roles: ['ADMIN', 'DIRETOR'] },
+      },
+
+      // Notificações
+      {
+        path: 'notificacoes',
+        loadChildren: () => import('./modules/notificacoes/notificacoes.module').then(m => m.NotificacoesModule),
+      },
+    ],
   },
 
-  // Dashboard por perfil
-  {
-    path: 'dashboard',
-    canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule),
-  },
-
-  // Módulo Pessoas / Alunos
-  {
-    path: 'pessoas',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN', 'SECRETARIA'] },
-    loadChildren: () =>
-      import('./modules/pessoa/pessoa.module').then(m => m.PessoaModule),
-  },
-
-  // Módulo Pedagogia
-  {
-    path: 'pedagogia',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN', 'SECRETARIA', 'PROFESSOR', 'DIRECAO'] },
-    loadChildren: () =>
-      import('./modules/pedagogia/pedagogia.module').then(m => m.PedagogiaModule),
-  },
-
-  // Módulo Financeiro
-  {
-    path: 'financeiro',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN', 'SECRETARIA'] },
-    loadChildren: () =>
-      import('./modules/financeiro/financeiro.module').then(m => m.FinanceiroModule),
-  },
-
-  // Módulo Comunidade
-  {
-    path: 'comunidade',
-    canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./modules/comunidade/comunidade.module').then(m => m.ComunidadeModule),
-  },
-
-  // Módulo LGPD
-  {
-    path: 'lgpd',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN', 'SECRETARIA'] },
-    loadChildren: () =>
-      import('./modules/lgpd/lgpd.module').then(m => m.LgpdModule),
-  },
-
-  // Fallback — página não encontrada
-  {
-    path: '**',
-    loadChildren: () =>
-      import('./modules/not-found/not-found.module').then(m => m.NotFoundModule),
-  },
+  // Fallback
+  { path: '**', redirectTo: 'auth/login' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
-    scrollPositionRestoration: 'enabled',
-    anchorScrolling: 'enabled',
+    scrollPositionRestoration: 'top',
+    enableTracing: false,
   })],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
