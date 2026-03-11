@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { LgpdComponent } from './lgpd.component';
+import { PessoasComponent } from './pessoas.component';
 
-const routes: Routes = [{ path: '', component: LgpdComponent }];
+const routes: Routes = [{ path: '', component: PessoasComponent }];
 
 @NgModule({
-  declarations: [LgpdComponent],
+  declarations: [PessoasComponent],
   imports: [CommonModule, RouterModule.forChild(routes)],
 })
-export class LgpdModule {}
+export class PessoasModule {}

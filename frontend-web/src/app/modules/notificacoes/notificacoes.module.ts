@@ -1,18 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { NotificacoesRoutingModule } from './notificacoes-routing.module';
-import { NotificacaoPainelComponent } from './painel/notificacao-painel.component';
-import { NotificacaoPreferenciasComponent } from './preferencias/notificacao-preferencias.component';
-import { TipoNotificacaoPipe } from './pipes/tipo-notificacao.pipe';
+import { RouterModule, Routes } from '@angular/router';
+import { NotificacoesComponent } from './notificacoes.component';
+
+const routes: Routes = [{ path: '', component: NotificacoesComponent }];
 
 @NgModule({
-  declarations: [
-    NotificacaoPainelComponent,
-    NotificacaoPreferenciasComponent,
-    TipoNotificacaoPipe,
-  ],
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, NotificacoesRoutingModule],
+  declarations: [NotificacoesComponent],
+  imports: [CommonModule, RouterModule.forChild(routes)],
 })
 export class NotificacoesModule {}

@@ -1,46 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { RoleGuard } from '../../core/guards/role.guard';
-import { SecretariaDashboardComponent } from './containers/secretaria-dashboard/secretaria-dashboard.component';
-import { ProfessorDashboardComponent } from './containers/professor-dashboard/professor-dashboard.component';
-import { PaisDashboardComponent } from './containers/pais-dashboard/pais-dashboard.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { DashboardComponent } from './dashboard.component';
 
-const routes: Routes = [
-  {
-    path: 'secretaria',
-    component: SecretariaDashboardComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ['ADMIN', 'SECRETARIA'] },
-  },
-  {
-    path: 'professor',
-    component: ProfessorDashboardComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ['ADMIN', 'PROFESSOR', 'DIRECAO'] },
-  },
-  {
-    path: 'pais',
-    component: PaisDashboardComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ['PAIS'] },
-  },
-  {
-    path: '',
-    redirectTo: 'secretaria',
-    pathMatch: 'full',
-  },
-];
+const routes: Routes = [{ path: '', component: DashboardComponent }];
 
 @NgModule({
-  declarations: [
-    SecretariaDashboardComponent,
-    ProfessorDashboardComponent,
-    PaisDashboardComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-  ],
+  declarations: [DashboardComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), MatCardModule, MatIconModule],
 })
-export class DashboardModule { }
+export class DashboardModule {}

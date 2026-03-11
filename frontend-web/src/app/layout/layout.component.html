@@ -1,22 +1,20 @@
-<div class="flex h-screen overflow-hidden bg-waldorf-cream-50">
-
-  <!-- Sidebar -->
-  <wld-sidebar [aberta]="sidebarAberta()" (fechar)="sidebarAberta.set(false)"></wld-sidebar>
-
-  <!-- Overlay mobile -->
-  <div *ngIf="sidebarAberta()" class="fixed inset-0 bg-black/40 z-20 lg:hidden"
-       (click)="sidebarAberta.set(false)"></div>
-
-  <!-- Área principal -->
-  <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
-    <wld-header (menuToggle)="sidebarAberta.set(!sidebarAberta())"></wld-header>
-
-    <main class="flex-1 overflow-y-auto p-4 sm:p-6">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-</div>
-
-<!-- Componentes globais de UX -->
-<wld-toast></wld-toast>
-<wld-loading-overlay></wld-loading-overlay>
+<mat-sidenav-container class="h-screen">
+  <mat-sidenav mode="side" opened class="w-64 bg-waldorf-green">
+    <div class="p-4 text-white">
+      <h2 class="text-lg font-bold">Waldorf</h2>
+      <p class="text-sm opacity-75">{{ usuario?.nome }}</p>
+    </div>
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="bg-white/10">
+        <mat-icon matListItemIcon class="text-white">{{ item.icon }}</mat-icon>
+        <span matListItemTitle class="text-white">{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+    <div class="absolute bottom-4 w-full px-4">
+      <button mat-stroked-button class="w-full text-white" (click)="logout()">Sair</button>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content class="p-6 bg-gray-50">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
