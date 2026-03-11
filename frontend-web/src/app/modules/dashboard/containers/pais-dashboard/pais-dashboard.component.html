@@ -1,0 +1,21 @@
+<div class="space-y-6 animate-fade-in-up">
+  <div>
+    <h1 class="text-2xl font-serif text-waldorf-gray-900">Olá! 🌿</h1>
+    <p class="text-waldorf-gray-500 text-sm mt-0.5">Acompanhe o desenvolvimento dos seus filhos</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div *ngFor="let filho of filhos()" class="card-hover">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-waldorf-green-100 rounded-full flex items-center justify-center">
+          <span class="material-icons text-waldorf-green-600 text-2xl">child_care</span>
+        </div>
+        <div>
+          <p class="font-semibold text-waldorf-gray-800">{{ filho.nome }}</p>
+          <p class="text-sm text-waldorf-gray-500">{{ filho.turma }}</p>
+        </div>
+      </div>
+      <button class="btn-secondary w-full mt-4 text-sm">Ver desenvolvimento</button>
+    </div>
+  </div>
+</div>

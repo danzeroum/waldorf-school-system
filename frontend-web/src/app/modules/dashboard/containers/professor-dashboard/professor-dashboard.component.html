@@ -1,0 +1,37 @@
+<div class="space-y-6 animate-fade-in-up">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Bom dia, Professor! 🌅</h1>
+      <p class="text-waldorf-gray-500 text-sm mt-0.5">
+        {{ turmaAtual().nome }} &bull; Época: {{ epocaAtual().titulo }}
+      </p>
+    </div>
+    <button class="btn-primary text-sm flex items-center gap-1.5">
+      <span class="material-icons text-base">add_circle_outline</span>
+      Nova Observação
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="card text-center">
+      <p class="text-3xl font-bold text-waldorf-green-600">{{ turmaAtual().totalAlunos }}</p>
+      <p class="text-sm text-waldorf-gray-500 mt-1">Alunos na turma</p>
+    </div>
+    <div class="card text-center">
+      <p class="text-3xl font-bold text-waldorf-amber-500">{{ turmaAtual().pendentesObservacao }}</p>
+      <p class="text-sm text-waldorf-gray-500 mt-1">Pendentes de observação</p>
+    </div>
+    <div class="card">
+      <p class="text-xs font-medium text-waldorf-gray-500 uppercase tracking-wide">Época Atual</p>
+      <p class="text-base font-semibold text-waldorf-gray-800 mt-1">{{ epocaAtual().titulo }}</p>
+      <p class="text-xs text-waldorf-gray-400">{{ epocaAtual().inicio }} — {{ epocaAtual().fim }}</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="text-base font-semibold text-waldorf-gray-800 mb-3">Observações Recentes</h2>
+    <p class="text-sm text-waldorf-gray-500 text-center py-8">
+      Nenhuma observação ainda. <a class="text-waldorf-green-600 font-medium cursor-pointer">Registrar a primeira</a>
+    </p>
+  </div>
+</div>
