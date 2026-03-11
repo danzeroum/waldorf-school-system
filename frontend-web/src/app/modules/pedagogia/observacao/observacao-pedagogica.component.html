@@ -1,0 +1,113 @@
+<div class="space-y-5 animate-fade-in-up">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Observações Pedagógicas</h1>
+      <p class="text-sm text-waldorf-gray-500 mt-0.5">{{ observacoesFiltradas.length }} registro(s)</p>
+    </div>
+    <button (click)="exibirForm.set(!exibirForm())" class="btn-primary flex items-center gap-2">
+      <span class="material-icons text-base">{{ exibirForm() ? 'close' : 'add' }}</span>
+      {{ exibirForm() ? 'Cancelar' : 'Nova Observação' }}
+    </button>
+  </div>
+
+  <!-- Formulário inline -->
+  <div *ngIf="exibirForm()" class="card border-2 border-waldorf-green-200 space-y-4" [formGroup]="form">
+    <h2 class="text-sm font-semibold text-waldorf-gray-700">Registrar Observação</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div>
+        <label class="form-label">Data *</label>
+        <input type="date" formControlName="data" class="form-input">
+      </div>
+      <div>
+        <label class="form-label">Aspecto *</label>
+        <select formControlName="aspecto" class="form-input">
+          <option *ngFor="let a of aspectos" [value]="a.value">{{ a.label }}</option>
+        </select>
+      </div>
+      <div class="flex items-end">
+        <label class="flex items-center gap-2 cursor-pointer pb-2">
+          <input type="checkbox" formControlName="privada" class="w-4 h-4 rounded text-waldorf-green-500">
+          <span class="text-sm text-waldorf-gray-700">Observação privada</span>
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <label class="form-label">Observação *</label>
+      <textarea
+        formControlName="conteudo"
+        rows="5"
+        placeholder="Descreva as observações pedagógicas do aluno nesta época... Aspectos físicos, anímicos e espirituais do desenvolvimento..."
+        [class]="form.get('conteudo')?.invalid && form.get('conteudo')?.touched ? 'form-input-error' : 'form-input'"
+      ></textarea>
+      <p class="form-error" *ngIf="form.get('conteudo')?.hasError('minlength') && form.get('conteudo')?.touched">
+        Mínimo de 10 caracteres
+      </p>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <button type="button" (click)="exibirForm.set(false)" class="btn-secondary">Cancelar</button>
+      <button type="button" (click)="salvar()" [disabled]="salvando()" class="btn-primary flex items-center gap-2">
+        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+        {{ salvando() ? 'Salvando...' : 'Salvar Observação' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros por aspecto -->
+  <div class="flex gap-2 flex-wrap">
+    <button
+      (click)="filtroAspecto.set('')"
+      [class]="!filtroAspecto() ? 'btn-primary text-sm' : 'btn-ghost text-sm'"
+    >Todos</button>
+    <button
+      *ngFor="let a of aspectos"
+      (click)="filtroAspecto.set(a.value)"
+      [class]="filtroAspecto() === a.value ? 'btn-primary text-sm' : 'btn-ghost text-sm'"
+    >{{ a.label }}</button>
+  </div>
+
+  <!-- Lista de observações -->
+  <div class="space-y-3">
+    <div *ngIf="carregando()">
+      <div *ngFor="let i of [1,2,3]" class="card space-y-2 animate-pulse">
+        <div class="skeleton h-4 w-1/4"></div>
+        <div class="skeleton h-16 w-full"></div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!carregando()">
+      <div *ngFor="let obs of observacoesFiltradas" class="card space-y-2">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <div [class]="'w-7 h-7 rounded-lg flex items-center justify-center ' + (obs.aspecto | aspecto:'css')">
+              <span class="material-icons text-white text-sm">{{ obs.aspecto | aspecto:'icone' }}</span>
+            </div>
+            <span class="text-sm font-medium text-waldorf-gray-700">{{ obs.aspecto | aspecto }}</span>
+            <span *ngIf="obs.privada" class="badge badge-warning text-xs flex items-center gap-1">
+              <span class="material-icons text-xs">lock</span> Privada
+            </span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-waldorf-gray-400">
+            <span>{{ obs.data | date:'dd/MM/yyyy' }}</span>
+            <span *ngIf="obs.professorNome">&bull; {{ obs.professorNome }}</span>
+          </div>
+        </div>
+        <p class="text-sm text-waldorf-gray-700 leading-relaxed whitespace-pre-line">{{ obs.conteudo }}</p>
+        <p *ngIf="obs.epocaTitulo" class="text-xs text-waldorf-gray-400 flex items-center gap-1">
+          <span class="material-icons text-xs">timeline</span>
+          {{ obs.epocaTitulo }}
+        </p>
+      </div>
+
+      <div *ngIf="observacoesFiltradas.length === 0" class="card text-center py-12">
+        <span class="material-icons text-4xl text-waldorf-gray-300">visibility_off</span>
+        <p class="text-waldorf-gray-500 mt-2">Nenhuma observação registrada</p>
+        <button (click)="exibirForm.set(true)" class="btn-primary mt-4 text-sm">Registrar primeira observação</button>
+      </div>
+    </ng-container>
+  </div>
+</div>

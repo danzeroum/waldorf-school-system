@@ -1,0 +1,101 @@
+<div class="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
+
+  <div class="flex items-center gap-3">
+    <button (click)="cancelar()" class="btn-icon">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <h1 class="text-2xl font-serif text-waldorf-gray-900">
+      {{ modoEdicao() ? 'Editar Época' : 'Nova Época de Ensino' }}
+    </h1>
+  </div>
+
+  <div *ngIf="erro()" class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex items-center gap-2">
+    <span class="material-icons text-base">error_outline</span> {{ erro() }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="salvar()" class="card space-y-5">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <div class="sm:col-span-2">
+        <label class="form-label">Título da Época *</label>
+        <input type="text" formControlName="titulo" placeholder="Ex: Época de Matemática — Frações"
+               [class]="form.get('titulo')?.invalid && form.get('titulo')?.touched ? 'form-input-error' : 'form-input'">
+        <p class="form-error" *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">Obrigatório (mín. 3 caracteres)</p>
+      </div>
+
+      <div>
+        <label class="form-label">Matéria *</label>
+        <select formControlName="materia"
+                [class]="form.get('materia')?.invalid && form.get('materia')?.touched ? 'form-input-error' : 'form-input'">
+          <option value="">Selecionar...</option>
+          <option *ngFor="let m of materias" [value]="m">{{ m }}</option>
+        </select>
+        <p class="form-error" *ngIf="form.get('materia')?.invalid && form.get('materia')?.touched">Obrigatório</p>
+      </div>
+
+      <div>
+        <label class="form-label">Turma *</label>
+        <select formControlName="turmaId"
+                [class]="form.get('turmaId')?.invalid && form.get('turmaId')?.touched ? 'form-input-error' : 'form-input'">
+          <option value="">Selecionar turma...</option>
+          <option *ngFor="let t of turmas()" [value]="t.id">{{ t.nome }}</option>
+        </select>
+        <p class="form-error" *ngIf="form.get('turmaId')?.invalid && form.get('turmaId')?.touched">Obrigatório</p>
+      </div>
+
+      <!-- Aspecto Waldorf -->
+      <div class="sm:col-span-2">
+        <label class="form-label">Aspecto Waldorf *</label>
+        <div class="grid grid-cols-3 gap-3">
+          <label
+            *ngFor="let a of aspectos"
+            [class]="'cursor-pointer rounded-xl border-2 p-3 text-center transition-all ' +
+              (form.get('aspecto')?.value === a.value
+                ? 'border-waldorf-green-400 bg-waldorf-green-50'
+                : 'border-waldorf-cream-200 hover:border-waldorf-cream-300')"
+          >
+            <input type="radio" formControlName="aspecto" [value]="a.value" class="sr-only">
+            <div [class]="'w-8 h-8 rounded-lg mx-auto mb-2 flex items-center justify-center ' + (a.value | aspecto:'css')">
+              <span class="material-icons text-white text-base">{{ a.value | aspecto:'icone' }}</span>
+            </div>
+            <p class="text-sm font-medium text-waldorf-gray-700">{{ a.label }}</p>
+            <p class="text-xs text-waldorf-gray-400 mt-0.5 hidden sm:block">{{ a.descricao }}</p>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label class="form-label">Data de Início *</label>
+        <input type="date" formControlName="dataInicio"
+               [class]="form.get('dataInicio')?.invalid && form.get('dataInicio')?.touched ? 'form-input-error' : 'form-input'">
+        <p class="form-error" *ngIf="form.get('dataInicio')?.invalid && form.get('dataInicio')?.touched">Obrigatório</p>
+      </div>
+
+      <div>
+        <label class="form-label">Data de Fim *</label>
+        <input type="date" formControlName="dataFim"
+               [class]="form.get('dataFim')?.invalid && form.get('dataFim')?.touched ? 'form-input-error' : 'form-input'">
+        <p class="form-error" *ngIf="form.get('dataFim')?.invalid && form.get('dataFim')?.touched">Obrigatório</p>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="form-label">Descrição</label>
+        <textarea formControlName="descricao" rows="3" placeholder="Conteúdo geral da época..." class="form-input"></textarea>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="form-label">Objetivos Pedagógicos</label>
+        <textarea formControlName="objetivos" rows="3" placeholder="O que se espera que o aluno desenvolva..." class="form-input"></textarea>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3 pt-2">
+      <button type="button" (click)="cancelar()" class="btn-secondary">Cancelar</button>
+      <button type="submit" [disabled]="salvando()" class="btn-primary flex items-center gap-2">
+        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+        {{ salvando() ? 'Salvando...' : (modoEdicao() ? 'Atualizar' : 'Criar Época') }}
+      </button>
+    </div>
+  </form>
+</div>
