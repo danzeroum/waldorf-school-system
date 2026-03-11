@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -58,12 +57,12 @@ public class EpocaService {
 
     private EpocaPedagogica findOrThrow(Long id) {
         return epocaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Época não encontrada: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("\u00c9poca n\u00e3o encontrada: " + id));
     }
 
     private void aplicarDTO(EpocaPedagogica e, EpocaRequestDTO dto) {
         e.setTurma(turmaRepository.findById(dto.turmaId())
-                .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada")));
+                .orElseThrow(() -> new EntityNotFoundException("Turma n\u00e3o encontrada")));
         e.setTitulo(dto.titulo());
         e.setMateria(dto.materia());
         e.setAspecto(dto.aspecto());
@@ -75,8 +74,9 @@ public class EpocaService {
 
     private String resolverStatus(EpocaPedagogica e) {
         LocalDate hoje = LocalDate.now();
-        if (hoje.isBefore(e.getDataInicio()))  return "PLANEJADA";
-        if (hoje.isAfter(e.getDataFim()))      return "CONCLUIDA";
+        LocalDate fim  = e.getDataFim();
+        if (hoje.isBefore(e.getDataInicio()))      return "PLANEJADA";
+        if (fim != null && hoje.isAfter(fim))       return "CONCLUIDA";
         return "EM_ANDAMENTO";
     }
 

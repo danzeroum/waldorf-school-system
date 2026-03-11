@@ -21,12 +21,20 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
+      - name: Make mvnw executable
+        working-directory: ./backend
+        run: chmod +x mvnw
+
       - name: Run tests
         working-directory: ./backend
-        run: mvn -B clean test --no-transfer-progress
+        run: ./mvnw -B clean test --no-transfer-progress 2>&1 | tee /tmp/maven-test.log; exit ${PIPESTATUS[0]}
         env:
           SPRING_PROFILES_ACTIVE: test
-          JWT_SECRET: test-jwt-secret-waldorf-256bits-testing-only-ci-ok
+          JWT_SECRET: test-secret-waldorf-at-least-256bits-for-hmac-sha-ok
+
+      - name: Show last 150 lines of Maven log on failure
+        if: failure()
+        run: tail -150 /tmp/maven-test.log
 
       - name: Upload test reports
         if: always()
@@ -52,12 +60,16 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
+      - name: Make mvnw executable
+        working-directory: ./backend
+        run: chmod +x mvnw
+
       - name: Build JAR (skip tests)
         working-directory: ./backend
-        run: mvn -B clean package -DskipTests --no-transfer-progress
+        run: ./mvnw -B clean package -DskipTests --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
-          JWT_SECRET: test-jwt-secret-waldorf-256bits-testing-only-ci-ok
+          JWT_SECRET: test-secret-waldorf-at-least-256bits-for-hmac-sha-ok
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
