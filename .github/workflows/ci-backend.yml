@@ -25,7 +25,7 @@ jobs:
         working-directory: ./backend
         run: chmod +x mvnw
 
-      - name: Run tests
+      - name: Run tests (H2 in-memory, perfil test)
         working-directory: ./backend
         run: ./mvnw -B clean test --no-transfer-progress
         env:
@@ -63,6 +63,9 @@ jobs:
       - name: Build JAR (skip tests)
         working-directory: ./backend
         run: ./mvnw -B clean package -DskipTests --no-transfer-progress
+        env:
+          SPRING_PROFILES_ACTIVE: test
+          JWT_SECRET: ci-jwt-secret-waldorf-256bits-testing-only-ok
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
