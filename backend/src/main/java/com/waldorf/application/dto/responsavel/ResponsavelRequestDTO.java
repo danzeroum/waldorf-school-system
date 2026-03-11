@@ -1,19 +1,20 @@
 package com.waldorf.application.dto.responsavel;
 
+import com.waldorf.domain.enums.Genero;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.time.LocalDate;
+
 public record ResponsavelRequestDTO(
         @NotBlank String nome,
-        @NotBlank String cpf,
+        LocalDate dataNascimento,
+        Genero genero,
         @Email String email,
         String telefone,
+        @NotBlank String cpf,
         String parentesco,
-        boolean responsavelFinanceiro,
-        String enderecoRua,
-        String enderecoNumero,
-        String enderecoBairro,
-        String enderecoCidade,
-        String enderecoEstado,
-        String enderecoCep
+        String profissao,
+        String empresa,
+        boolean autorizado
 ) {}

@@ -6,10 +6,9 @@ public record TurmaResponseDTO(
         Long id,
         String nome,
         Integer anoLetivo,
-        Integer anoEscolar,
-        Long professorId,
-        String professorNome,
-        Integer capacidadeMaxima,
-        Integer totalAlunos,
+        Long professorRegenteId,
+        String professorRegenteNome,
+        int totalAlunos,
+        boolean ativa,
         LocalDateTime createdAt
 ) {}

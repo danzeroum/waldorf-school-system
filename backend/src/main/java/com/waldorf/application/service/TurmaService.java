@@ -18,9 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TurmaService {
 
-    private final TurmaRepository    turmaRepository;
+    private final TurmaRepository     turmaRepository;
     private final ProfessorRepository professorRepository;
-    private final AlunoRepository    alunoRepository;
+    private final AlunoRepository     alunoRepository;
 
     public List<TurmaResponseDTO> listar(Integer anoLetivo) {
         List<Turma> turmas = anoLetivo != null
@@ -51,9 +51,10 @@ public class TurmaService {
         return alunoRepository.findByTurmaIdAndAtivoTrue(turmaId).stream()
                 .map(a -> new AlunoResponseDTO(
                         a.getId(), a.getMatricula(), a.getNome(), a.getDataNascimento(),
-                        a.getGenero(), a.getEmail(), a.getTelefone(),
-                        turmaId, null, a.getAnoIngresso(), a.getTemperamento(),
-                        a.isAtivo(), List.of(), a.getCreatedAt(), a.getUpdatedAt()))
+                        a.getGenero(), a.getEmail(), a.getAnoIngresso(),
+                        turmaId == null ? null : a.getTurma() != null ? a.getTurma().getNome() : null,
+                        a.getTemperamento(), a.isAtivo(),
+                        a.getCreatedAt(), a.getUpdatedAt()))
                 .toList();
     }
 
@@ -65,8 +66,12 @@ public class TurmaService {
     private void aplicarDTO(Turma t, TurmaRequestDTO dto) {
         t.setNome(dto.nome());
         t.setAnoLetivo(dto.anoLetivo());
-        t.setProfessorRegente(professorRepository.findById(dto.professorRegenteId())
-                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado")));
+        t.setAnoEscolar(dto.anoEscolar());
+        t.setCapacidadeMaxima(dto.capacidadeMaxima());
+        if (dto.professorRegenteId() != null) {
+            t.setProfessorRegente(professorRepository.findById(dto.professorRegenteId())
+                    .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado")));
+        }
     }
 
     private TurmaResponseDTO toDTO(Turma t) {

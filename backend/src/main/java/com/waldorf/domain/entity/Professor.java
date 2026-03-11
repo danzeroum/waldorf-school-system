@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "professores")
@@ -26,9 +24,6 @@ public class Professor {
 
     @Column(nullable = false)
     private boolean ativo = true;
-
-    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Turma> turmas = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

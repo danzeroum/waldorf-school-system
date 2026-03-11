@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
 
@@ -20,4 +22,8 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
             @Param("turmaId") Long turmaId,
             @Param("ativo") Boolean ativo,
             Pageable pageable);
+
+    List<Aluno> findByTurmaIdAndAtivoTrue(Long turmaId);
+
+    int countByTurmaIdAndAtivoTrue(Long turmaId);
 }

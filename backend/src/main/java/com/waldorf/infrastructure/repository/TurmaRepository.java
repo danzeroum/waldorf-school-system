@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TurmaRepository extends JpaRepository<Turma, Long> {
-    List<Turma> findByAnoLetivo(int anoLetivo);
+    List<Turma> findByAnoLetivo(Integer anoLetivo);
 }

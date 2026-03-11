@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 public record TurmaRequestDTO(
         @NotBlank String nome,
         @NotNull Integer anoLetivo,
-        @NotNull Integer anoEscolar,
-        Long professorId,
+        Integer anoEscolar,
+        Long professorRegenteId,
         Integer capacidadeMaxima
 ) {}

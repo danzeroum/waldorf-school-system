@@ -28,9 +28,12 @@ public class Turma {
     @Column(name = "capacidade_maxima")
     private Integer capacidadeMaxima;
 
+    @Column(nullable = false)
+    private boolean ativa = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "professor_id")
-    private Professor professor;
+    @JoinColumn(name = "professor_regente_id")
+    private Professor professorRegente;
 
     @OneToMany(mappedBy = "turma", fetch = FetchType.LAZY)
     private List<Aluno> alunos = new ArrayList<>();
