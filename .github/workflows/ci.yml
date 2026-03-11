@@ -21,13 +21,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Make mvnw executable
-        working-directory: backend
-        run: chmod +x mvnw
-
+      # mvnw nao existe — usa mvn direto (igual ao ci-backend.yml que ja funciona)
       - name: Build & Test (H2 in-memory)
         working-directory: backend
-        run: ./mvnw -B verify --no-transfer-progress
+        run: mvn -B verify --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
           JWT_SECRET: ci-jwt-secret-waldorf-256bits-testing-only-ok
