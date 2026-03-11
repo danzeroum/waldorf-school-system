@@ -21,16 +21,12 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Make mvnw executable
+      - name: Run tests
         working-directory: ./backend
-        run: chmod +x mvnw
-
-      - name: Run tests (H2 in-memory, perfil test)
-        working-directory: ./backend
-        run: ./mvnw -B clean test --no-transfer-progress
+        run: mvn -B clean test --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
-          JWT_SECRET: ci-jwt-secret-waldorf-256bits-testing-only-ok
+          JWT_SECRET: test-jwt-secret-waldorf-256bits-testing-only-ci-ok
 
       - name: Upload test reports
         if: always()
@@ -56,16 +52,12 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Make mvnw executable
-        working-directory: ./backend
-        run: chmod +x mvnw
-
       - name: Build JAR (skip tests)
         working-directory: ./backend
-        run: ./mvnw -B clean package -DskipTests --no-transfer-progress
+        run: mvn -B clean package -DskipTests --no-transfer-progress
         env:
           SPRING_PROFILES_ACTIVE: test
-          JWT_SECRET: ci-jwt-secret-waldorf-256bits-testing-only-ok
+          JWT_SECRET: test-jwt-secret-waldorf-256bits-testing-only-ci-ok
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
