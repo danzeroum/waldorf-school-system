@@ -1,0 +1,109 @@
+<div class="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
+
+  <div class="flex items-center gap-3">
+    <button (click)="router.navigate(['/financeiro/contratos'])" class="btn-icon">
+      <span class="material-icons">arrow_back</span>
+    </button>
+    <h1 class="text-2xl font-serif text-waldorf-gray-900">Novo Contrato</h1>
+  </div>
+
+  <div *ngIf="erro()" class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex gap-2">
+    <span class="material-icons text-base">error_outline</span> {{ erro() }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="salvar()" class="space-y-5">
+
+    <div class="card space-y-4">
+      <h2 class="text-sm font-semibold text-waldorf-gray-700">Dados do Contrato</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <div>
+          <label class="form-label">ID do Aluno *</label>
+          <input type="number" formControlName="alunoId" placeholder="Ex: 42"
+                 [class]="form.get('alunoId')?.invalid && form.get('alunoId')?.touched ? 'form-input-error' : 'form-input'">
+          <p class="form-error" *ngIf="form.get('alunoId')?.invalid && form.get('alunoId')?.touched">Obrigatório</p>
+        </div>
+
+        <div>
+          <label class="form-label">ID da Turma *</label>
+          <input type="number" formControlName="turmaId" placeholder="Ex: 3"
+                 [class]="form.get('turmaId')?.invalid && form.get('turmaId')?.touched ? 'form-input-error' : 'form-input'">
+          <p class="form-error" *ngIf="form.get('turmaId')?.invalid && form.get('turmaId')?.touched">Obrigatório</p>
+        </div>
+
+        <div>
+          <label class="form-label">Mensalidade (R$) *</label>
+          <input type="number" formControlName="valorMensalidade" placeholder="1850"
+                 [class]="form.get('valorMensalidade')?.invalid && form.get('valorMensalidade')?.touched ? 'form-input-error' : 'form-input'">
+        </div>
+
+        <div>
+          <label class="form-label">Taxa de Matrícula (R$)</label>
+          <input type="number" formControlName="valorMatricula" placeholder="0" class="form-input">
+        </div>
+
+        <div>
+          <label class="form-label">Nº de Parcelas *</label>
+          <input type="number" formControlName="totalParcelas" min="1" max="12" class="form-input">
+        </div>
+
+        <div>
+          <label class="form-label">Dia de Vencimento *</label>
+          <input type="number" formControlName="diaVencimento" min="1" max="28" placeholder="10" class="form-input">
+        </div>
+
+        <div>
+          <label class="form-label">Data de Início *</label>
+          <input type="date" formControlName="dataInicio"
+                 [class]="form.get('dataInicio')?.invalid && form.get('dataInicio')?.touched ? 'form-input-error' : 'form-input'">
+        </div>
+
+        <div>
+          <label class="form-label">Ano Letivo *</label>
+          <input type="number" formControlName="anoLetivo" class="form-input">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="form-label">Observações</label>
+          <textarea formControlName="observacoes" rows="2" class="form-input"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview de parcelas -->
+    <div class="card" *ngIf="previewParcelas().length > 0">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-waldorf-gray-700">Preview de Parcelas</h2>
+        <span class="badge badge-info">Total: {{ formatarMoeda(totalContrato) }}</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-waldorf-cream-100">
+              <th class="py-2 text-left text-xs text-waldorf-gray-500 font-medium">#</th>
+              <th class="py-2 text-left text-xs text-waldorf-gray-500 font-medium">Vencimento</th>
+              <th class="py-2 text-right text-xs text-waldorf-gray-500 font-medium">Valor</th>
+              <th class="py-2 text-left text-xs text-waldorf-gray-500 font-medium pl-3">Obs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of previewParcelas()" class="border-b border-waldorf-cream-50 last:border-0">
+              <td class="py-1.5 text-waldorf-gray-500 font-mono">{{ p.num }}ª</td>
+              <td class="py-1.5 text-waldorf-gray-700">{{ p.vencimento }}</td>
+              <td class="py-1.5 text-right font-semibold text-waldorf-gray-800">{{ formatarMoeda(p.valor) }}</td>
+              <td class="py-1.5 pl-3 text-xs text-waldorf-gray-400">{{ p.num === 1 && form.value.valorMatricula > 0 ? '+ Matrícula' : '' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <button type="button" (click)="router.navigate(['/financeiro/contratos'])" class="btn-secondary">Cancelar</button>
+      <button type="submit" [disabled]="salvando()" class="btn-primary flex items-center gap-2">
+        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+        {{ salvando() ? 'Salvando...' : 'Gerar Contrato' }}
+      </button>
+    </div>
+  </form>
+</div>

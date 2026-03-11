@@ -1,0 +1,78 @@
+<div class="space-y-5 animate-fade-in-up">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <h1 class="text-2xl font-serif text-waldorf-gray-900">Contratos</h1>
+    <button (click)="novoContrato()" class="btn-primary flex items-center gap-2">
+      <span class="material-icons text-base">add</span>
+      Novo Contrato
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card p-4 flex flex-col sm:flex-row gap-3">
+    <div class="relative flex-1">
+      <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-waldorf-gray-400 text-xl pointer-events-none">search</span>
+      <input type="search" [formControl]="buscaCtrl" placeholder="Buscar por nome do aluno..."
+             class="form-input pl-10">
+    </div>
+    <select [value]="filtroStatus()" (change)="filtroStatus.set(($event.target as HTMLSelectElement).value); carregar()"
+            class="form-input w-full sm:w-44">
+      <option value="">Todos os status</option>
+      <option value="ATIVO">Ativo</option>
+      <option value="INADIMPLENTE">Inadimplente</option>
+      <option value="SUSPENSO">Suspenso</option>
+      <option value="ENCERRADO">Encerrado</option>
+    </select>
+  </div>
+
+  <!-- Tabela -->
+  <div class="card p-0 overflow-hidden">
+    <table class="w-full">
+      <thead>
+        <tr>
+          <th class="table-header text-left">Aluno</th>
+          <th class="table-header text-left hidden sm:table-cell">Turma</th>
+          <th class="table-header text-right hidden md:table-cell">Mensalidade</th>
+          <th class="table-header text-center hidden md:table-cell">Parcelas</th>
+          <th class="table-header text-left">Status</th>
+          <th class="table-header text-right">Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="carregando()">
+          <tr *ngFor="let i of [1,2,3]" class="table-row-hover">
+            <td class="table-cell"><div class="skeleton h-4 w-40"></div></td>
+            <td class="table-cell hidden sm:table-cell"><div class="skeleton h-4 w-24"></div></td>
+            <td class="table-cell hidden md:table-cell"><div class="skeleton h-4 w-20 ml-auto"></div></td>
+            <td class="table-cell hidden md:table-cell"><div class="skeleton h-4 w-10 mx-auto"></div></td>
+            <td class="table-cell"><div class="skeleton h-5 w-20 rounded-full"></div></td>
+            <td class="table-cell"><div class="skeleton h-8 w-16 ml-auto rounded"></div></td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="!carregando()">
+          <tr *ngFor="let c of contratos()" class="table-row-hover cursor-pointer" (click)="verContrato(c.id)">
+            <td class="table-cell font-medium text-waldorf-gray-800">{{ c.alunoNome }}</td>
+            <td class="table-cell hidden sm:table-cell">
+              <span class="badge badge-info">{{ c.turmaNome }}</span>
+            </td>
+            <td class="table-cell text-right hidden md:table-cell font-semibold text-waldorf-gray-700">
+              {{ formatarMoeda(c.valorMensalidade) }}
+            </td>
+            <td class="table-cell text-center hidden md:table-cell text-waldorf-gray-500 text-sm">
+              {{ c.totalParcelas }}x
+            </td>
+            <td class="table-cell">
+              <span [class]="'badge ' + (c.status | statusContrato:'css')">{{ c.status | statusContrato }}</span>
+            </td>
+            <td class="table-cell text-right">
+              <button class="btn-ghost text-xs">Ver</button>
+            </td>
+          </tr>
+          <tr *ngIf="contratos().length === 0">
+            <td colspan="6" class="py-12 text-center text-waldorf-gray-400">Nenhum contrato encontrado</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

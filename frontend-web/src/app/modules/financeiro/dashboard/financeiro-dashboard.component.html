@@ -1,0 +1,154 @@
+<div class="space-y-6 animate-fade-in-up">
+
+  <!-- Cabeçalho -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Financeiro</h1>
+      <p class="text-sm text-waldorf-gray-500 mt-0.5">Ano Letivo {{ anoLetivo() }}</p>
+    </div>
+    <div class="flex gap-2">
+      <select [value]="anoLetivo()"
+              (change)="anoLetivo.set(+($event.target as HTMLSelectElement).value); carregar()"
+              class="form-input w-28">
+        <option [value]="2025">2025</option>
+        <option [value]="2026">2026</option>
+      </select>
+      <button (click)="router.navigate(['/financeiro/contratos/novo'])" class="btn-primary flex items-center gap-2">
+        <span class="material-icons text-base">add</span>
+        Novo Contrato
+      </button>
+    </div>
+  </div>
+
+  <!-- Cards de métricas -->
+  <div *ngIf="carregando()" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div *ngFor="let i of [1,2,3,4]" class="card space-y-2">
+      <div class="skeleton h-4 w-1/2"></div>
+      <div class="skeleton h-8 w-3/4"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!carregando() && resumo()" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+    <!-- Total a receber -->
+    <div class="card cursor-pointer hover:shadow-waldorf-md transition-shadow" (click)="irParaParcelas()">
+      <div class="flex items-start justify-between">
+        <p class="text-xs font-medium text-waldorf-gray-500 uppercase tracking-wide">Total a Receber</p>
+        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+          <span class="material-icons text-blue-500 text-base">account_balance_wallet</span>
+        </div>
+      </div>
+      <p class="text-2xl font-bold text-waldorf-gray-800 mt-2">{{ formatarMoeda(resumo()!.totalReceita) }}</p>
+      <p class="text-xs text-waldorf-gray-400 mt-1">{{ resumo()!.totalContratos }} contratos ativos</p>
+    </div>
+
+    <!-- Recebido -->
+    <div class="card cursor-pointer hover:shadow-waldorf-md transition-shadow" (click)="irParaParcelas('PAGA')">
+      <div class="flex items-start justify-between">
+        <p class="text-xs font-medium text-waldorf-gray-500 uppercase tracking-wide">Recebido</p>
+        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+          <span class="material-icons text-green-500 text-base">check_circle</span>
+        </div>
+      </div>
+      <p class="text-2xl font-bold text-waldorf-green-600 mt-2">{{ formatarMoeda(resumo()!.totalRecebido) }}</p>
+      <div class="mt-2">
+        <div class="h-1.5 bg-waldorf-cream-200 rounded-full overflow-hidden">
+          <div class="h-full bg-waldorf-green-400 rounded-full transition-all"
+               [style.width.%]="percentualRecebido"></div>
+        </div>
+        <p class="text-xs text-waldorf-gray-400 mt-1">{{ percentualRecebido }}% do total</p>
+      </div>
+    </div>
+
+    <!-- Pendente -->
+    <div class="card cursor-pointer hover:shadow-waldorf-md transition-shadow" (click)="irParaParcelas('PENDENTE')">
+      <div class="flex items-start justify-between">
+        <p class="text-xs font-medium text-waldorf-gray-500 uppercase tracking-wide">Pendente</p>
+        <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+          <span class="material-icons text-amber-500 text-base">schedule</span>
+        </div>
+      </div>
+      <p class="text-2xl font-bold text-amber-600 mt-2">{{ formatarMoeda(resumo()!.totalPendente) }}</p>
+      <p class="text-xs text-waldorf-gray-400 mt-1">A vencer</p>
+    </div>
+
+    <!-- Vencido / Inadimplência -->
+    <div class="card cursor-pointer hover:shadow-waldorf-md transition-shadow border border-red-100" (click)="irParaParcelas('VENCIDA')">
+      <div class="flex items-start justify-between">
+        <p class="text-xs font-medium text-red-500 uppercase tracking-wide">Vencido</p>
+        <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+          <span class="material-icons text-red-500 text-base">warning</span>
+        </div>
+      </div>
+      <p class="text-2xl font-bold text-red-600 mt-2">{{ formatarMoeda(resumo()!.totalVencido) }}</p>
+      <p class="text-xs text-red-400 mt-1">
+        {{ resumo()!.inadimplentes }} inadimplentes &bull; {{ resumo()!.taxaInadimplencia }}%
+      </p>
+    </div>
+  </div>
+
+  <!-- Parcelas vencidas recentes -->
+  <div *ngIf="!carregando()">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-base font-semibold text-waldorf-gray-800">Parcelas Vencidas</h2>
+      <button (click)="irParaParcelas('VENCIDA')" class="text-sm text-waldorf-green-600 hover:underline">Ver todas</button>
+    </div>
+
+    <div *ngIf="vencidas().length === 0" class="card text-center py-8">
+      <span class="material-icons text-3xl text-green-300">check_circle</span>
+      <p class="text-waldorf-gray-500 mt-2 text-sm">Nenhuma parcela vencida 🎉</p>
+    </div>
+
+    <div *ngIf="vencidas().length > 0" class="card p-0 overflow-hidden">
+      <table class="w-full">
+        <thead>
+          <tr>
+            <th class="table-header text-left">Aluno</th>
+            <th class="table-header text-left hidden sm:table-cell">Descrição</th>
+            <th class="table-header text-right">Valor</th>
+            <th class="table-header text-left hidden md:table-cell">Vencimento</th>
+            <th class="table-header text-right">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of vencidas()" class="table-row-hover">
+            <td class="table-cell font-medium text-waldorf-gray-800">{{ p.alunoNome ?? '—' }}</td>
+            <td class="table-cell text-sm text-waldorf-gray-500 hidden sm:table-cell">{{ p.descricao }}</td>
+            <td class="table-cell text-right font-semibold text-red-600">{{ formatarMoeda(p.valor) }}</td>
+            <td class="table-cell text-sm text-red-400 hidden md:table-cell">
+              {{ p.dataVencimento | date:'dd/MM/yyyy' }}
+            </td>
+            <td class="table-cell text-right">
+              <button class="btn-ghost text-xs flex items-center gap-1 ml-auto">
+                <span class="material-icons text-base">payments</span>
+                Baixar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Atalhos -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <button (click)="router.navigate(['/financeiro/contratos'])" class="card card-hover flex flex-col items-center py-5 gap-2 text-center">
+      <span class="material-icons text-waldorf-green-500 text-2xl">description</span>
+      <span class="text-sm font-medium text-waldorf-gray-700">Contratos</span>
+    </button>
+    <button (click)="irParaParcelas()" class="card card-hover flex flex-col items-center py-5 gap-2 text-center">
+      <span class="material-icons text-amber-500 text-2xl">receipt_long</span>
+      <span class="text-sm font-medium text-waldorf-gray-700">Parcelas</span>
+    </button>
+    <button class="card card-hover flex flex-col items-center py-5 gap-2 text-center opacity-60 cursor-not-allowed">
+      <span class="material-icons text-blue-400 text-2xl">bar_chart</span>
+      <span class="text-sm font-medium text-waldorf-gray-700">Relatórios</span>
+      <span class="text-xs text-waldorf-gray-400">Em breve</span>
+    </button>
+    <button class="card card-hover flex flex-col items-center py-5 gap-2 text-center opacity-60 cursor-not-allowed">
+      <span class="material-icons text-purple-400 text-2xl">send</span>
+      <span class="text-sm font-medium text-waldorf-gray-700">Cobranças</span>
+      <span class="text-xs text-waldorf-gray-400">Em breve</span>
+    </button>
+  </div>
+</div>
