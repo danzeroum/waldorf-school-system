@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 public class AuthService {
 
     private final AuthenticationManager authManager;
-    private final UsuarioRepository usuarioRepository;
-    private final JwtService jwtService;
+    private final UsuarioRepository     usuarioRepository;
+    private final JwtService            jwtService;
 
     public LoginResponseDTO login(LoginRequestDTO dto) {
         authManager.authenticate(
@@ -28,10 +28,24 @@ public class AuthService {
         var usuario = usuarioRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        if (!usuario.isAtivo()) {
-            throw new IllegalStateException("Usuário inativo");
+        if (!usuario.isAtivo()) throw new IllegalStateException("Usuário inativo");
+
+        return buildResponse(usuario);
+    }
+
+    public LoginResponseDTO refresh(String refreshToken) {
+        String email = jwtService.extrairEmail(refreshToken);
+        var usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        if (!jwtService.tokenValido(refreshToken, usuario)) {
+            throw new IllegalArgumentException("Refresh token inválido ou expirado");
         }
 
+        return buildResponse(usuario);
+    }
+
+    private LoginResponseDTO buildResponse(com.waldorf.domain.entity.Usuario usuario) {
         String accessToken  = jwtService.gerarToken(usuario);
         String refreshToken = jwtService.gerarRefreshToken(usuario);
 

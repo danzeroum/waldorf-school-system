@@ -4,7 +4,6 @@ import com.waldorf.application.dto.aluno.AlunoRequestDTO;
 import com.waldorf.application.dto.aluno.AlunoResponseDTO;
 import com.waldorf.domain.entity.Aluno;
 import com.waldorf.infrastructure.repository.AlunoRepository;
-import com.waldorf.infrastructure.repository.ResponsavelRepository;
 import com.waldorf.infrastructure.repository.TurmaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +18,8 @@ import java.time.Year;
 @RequiredArgsConstructor
 public class AlunoService {
 
-    private final AlunoRepository       alunoRepository;
-    private final TurmaRepository       turmaRepository;
-    private final ResponsavelRepository responsavelRepository;
+    private final AlunoRepository   alunoRepository;
+    private final TurmaRepository   turmaRepository;
 
     public Page<AlunoResponseDTO> listar(String nome, Long turmaId, Boolean ativo, Pageable pageable) {
         return alunoRepository.findWithFilters(nome, turmaId, ativo, pageable)
@@ -43,14 +41,32 @@ public class AlunoService {
         aluno.setAnoIngresso(dto.anoIngresso() > 0 ? dto.anoIngresso() : Year.now().getValue());
         aluno.setTemperamento(dto.temperamento());
         aluno.setAtivo(true);
+        // Gera matricula provisoria para satisfazer NOT NULL antes do primeiro save
+        aluno.setMatricula("TEMP-" + System.currentTimeMillis());
         if (dto.turmaId() != null) {
             aluno.setTurma(turmaRepository.findById(dto.turmaId()).orElse(null));
         }
-        // salva uma única vez: a matrícula é gerada com o ID retornado pelo próprio save
         aluno = alunoRepository.save(aluno);
+        // Atualiza com matricula definitiva baseada no ID gerado
         aluno.setMatricula(gerarMatricula(aluno.getId()));
-        // segundo save removido — a transação @Transactional persiste a alteração de matrícula no flush
+        aluno = alunoRepository.save(aluno);
         return toDTO(aluno);
+    }
+
+    @Transactional
+    public AlunoResponseDTO atualizar(Long id, AlunoRequestDTO dto) {
+        Aluno aluno = findOrThrow(id);
+        aluno.setNome(dto.nome());
+        aluno.setDataNascimento(dto.dataNascimento());
+        aluno.setGenero(dto.genero());
+        aluno.setEmail(dto.email());
+        aluno.setTelefone(dto.telefone());
+        aluno.setAnoIngresso(dto.anoIngresso() > 0 ? dto.anoIngresso() : Year.now().getValue());
+        aluno.setTemperamento(dto.temperamento());
+        if (dto.turmaId() != null) {
+            aluno.setTurma(turmaRepository.findById(dto.turmaId()).orElse(null));
+        }
+        return toDTO(alunoRepository.save(aluno));
     }
 
     @Transactional

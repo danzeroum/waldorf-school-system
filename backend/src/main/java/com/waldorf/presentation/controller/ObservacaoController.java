@@ -21,6 +21,18 @@ public class ObservacaoController {
 
     private final ObservacaoService observacaoService;
 
+    @GetMapping
+    @Operation(summary = "Listar todas as observações ou filtrar por aluno")
+    @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA','DIRETOR','PROFESSOR')")
+    public ResponseEntity<List<ObservacaoResponseDTO>> listar(
+            @RequestParam(required = false) Long alunoId,
+            @RequestParam(required = false) String aspecto) {
+        if (alunoId != null) {
+            return ResponseEntity.ok(observacaoService.listarPorAluno(alunoId, aspecto));
+        }
+        return ResponseEntity.ok(List.of());
+    }
+
     @GetMapping("/aluno/{alunoId}")
     @Operation(summary = "Listar observações de um aluno")
     @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA','DIRETOR','PROFESSOR')")
@@ -35,6 +47,13 @@ public class ObservacaoController {
     @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     public ResponseEntity<ObservacaoResponseDTO> criar(@Valid @RequestBody ObservacaoRequestDTO dto) {
         return ResponseEntity.ok(observacaoService.criar(dto));
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Buscar observação por ID")
+    @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA','DIRETOR','PROFESSOR')")
+    public ResponseEntity<ObservacaoResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(observacaoService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
