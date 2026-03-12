@@ -1,9 +1,7 @@
 -- =============================================================================
 -- Migration V8: Alinha tabela alunos com a entidade Aluno.java
--- A tabela alunos foi criada como subtipo de pessoas (V1),
--- mas a entidade Java espera colunas standalone.
--- ADD COLUMN IF NOT EXISTS so existe a partir do MySQL 8.0.29,
--- portanto usamos ADD COLUMN simples (banco sempre zerado via down -v).
+-- Colunas created_at/updated_at ja foram adicionadas pela V6.
+-- Colunas abaixo sao as que ainda faltam para a entidade Aluno.java funcionar.
 -- =============================================================================
 
 ALTER TABLE alunos
@@ -15,9 +13,7 @@ ALTER TABLE alunos
     ADD COLUMN ano_ingresso    INT          NOT NULL DEFAULT 0,
     ADD COLUMN ativo           BOOLEAN      NOT NULL DEFAULT TRUE,
     ADD COLUMN temperamento    VARCHAR(100) NULL,
-    ADD COLUMN turma_id        BIGINT       NULL,
-    ADD COLUMN created_at      DATETIME     NULL,
-    ADD COLUMN updated_at      DATETIME     NULL;
+    ADD COLUMN turma_id        BIGINT       NULL;
 
 ALTER TABLE alunos
     ADD CONSTRAINT fk_aluno_turma
@@ -26,10 +22,8 @@ ALTER TABLE alunos
 -- Sincronizar nome/email a partir de pessoas para registros existentes
 UPDATE alunos a
     JOIN pessoas p ON a.id = p.id
-SET a.nome             = p.nome_completo,
-    a.email            = p.email,
-    a.data_nascimento  = p.data_nascimento,
-    a.ativo            = p.ativo,
-    a.created_at       = p.data_cadastro,
-    a.updated_at       = p.data_atualizacao
+SET a.nome            = p.nome_completo,
+    a.email           = p.email,
+    a.data_nascimento = p.data_nascimento,
+    a.ativo           = p.ativo
 WHERE a.nome IS NULL;
