@@ -1,11 +1,18 @@
 -- =============================================================================
 -- WALDORF SCHOOL SYSTEM - SCHEMA DEFINITIVO v1
--- 100% alinhado com entidades Java (Hibernate 6 validation)
--- Tipos ENUM MySQL alinhados com @Enumerated(EnumType.STRING)
+-- Validado campo a campo contra todas as entidades Java
+-- Hibernate 6 + MySQL 8.0 + @Enumerated(EnumType.STRING)
+--
+-- Entidades mapeadas:
+--   Perfil, Usuario, Professor, Responsavel, Turma, Aluno,
+--   Contrato, EpocaPedagogica, ObservacaoDesenvolvimento, SolicitacaoTitular
 -- =============================================================================
 
 -- =============================================================================
--- MÓDULO: SEGURANÇA
+-- MODULO: SEGURANCA
+-- Perfil.java: id, nome
+-- Usuario.java: id, nome, email, senha, ativo, createdAt, updatedAt
+--   @JoinTable(name="usuario_perfis")
 -- =============================================================================
 
 CREATE TABLE perfis (
@@ -25,7 +32,6 @@ CREATE TABLE usuarios (
     INDEX idx_ativo (ativo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- @JoinTable(name = "usuario_perfis") na entidade Usuario.java
 CREATE TABLE usuario_perfis (
     usuario_id BIGINT NOT NULL,
     perfil_id  BIGINT NOT NULL,
@@ -35,7 +41,10 @@ CREATE TABLE usuario_perfis (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================================================
--- MÓDULO: PESSOAS
+-- MODULO: PESSOAS
+-- Professor.java: id, nome, email, especialidade, ativo, createdAt, updatedAt
+-- Responsavel.java: id, nome, dataNascimento, genero(ENUM), email, telefone,
+--   cpf, parentesco, profissao, empresa, autorizado, createdAt, updatedAt
 -- =============================================================================
 
 CREATE TABLE professores (
@@ -48,7 +57,6 @@ CREATE TABLE professores (
     updated_at    DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- genero: ENUM alinhado com enum Genero.java (MASCULINO,FEMININO,OUTRO,NAO_INFORMADO)
 CREATE TABLE responsaveis (
     id              BIGINT       PRIMARY KEY AUTO_INCREMENT,
     nome            VARCHAR(200) NOT NULL,
@@ -66,7 +74,12 @@ CREATE TABLE responsaveis (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================================================
--- MÓDULO: ESTRUTURA ESCOLAR
+-- MODULO: ESTRUTURA ESCOLAR
+-- Turma.java: id, nome, anoLetivo, anoEscolar, capacidadeMaxima, ativa,
+--   professorRegente(FK professor_regente_id), createdAt, updatedAt
+-- Aluno.java: id, nome, matricula, dataNascimento, genero(ENUM), email,
+--   telefone, anoIngresso, ativo, temperamento, turma(FK turma_id),
+--   createdAt, updatedAt
 -- =============================================================================
 
 CREATE TABLE turmas (
@@ -83,7 +96,6 @@ CREATE TABLE turmas (
     INDEX idx_ano_letivo (ano_letivo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- genero: ENUM alinhado com enum Genero.java
 CREATE TABLE alunos (
     id              BIGINT       PRIMARY KEY AUTO_INCREMENT,
     nome            VARCHAR(200) NOT NULL,
@@ -103,10 +115,13 @@ CREATE TABLE alunos (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================================================
--- MÓDULO: FINANCEIRO
+-- MODULO: FINANCEIRO
+-- Contrato.java: id, aluno(FK aluno_id), anoLetivo, valorMensalidade,
+--   desconto, valorMatricula, totalParcelas, diaVencimento, dataInicio,
+--   dataFim, situacao(ENUM SituacaoContrato), createdAt, updatedAt
+-- SituacaoContrato.java: ATIVO, ENCERRADO, SUSPENSO, CANCELADO
 -- =============================================================================
 
--- situacao: ENUM alinhado com enum SituacaoContrato.java (ATIVO,ENCERRADO,SUSPENSO,CANCELADO)
 CREATE TABLE contratos (
     id                BIGINT        PRIMARY KEY AUTO_INCREMENT,
     aluno_id          BIGINT        NOT NULL,
@@ -127,7 +142,13 @@ CREATE TABLE contratos (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================================================
--- MÓDULO: PEDAGOGIA WALDORF
+-- MODULO: PEDAGOGIA WALDORF
+-- EpocaPedagogica.java: id, turma(FK), titulo, materia, aspecto,
+--   dataInicio, dataFim, descricao, objetivos, createdAt, updatedAt
+-- ObservacaoDesenvolvimento.java: id, aluno(FK), professor(FK),
+--   aspecto(NOT NULL), conteudo(TEXT NOT NULL), privada, data(NOT NULL),
+--   createdAt
+--   ATENCAO: campo mapeado como "data" (nao data_observacao)
 -- =============================================================================
 
 CREATE TABLE epocas_pedagogicas (
@@ -146,7 +167,6 @@ CREATE TABLE epocas_pedagogicas (
     INDEX idx_turma (turma_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- aspecto NOT NULL, coluna "data" (nao data_observacao) - alinhado com ObservacaoDesenvolvimento.java
 CREATE TABLE observacoes_desenvolvimento (
     id           BIGINT       PRIMARY KEY AUTO_INCREMENT,
     aluno_id     BIGINT       NOT NULL,
@@ -159,6 +179,27 @@ CREATE TABLE observacoes_desenvolvimento (
     FOREIGN KEY (aluno_id)     REFERENCES alunos(id),
     FOREIGN KEY (professor_id) REFERENCES professores(id),
     INDEX idx_aluno_data (aluno_id, data)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================================================
+-- MODULO: LGPD
+-- SolicitacaoTitular.java: id, tipo(ENUM TipoSolicitacao),
+--   status(ENUM StatusSolicitacao), descricao(TEXT), resposta(TEXT),
+--   prazo(DATE), createdAt, updatedAt
+-- TipoSolicitacao.java: ACESSO, CORRECAO, EXCLUSAO, PORTABILIDADE, OPOSICAO
+-- StatusSolicitacao.java: ABERTA, EM_ANALISE, CONCLUIDA, REJEITADA
+-- =============================================================================
+
+CREATE TABLE solicitacoes_titulares (
+    id         BIGINT       PRIMARY KEY AUTO_INCREMENT,
+    tipo       ENUM('ACESSO','CORRECAO','EXCLUSAO','PORTABILIDADE','OPOSICAO') NOT NULL,
+    status     ENUM('ABERTA','EM_ANALISE','CONCLUIDA','REJEITADA')             NOT NULL DEFAULT 'ABERTA',
+    descricao  TEXT,
+    resposta   TEXT,
+    prazo      DATE,
+    created_at DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================================================
