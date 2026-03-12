@@ -1,11 +1,11 @@
 -- =============================================================================
 -- WALDORF SCHOOL SYSTEM - SCHEMA DEFINITIVO v1
--- 100% alinhado com entidades Java (Hibernate validation)
--- Todas as tabelas standalone (sem herança de pessoas)
+-- 100% alinhado com entidades Java (Hibernate 6 validation)
+-- Tipos ENUM MySQL alinhados com @Enumerated(EnumType.STRING)
 -- =============================================================================
 
 -- =============================================================================
--- MÓDULO: SEGURANÇA - perfis e usuarios
+-- MÓDULO: SEGURANÇA
 -- =============================================================================
 
 CREATE TABLE perfis (
@@ -25,6 +25,7 @@ CREATE TABLE usuarios (
     INDEX idx_ativo (ativo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- @JoinTable(name = "usuario_perfis") na entidade Usuario.java
 CREATE TABLE usuario_perfis (
     usuario_id BIGINT NOT NULL,
     perfil_id  BIGINT NOT NULL,
@@ -38,20 +39,21 @@ CREATE TABLE usuario_perfis (
 -- =============================================================================
 
 CREATE TABLE professores (
-    id           BIGINT       PRIMARY KEY AUTO_INCREMENT,
-    nome         VARCHAR(200) NOT NULL,
-    email        VARCHAR(150) NOT NULL UNIQUE,
+    id            BIGINT       PRIMARY KEY AUTO_INCREMENT,
+    nome          VARCHAR(200) NOT NULL,
+    email         VARCHAR(150) NOT NULL UNIQUE,
     especialidade VARCHAR(100),
-    ativo        BOOLEAN      NOT NULL DEFAULT TRUE,
-    created_at   DATETIME     DEFAULT CURRENT_TIMESTAMP,
-    updated_at   DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ativo         BOOLEAN      NOT NULL DEFAULT TRUE,
+    created_at    DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    updated_at    DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- genero: ENUM alinhado com enum Genero.java (MASCULINO,FEMININO,OUTRO,NAO_INFORMADO)
 CREATE TABLE responsaveis (
     id              BIGINT       PRIMARY KEY AUTO_INCREMENT,
     nome            VARCHAR(200) NOT NULL,
     data_nascimento DATE,
-    genero          VARCHAR(20),
+    genero          ENUM('MASCULINO','FEMININO','OUTRO','NAO_INFORMADO'),
     email           VARCHAR(150) UNIQUE,
     telefone        VARCHAR(20),
     cpf             VARCHAR(14),
@@ -68,25 +70,26 @@ CREATE TABLE responsaveis (
 -- =============================================================================
 
 CREATE TABLE turmas (
-    id                  BIGINT       PRIMARY KEY AUTO_INCREMENT,
-    nome                VARCHAR(100) NOT NULL,
-    ano_letivo          INT          NOT NULL,
-    ano_escolar         INT,
-    capacidade_maxima   INT          DEFAULT 25,
-    ativa               BOOLEAN      NOT NULL DEFAULT TRUE,
+    id                   BIGINT       PRIMARY KEY AUTO_INCREMENT,
+    nome                 VARCHAR(100) NOT NULL,
+    ano_letivo           INT          NOT NULL,
+    ano_escolar          INT,
+    capacidade_maxima    INT          DEFAULT 25,
+    ativa                BOOLEAN      NOT NULL DEFAULT TRUE,
     professor_regente_id BIGINT,
-    created_at          DATETIME     DEFAULT CURRENT_TIMESTAMP,
-    updated_at          DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at           DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    updated_at           DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (professor_regente_id) REFERENCES professores(id) ON DELETE SET NULL,
     INDEX idx_ano_letivo (ano_letivo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- genero: ENUM alinhado com enum Genero.java
 CREATE TABLE alunos (
     id              BIGINT       PRIMARY KEY AUTO_INCREMENT,
     nome            VARCHAR(200) NOT NULL,
     matricula       VARCHAR(20)  NOT NULL UNIQUE,
     data_nascimento DATE,
-    genero          VARCHAR(20),
+    genero          ENUM('MASCULINO','FEMININO','OUTRO','NAO_INFORMADO'),
     email           VARCHAR(150),
     telefone        VARCHAR(20),
     ano_ingresso    INT          NOT NULL DEFAULT 0,
@@ -103,22 +106,23 @@ CREATE TABLE alunos (
 -- MÓDULO: FINANCEIRO
 -- =============================================================================
 
+-- situacao: ENUM alinhado com enum SituacaoContrato.java (ATIVO,ENCERRADO,SUSPENSO,CANCELADO)
 CREATE TABLE contratos (
-    id                BIGINT         PRIMARY KEY AUTO_INCREMENT,
-    aluno_id          BIGINT         NOT NULL,
-    ano_letivo        INT            NOT NULL,
-    valor_mensalidade DECIMAL(10,2)  NOT NULL,
+    id                BIGINT        PRIMARY KEY AUTO_INCREMENT,
+    aluno_id          BIGINT        NOT NULL,
+    ano_letivo        INT           NOT NULL,
+    valor_mensalidade DECIMAL(10,2) NOT NULL,
     desconto          DECIMAL(10,2),
     valor_matricula   DECIMAL(10,2),
-    total_parcelas    INT            NOT NULL DEFAULT 0,
-    dia_vencimento    INT            NOT NULL DEFAULT 0,
+    total_parcelas    INT           NOT NULL DEFAULT 0,
+    dia_vencimento    INT           NOT NULL DEFAULT 0,
     data_inicio       DATE,
     data_fim          DATE,
-    situacao          VARCHAR(30)    NOT NULL DEFAULT 'ATIVO',
-    created_at        DATETIME       DEFAULT CURRENT_TIMESTAMP,
-    updated_at        DATETIME       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    situacao          ENUM('ATIVO','ENCERRADO','SUSPENSO','CANCELADO') NOT NULL DEFAULT 'ATIVO',
+    created_at        DATETIME      DEFAULT CURRENT_TIMESTAMP,
+    updated_at        DATETIME      DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (aluno_id) REFERENCES alunos(id),
-    INDEX idx_aluno (aluno_id),
+    INDEX idx_aluno    (aluno_id),
     INDEX idx_situacao (situacao)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -142,10 +146,11 @@ CREATE TABLE epocas_pedagogicas (
     INDEX idx_turma (turma_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- aspecto NOT NULL, coluna "data" (nao data_observacao) - alinhado com ObservacaoDesenvolvimento.java
 CREATE TABLE observacoes_desenvolvimento (
-    id           BIGINT   PRIMARY KEY AUTO_INCREMENT,
-    aluno_id     BIGINT   NOT NULL,
-    professor_id BIGINT   NOT NULL,
+    id           BIGINT       PRIMARY KEY AUTO_INCREMENT,
+    aluno_id     BIGINT       NOT NULL,
+    professor_id BIGINT       NOT NULL,
     aspecto      VARCHAR(255) NOT NULL,
     conteudo     TEXT         NOT NULL,
     privada      BOOLEAN      NOT NULL DEFAULT FALSE,
