@@ -15,6 +15,8 @@ services:
       - ./database/init:/docker-entrypoint-initdb.d
     networks:
       - waldorf-network
+    # Permite CREATE TRIGGER sem privilegio SUPER quando binary log esta ativo
+    command: --log_bin_trust_function_creators=1
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 10s
@@ -116,18 +118,18 @@ services:
       timeout: 10s
       retries: 5
 
-  # Frontend Angular (Fase 3)
-  # frontend:
-  #   build:
-  #     context: ./frontend-web
-  #     dockerfile: Dockerfile
-  #   container_name: waldorf-frontend
-  #   ports:
-  #     - "4200:80"
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - waldorf-network
+  # Frontend Angular
+  frontend:
+    build:
+      context: ./frontend-web
+      dockerfile: Dockerfile
+    container_name: waldorf-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - waldorf-network
 
 volumes:
   mysql_data:
