@@ -1,2 +1,2 @@
--- DELETADO: conteudo consolidado em V1__schema_completo.sql
+-- placeholder: conteudo consolidado no V1
 SELECT 1;
