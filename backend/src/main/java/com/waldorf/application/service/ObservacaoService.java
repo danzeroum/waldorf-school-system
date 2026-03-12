@@ -28,6 +28,10 @@ public class ObservacaoService {
         return obs.stream().map(this::toDTO).toList();
     }
 
+    public ObservacaoResponseDTO buscarPorId(Long id) {
+        return toDTO(findOrThrow(id));
+    }
+
     @Transactional
     public ObservacaoResponseDTO criar(ObservacaoRequestDTO dto) {
         ObservacaoDesenvolvimento obs = new ObservacaoDesenvolvimento();

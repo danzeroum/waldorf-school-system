@@ -3,6 +3,7 @@ package com.waldorf.application.service;
 import com.waldorf.application.dto.auth.LoginRequestDTO;
 import com.waldorf.application.dto.auth.LoginResponseDTO;
 import com.waldorf.application.dto.auth.UsuarioResponseDTO;
+import com.waldorf.domain.entity.Usuario;
 import com.waldorf.infrastructure.repository.UsuarioRepository;
 import com.waldorf.infrastructure.security.JwtService;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,18 +35,18 @@ public class AuthService {
     }
 
     public LoginResponseDTO refresh(String refreshToken) {
-        String email = jwtService.extrairEmail(refreshToken);
-        var usuario = usuarioRepository.findByEmail(email)
+        String email = jwtService.extractUsername(refreshToken);
+        Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        if (!jwtService.tokenValido(refreshToken, usuario)) {
+        if (!jwtService.isTokenValid(refreshToken, usuario)) {
             throw new IllegalArgumentException("Refresh token inválido ou expirado");
         }
 
         return buildResponse(usuario);
     }
 
-    private LoginResponseDTO buildResponse(com.waldorf.domain.entity.Usuario usuario) {
+    private LoginResponseDTO buildResponse(Usuario usuario) {
         String accessToken  = jwtService.gerarToken(usuario);
         String refreshToken = jwtService.gerarRefreshToken(usuario);
 
