@@ -1,13 +1,13 @@
 -- =============================================================================
 -- Migration V8: Alinha tabela alunos com a entidade Aluno.java
--- Colunas created_at/updated_at ja foram adicionadas pela V6.
--- Colunas abaixo sao as que ainda faltam para a entidade Aluno.java funcionar.
+-- - created_at/updated_at ja existem pela V6 (nao adicionar)
+-- - genero deve ser ENUM alinhado com com.waldorf.domain.enums.Genero
 -- =============================================================================
 
 ALTER TABLE alunos
     ADD COLUMN nome            VARCHAR(200) NULL,
     ADD COLUMN data_nascimento DATE         NULL,
-    ADD COLUMN genero          VARCHAR(20)  NULL,
+    ADD COLUMN genero          ENUM('MASCULINO','FEMININO','OUTRO','NAO_INFORMADO') NULL,
     ADD COLUMN email           VARCHAR(150) NULL,
     ADD COLUMN telefone        VARCHAR(20)  NULL,
     ADD COLUMN ano_ingresso    INT          NOT NULL DEFAULT 0,
