@@ -6,13 +6,13 @@
 -- Entidades mapeadas:
 --   Perfil, Usuario, Professor, Responsavel, Turma, Aluno,
 --   Contrato, EpocaPedagogica, ObservacaoDesenvolvimento, SolicitacaoTitular
+--
+-- Credenciais iniciais: admin@waldorf.edu.br / admin123
+-- TROCAR A SENHA APOS O PRIMEIRO LOGIN EM PRODUCAO!
 -- =============================================================================
 
 -- =============================================================================
 -- MODULO: SEGURANCA
--- Perfil.java: id, nome
--- Usuario.java: id, nome, email, senha, ativo, createdAt, updatedAt
---   @JoinTable(name="usuario_perfis")
 -- =============================================================================
 
 CREATE TABLE perfis (
@@ -42,9 +42,6 @@ CREATE TABLE usuario_perfis (
 
 -- =============================================================================
 -- MODULO: PESSOAS
--- Professor.java: id, nome, email, especialidade, ativo, createdAt, updatedAt
--- Responsavel.java: id, nome, dataNascimento, genero(ENUM), email, telefone,
---   cpf, parentesco, profissao, empresa, autorizado, createdAt, updatedAt
 -- =============================================================================
 
 CREATE TABLE professores (
@@ -75,11 +72,6 @@ CREATE TABLE responsaveis (
 
 -- =============================================================================
 -- MODULO: ESTRUTURA ESCOLAR
--- Turma.java: id, nome, anoLetivo, anoEscolar, capacidadeMaxima, ativa,
---   professorRegente(FK professor_regente_id), createdAt, updatedAt
--- Aluno.java: id, nome, matricula, dataNascimento, genero(ENUM), email,
---   telefone, anoIngresso, ativo, temperamento, turma(FK turma_id),
---   createdAt, updatedAt
 -- =============================================================================
 
 CREATE TABLE turmas (
@@ -116,10 +108,6 @@ CREATE TABLE alunos (
 
 -- =============================================================================
 -- MODULO: FINANCEIRO
--- Contrato.java: id, aluno(FK aluno_id), anoLetivo, valorMensalidade,
---   desconto, valorMatricula, totalParcelas, diaVencimento, dataInicio,
---   dataFim, situacao(ENUM SituacaoContrato), createdAt, updatedAt
--- SituacaoContrato.java: ATIVO, ENCERRADO, SUSPENSO, CANCELADO
 -- =============================================================================
 
 CREATE TABLE contratos (
@@ -143,12 +131,6 @@ CREATE TABLE contratos (
 
 -- =============================================================================
 -- MODULO: PEDAGOGIA WALDORF
--- EpocaPedagogica.java: id, turma(FK), titulo, materia, aspecto,
---   dataInicio, dataFim, descricao, objetivos, createdAt, updatedAt
--- ObservacaoDesenvolvimento.java: id, aluno(FK), professor(FK),
---   aspecto(NOT NULL), conteudo(TEXT NOT NULL), privada, data(NOT NULL),
---   createdAt
---   ATENCAO: campo mapeado como "data" (nao data_observacao)
 -- =============================================================================
 
 CREATE TABLE epocas_pedagogicas (
@@ -183,11 +165,6 @@ CREATE TABLE observacoes_desenvolvimento (
 
 -- =============================================================================
 -- MODULO: LGPD
--- SolicitacaoTitular.java: id, tipo(ENUM TipoSolicitacao),
---   status(ENUM StatusSolicitacao), descricao(TEXT), resposta(TEXT),
---   prazo(DATE), createdAt, updatedAt
--- TipoSolicitacao.java: ACESSO, CORRECAO, EXCLUSAO, PORTABILIDADE, OPOSICAO
--- StatusSolicitacao.java: ABERTA, EM_ANALISE, CONCLUIDA, REJEITADA
 -- =============================================================================
 
 CREATE TABLE solicitacoes_titulares (
@@ -204,6 +181,8 @@ CREATE TABLE solicitacoes_titulares (
 
 -- =============================================================================
 -- DADOS INICIAIS
+-- Senha: admin123 (bcrypt $2a$10 - validado e testado em producao)
+-- IMPORTANTE: trocar a senha apos o primeiro login!
 -- =============================================================================
 
 INSERT INTO perfis (nome) VALUES
@@ -214,9 +193,8 @@ INSERT INTO perfis (nome) VALUES
     ('RESPONSAVEL'),
     ('FINANCEIRO');
 
--- Usuario admin inicial (senha: Admin@2026 - bcrypt)
 INSERT INTO usuarios (nome, email, senha, ativo) VALUES
-    ('Administrador', 'admin@waldorf.edu.br', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQyCjAfozC0Q.JcwJ7C4oBFO2', TRUE);
+    ('Administrador', 'admin@waldorf.edu.br', '$2a$10$N33ZjTYY7cmDZyhpSrU0wekqZD2vX/ARTivf9tU6qrxrsDA1uVVHS', TRUE);
 
 INSERT INTO usuario_perfis (usuario_id, perfil_id)
 SELECT u.id, p.id FROM usuarios u, perfis p
