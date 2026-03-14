@@ -21,7 +21,10 @@ public class ObservacaoService {
     private final AlunoRepository       alunoRepository;
     private final ProfessorRepository   professorRepository;
 
-    public List<ObservacaoResponseDTO> listarPorAluno(Long alunoId, String aspecto) {
+    public List<ObservacaoResponseDTO> listar(Long alunoId, String aspecto) {
+        if (alunoId == null) {
+            return observacaoRepository.findAll().stream().map(this::toDTO).toList();
+        }
         List<ObservacaoDesenvolvimento> obs = aspecto != null
                 ? observacaoRepository.findByAlunoIdAndAspecto(alunoId, aspecto)
                 : observacaoRepository.findByAlunoIdOrderByDataDesc(alunoId);

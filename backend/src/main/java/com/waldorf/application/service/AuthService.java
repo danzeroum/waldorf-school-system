@@ -25,12 +25,9 @@ public class AuthService {
     public LoginResponseDTO login(LoginRequestDTO dto) {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
-
         var usuario = usuarioRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
-
         if (!usuario.isAtivo()) throw new IllegalStateException("Usuário inativo");
-
         return buildResponse(usuario);
     }
 
@@ -38,25 +35,18 @@ public class AuthService {
         String email = jwtService.extractUsername(refreshToken);
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
-
         if (!jwtService.isTokenValid(refreshToken, usuario)) {
             throw new IllegalArgumentException("Refresh token inválido ou expirado");
         }
-
         return buildResponse(usuario);
     }
 
     private LoginResponseDTO buildResponse(Usuario usuario) {
         String accessToken  = jwtService.gerarToken(usuario);
         String refreshToken = jwtService.gerarRefreshToken(usuario);
-
-        var usuarioDTO = new UsuarioResponseDTO(
-                usuario.getId(),
-                usuario.getNome(),
-                usuario.getEmail(),
-                usuario.getPerfis().stream().map(p -> p.getNome()).collect(Collectors.toSet())
-        );
-
-        return new LoginResponseDTO(accessToken, refreshToken, usuarioDTO);
+        var dto = new UsuarioResponseDTO(
+                usuario.getId(), usuario.getNome(), usuario.getEmail(),
+                usuario.getPerfis().stream().map(p -> p.getNome()).collect(Collectors.toSet()));
+        return new LoginResponseDTO(accessToken, refreshToken, dto);
     }
 }

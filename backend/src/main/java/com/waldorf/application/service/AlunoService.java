@@ -18,8 +18,8 @@ import java.time.Year;
 @RequiredArgsConstructor
 public class AlunoService {
 
-    private final AlunoRepository   alunoRepository;
-    private final TurmaRepository   turmaRepository;
+    private final AlunoRepository alunoRepository;
+    private final TurmaRepository turmaRepository;
 
     public Page<AlunoResponseDTO> listar(String nome, Long turmaId, Boolean ativo, Pageable pageable) {
         return alunoRepository.findWithFilters(nome, turmaId, ativo, pageable)
@@ -41,15 +41,14 @@ public class AlunoService {
         aluno.setAnoIngresso(dto.anoIngresso() > 0 ? dto.anoIngresso() : Year.now().getValue());
         aluno.setTemperamento(dto.temperamento());
         aluno.setAtivo(true);
-        // Gera matricula provisoria para satisfazer NOT NULL antes do primeiro save
-        aluno.setMatricula("TEMP-" + System.currentTimeMillis());
+        // matricula provisoria para satisfazer NOT NULL antes do primeiro INSERT
+        aluno.setMatricula("TEMP-" + System.nanoTime());
         if (dto.turmaId() != null) {
             aluno.setTurma(turmaRepository.findById(dto.turmaId()).orElse(null));
         }
-        aluno = alunoRepository.save(aluno);
-        // Atualiza com matricula definitiva baseada no ID gerado
+        aluno = alunoRepository.saveAndFlush(aluno);
         aluno.setMatricula(gerarMatricula(aluno.getId()));
-        aluno = alunoRepository.save(aluno);
+        aluno = alunoRepository.saveAndFlush(aluno);
         return toDTO(aluno);
     }
 
@@ -61,7 +60,7 @@ public class AlunoService {
         aluno.setGenero(dto.genero());
         aluno.setEmail(dto.email());
         aluno.setTelefone(dto.telefone());
-        aluno.setAnoIngresso(dto.anoIngresso() > 0 ? dto.anoIngresso() : Year.now().getValue());
+        if (dto.anoIngresso() > 0) aluno.setAnoIngresso(dto.anoIngresso());
         aluno.setTemperamento(dto.temperamento());
         if (dto.turmaId() != null) {
             aluno.setTurma(turmaRepository.findById(dto.turmaId()).orElse(null));

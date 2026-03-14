@@ -12,7 +12,7 @@ public record ResponsavelRequestDTO(
         Genero genero,
         @Email String email,
         String telefone,
-        @NotBlank String cpf,
+        String cpf,
         String parentesco,
         String profissao,
         String empresa,

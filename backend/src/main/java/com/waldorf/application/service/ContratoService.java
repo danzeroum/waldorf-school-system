@@ -20,8 +20,11 @@ public class ContratoService {
     private final ContratoRepository contratoRepository;
     private final AlunoRepository    alunoRepository;
 
-    public List<ContratoResponseDTO> listarPorAluno(Long alunoId) {
-        return contratoRepository.findByAlunoId(alunoId).stream().map(this::toDTO).toList();
+    public List<ContratoResponseDTO> listar(Long alunoId) {
+        if (alunoId != null) {
+            return contratoRepository.findByAlunoId(alunoId).stream().map(this::toDTO).toList();
+        }
+        return contratoRepository.findAll().stream().map(this::toDTO).toList();
     }
 
     public ContratoResponseDTO buscarPorId(Long id) {

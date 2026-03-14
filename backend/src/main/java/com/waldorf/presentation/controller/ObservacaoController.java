@@ -22,15 +22,12 @@ public class ObservacaoController {
     private final ObservacaoService observacaoService;
 
     @GetMapping
-    @Operation(summary = "Listar todas as observações ou filtrar por aluno")
+    @Operation(summary = "Listar observações, opcionalmente filtradas por aluno e aspecto")
     @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA','DIRETOR','PROFESSOR')")
     public ResponseEntity<List<ObservacaoResponseDTO>> listar(
             @RequestParam(required = false) Long alunoId,
             @RequestParam(required = false) String aspecto) {
-        if (alunoId != null) {
-            return ResponseEntity.ok(observacaoService.listarPorAluno(alunoId, aspecto));
-        }
-        return ResponseEntity.ok(List.of());
+        return ResponseEntity.ok(observacaoService.listar(alunoId, aspecto));
     }
 
     @GetMapping("/aluno/{alunoId}")
@@ -39,14 +36,7 @@ public class ObservacaoController {
     public ResponseEntity<List<ObservacaoResponseDTO>> listarPorAluno(
             @PathVariable Long alunoId,
             @RequestParam(required = false) String aspecto) {
-        return ResponseEntity.ok(observacaoService.listarPorAluno(alunoId, aspecto));
-    }
-
-    @PostMapping
-    @Operation(summary = "Registrar observação")
-    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
-    public ResponseEntity<ObservacaoResponseDTO> criar(@Valid @RequestBody ObservacaoRequestDTO dto) {
-        return ResponseEntity.ok(observacaoService.criar(dto));
+        return ResponseEntity.ok(observacaoService.listar(alunoId, aspecto));
     }
 
     @GetMapping("/{id}")
@@ -54,6 +44,13 @@ public class ObservacaoController {
     @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA','DIRETOR','PROFESSOR')")
     public ResponseEntity<ObservacaoResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(observacaoService.buscarPorId(id));
+    }
+
+    @PostMapping
+    @Operation(summary = "Registrar observação")
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
+    public ResponseEntity<ObservacaoResponseDTO> criar(@Valid @RequestBody ObservacaoRequestDTO dto) {
+        return ResponseEntity.ok(observacaoService.criar(dto));
     }
 
     @PutMapping("/{id}")

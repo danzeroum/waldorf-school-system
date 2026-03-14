@@ -23,14 +23,11 @@ public class FinanceiroController {
     private final ContratoService contratoService;
 
     @GetMapping("/contratos")
-    @Operation(summary = "Listar contratos por aluno")
+    @Operation(summary = "Listar contratos, opcionalmente filtrados por aluno")
     @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA','DIRETOR','FINANCEIRO')")
     public ResponseEntity<List<ContratoResponseDTO>> listar(
             @RequestParam(required = false) Long alunoId) {
-        if (alunoId != null) {
-            return ResponseEntity.ok(contratoService.listarPorAluno(alunoId));
-        }
-        return ResponseEntity.ok(List.of());
+        return ResponseEntity.ok(contratoService.listar(alunoId));
     }
 
     @PostMapping("/contratos")
