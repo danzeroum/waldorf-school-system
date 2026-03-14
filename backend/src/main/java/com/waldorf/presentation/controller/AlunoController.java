@@ -41,12 +41,23 @@ public class AlunoController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA')")
+    @Operation(summary = "Cadastrar aluno")
     public ResponseEntity<AlunoResponseDTO> criar(@Valid @RequestBody AlunoRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.criar(dto));
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA')")
+    @Operation(summary = "Atualizar aluno")
+    public ResponseEntity<AlunoResponseDTO> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody AlunoRequestDTO dto) {
+        return ResponseEntity.ok(alunoService.atualizar(id, dto));
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','SECRETARIA')")
+    @Operation(summary = "Inativar aluno")
     public ResponseEntity<Void> inativar(@PathVariable Long id) {
         alunoService.inativar(id);
         return ResponseEntity.noContent().build();
