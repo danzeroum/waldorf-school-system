@@ -15,6 +15,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Provedor de tokens JWT — access token (15 min) e refresh token (7 dias).
+ * Adicionado: generateAccessTokenFromUserId para uso no fluxo de refresh.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -33,51 +37,54 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
+    // -------------------------------------------------------------------
+    // Access token a partir de Authentication (uso no login)
+    // -------------------------------------------------------------------
     public String generateAccessToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", userPrincipal.getId());
+        claims.put("id",       userPrincipal.getId());
         claims.put("username", userPrincipal.getUsername());
-        claims.put("email", userPrincipal.getEmail());
-        claims.put("roles", userPrincipal.getAuthorities().stream()
+        claims.put("email",    userPrincipal.getEmail());
+        claims.put("roles",    userPrincipal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toArray());
 
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-
-        return Jwts.builder()
-                .setSubject(userPrincipal.getId().toString())
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
-                .compact();
+        return buildToken(userPrincipal.getId().toString(), claims, jwtExpirationMs);
     }
 
+    // -------------------------------------------------------------------
+    // Access token a partir de userId (uso no refresh)
+    // -------------------------------------------------------------------
+    public String generateAccessTokenFromUserId(Long userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userId);
+        return buildToken(userId.toString(), claims, jwtExpirationMs);
+    }
+
+    // -------------------------------------------------------------------
+    // Refresh token (apenas subject = userId)
+    // -------------------------------------------------------------------
     public String generateRefreshToken(Long userId) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtRefreshExpirationMs);
-
-        return Jwts.builder()
-                .setSubject(userId.toString())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
-                .compact();
+        return buildToken(userId.toString(), new HashMap<>(), jwtRefreshExpirationMs);
     }
 
+    // -------------------------------------------------------------------
+    // Extrair userId do token
+    // -------------------------------------------------------------------
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
         return Long.parseLong(claims.getSubject());
     }
 
+    // -------------------------------------------------------------------
+    // Validação
+    // -------------------------------------------------------------------
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser()
@@ -97,5 +104,21 @@ public class JwtTokenProvider {
             log.error("Claims JWT vazios: {}", e.getMessage());
         }
         return false;
+    }
+
+    // -------------------------------------------------------------------
+    // Helper interno
+    // -------------------------------------------------------------------
+    private String buildToken(String subject, Map<String, Object> claims, long expirationMs) {
+        Date now        = new Date();
+        Date expiryDate = new Date(now.getTime() + expirationMs);
+
+        return Jwts.builder()
+                .setSubject(subject)
+                .addClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .compact();
     }
 }
