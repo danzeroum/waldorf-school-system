@@ -9,6 +9,8 @@ import { ComunicadoListComponent } from './comunicado/comunicado-list/comunicado
 import { ComunicadoFormComponent } from './comunicado/comunicado-form/comunicado-form.component';
 import { PortalPaisComponent } from './portal-pais/portal-pais.component';
 import { TipoCanalPipe } from './pipes/tipo-canal.pipe';
+// FIX: TipoAvisoPipe existia em pipes/ mas não estava declarado no módulo
+import { TipoAvisoPipe } from './pipes/tipo-aviso.pipe';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import { TipoCanalPipe } from './pipes/tipo-canal.pipe';
     ComunicadoFormComponent,
     PortalPaisComponent,
     TipoCanalPipe,
+    TipoAvisoPipe,
   ],
   imports: [
     CommonModule,

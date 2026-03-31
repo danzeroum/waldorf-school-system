@@ -2,7 +2,8 @@
   <mat-sidenav mode="side" opened class="w-64 bg-waldorf-green">
     <div class="p-4 text-white">
       <h2 class="text-lg font-bold">Waldorf</h2>
-      <p class="text-sm opacity-75">{{ usuario?.nome }}</p>
+      <!-- FIX: UsuarioResumo tem 'nomeCompleto', não 'nome' -->
+      <p class="text-sm opacity-75">{{ usuario?.nomeCompleto }}</p>
     </div>
     <mat-nav-list>
       <a mat-list-item *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="bg-white/10">

@@ -3,7 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
-export type TipoAviso = 'GERAL' | 'TURMA' | 'URGENTE' | 'EVENTO' | 'CARDAPIO';
+// FIX: adicionado 'FESTIVAL' e 'MUTIRAO' para alinhar com enum Java TipoAviso
+export type TipoAviso = 'GERAL' | 'TURMA' | 'URGENTE' | 'EVENTO' | 'CARDAPIO' | 'FESTIVAL' | 'MUTIRAO';
 
 export interface Aviso {
   id: number;

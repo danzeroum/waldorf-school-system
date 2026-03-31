@@ -3,9 +3,12 @@ package com.waldorf.presentation.controller;
 import com.waldorf.application.dto.NotificacaoDTO;
 import com.waldorf.application.dto.PreferenciaNotificacaoDTO;
 import com.waldorf.application.service.NotificacaoService;
+import com.waldorf.domain.entity.Usuario;
+import com.waldorf.infrastructure.repository.UsuarioRepository;
 import com.waldorf.infrastructure.security.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,26 +25,24 @@ public class NotificationController {
 
     private final NotificacaoService notificacaoService;
     private final JwtService jwtService;
+    private final UsuarioRepository usuarioRepository;
 
     @GetMapping
     @Operation(summary = "Lista notificações do usuário autenticado")
     public ResponseEntity<List<NotificacaoDTO>> listar(HttpServletRequest req) {
-        Long usuarioId = extrairUsuarioId(req);
-        return ResponseEntity.ok(notificacaoService.listar(usuarioId));
+        return ResponseEntity.ok(notificacaoService.listar(extrairUsuarioId(req)));
     }
 
     @GetMapping("/count")
     @Operation(summary = "Conta notificações não lidas")
     public ResponseEntity<Map<String, Long>> contarNaoLidas(HttpServletRequest req) {
-        Long usuarioId = extrairUsuarioId(req);
-        return ResponseEntity.ok(Map.of("total", notificacaoService.contarNaoLidas(usuarioId)));
+        return ResponseEntity.ok(Map.of("total", notificacaoService.contarNaoLidas(extrairUsuarioId(req))));
     }
 
     @PostMapping("/{id}/read")
     @Operation(summary = "Marca uma notificação como lida")
     public ResponseEntity<Void> marcarComoLida(@PathVariable Long id, HttpServletRequest req) {
-        Long usuarioId = extrairUsuarioId(req);
-        notificacaoService.marcarComoLida(id, usuarioId);
+        notificacaoService.marcarComoLida(id, extrairUsuarioId(req));
         return ResponseEntity.noContent().build();
     }
 
@@ -66,9 +67,13 @@ public class NotificationController {
         return ResponseEntity.ok(notificacaoService.salvarPreferencias(extrairUsuarioId(req), dto));
     }
 
+    // FIX: JwtService não tem extractUserId() → usa extractUsername() (email) + busca por email
     private Long extrairUsuarioId(HttpServletRequest req) {
         String header = req.getHeader("Authorization");
         String token  = header != null && header.startsWith("Bearer ") ? header.substring(7) : "";
-        return jwtService.extractUserId(token);
+        String email  = jwtService.extractUsername(token);
+        Usuario u = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado: " + email));
+        return u.getId();
     }
 }

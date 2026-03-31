@@ -71,7 +71,8 @@ public class AvisoService {
                 a.getTipo().name(),
                 a.getTurma() != null ? a.getTurma().getId() : null,
                 a.getTurma() != null ? a.getTurma().getNome() : null,
-                a.getAutor().getNomeCompleto(),
+                // FIX: Usuario.java tem campo 'nome', não 'nomeCompleto'
+                a.getAutor().getNome(),
                 a.isFixado(),
                 a.getDataPublicacao().toString(),
                 a.getDataExpiracao() != null ? a.getDataExpiracao().toString() : null

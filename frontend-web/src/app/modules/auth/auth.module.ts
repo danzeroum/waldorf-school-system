@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+// FIX: mat-icon usado no login.component.html mas MatIconModule estava faltando
+import { MatIconModule } from '@angular/material/icon';
 import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
@@ -25,6 +27,7 @@ const routes: Routes = [
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatIconModule,
   ],
 })
 export class AuthModule {}
