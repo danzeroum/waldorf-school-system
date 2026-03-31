@@ -1,7 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ComunicadoService } from '../../services/comunicado.service';
+import { ComunicadoService, CreateComunicadoRequest } from '../../services/comunicado.service';
 
 @Component({
   selector: 'wld-comunicado-form',
@@ -10,8 +10,8 @@ import { ComunicadoService } from '../../services/comunicado.service';
 })
 export class ComunicadoFormComponent implements OnInit {
   form!: FormGroup;
-  salvando = signal(false);
-  erro     = signal<string | null>(null);
+  salvando = false;
+  erro = '';
 
   constructor(
     private fb: FormBuilder,
@@ -21,19 +21,20 @@ export class ComunicadoFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      assunto:       ['', [Validators.required, Validators.minLength(5)]],
-      corpo:         ['', [Validators.required, Validators.minLength(20)]],
-      destinatarios: ['TODOS', Validators.required],
-      turmaId:       [null],
+      assunto:      ['', [Validators.required, Validators.minLength(5)]],
+      corpo:        ['', [Validators.required, Validators.minLength(10)]],
+      destinatarios:['TODOS', Validators.required],
+      turmaId:      [null],
     });
   }
 
-  enviar(): void {
+  salvar(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
-    this.salvando.set(true);
-    this.comunicadoService.criar(this.form.value).subscribe({
-      next: () => { this.salvando.set(false); this.router.navigate(['/comunidade/comunicados']); },
-      error: (err) => { this.salvando.set(false); this.erro.set(err.error?.message ?? 'Erro ao enviar.'); },
+    this.salvando = true;
+    const req: CreateComunicadoRequest = this.form.value;
+    this.comunicadoService.criar(req).subscribe({
+      next:  () => this.router.navigate(['/comunidade/comunicados']),
+      error: () => { this.erro = 'Erro ao salvar comunicado.'; this.salvando = false; },
     });
   }
 }
