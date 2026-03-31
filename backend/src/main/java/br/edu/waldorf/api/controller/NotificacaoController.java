@@ -1,11 +1,11 @@
 package br.edu.waldorf.api.controller;
 
-import br.edu.waldorf.application.dto.NotificacaoDTO;
-import br.edu.waldorf.application.dto.PreferenciaNotificacaoDTO;
-import br.edu.waldorf.application.service.NotificacaoService;
-import br.edu.waldorf.domain.model.Usuario;
-import br.edu.waldorf.infrastructure.repository.UsuarioRepository;
-import br.edu.waldorf.infrastructure.security.JwtService;
+import com.waldorf.application.dto.NotificacaoDTO;
+import com.waldorf.application.dto.PreferenciaNotificacaoDTO;
+import com.waldorf.application.service.NotificacaoService;
+import com.waldorf.domain.entity.Usuario;
+import com.waldorf.infrastructure.repository.UsuarioRepository;
+import com.waldorf.infrastructure.security.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;

@@ -1,8 +1,8 @@
 package br.edu.waldorf.api.controller;
 
-import br.edu.waldorf.application.dto.observacao.ObservacaoRequestDTO;
-import br.edu.waldorf.application.dto.observacao.ObservacaoResponseDTO;
-import br.edu.waldorf.application.service.ObservacaoService;
+import com.waldorf.application.dto.observacao.ObservacaoRequestDTO;
+import com.waldorf.application.dto.observacao.ObservacaoResponseDTO;
+import com.waldorf.application.service.ObservacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

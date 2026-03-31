@@ -1,9 +1,9 @@
 package br.edu.waldorf.api.controller;
 
-import br.edu.waldorf.application.dto.auth.LoginRequestDTO;
-import br.edu.waldorf.application.dto.auth.LoginResponseDTO;
-import br.edu.waldorf.application.dto.auth.RefreshRequestDTO;
-import br.edu.waldorf.application.service.AuthService;
+import com.waldorf.application.dto.auth.LoginRequestDTO;
+import com.waldorf.application.dto.auth.LoginResponseDTO;
+import com.waldorf.application.dto.auth.RefreshRequestDTO;
+import com.waldorf.application.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

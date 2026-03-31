@@ -1,8 +1,8 @@
 package br.edu.waldorf.api.controller;
 
-import br.edu.waldorf.application.dto.aluno.AlunoRequestDTO;
-import br.edu.waldorf.application.dto.aluno.AlunoResponseDTO;
-import br.edu.waldorf.application.service.AlunoService;
+import com.waldorf.application.dto.aluno.AlunoRequestDTO;
+import com.waldorf.application.dto.aluno.AlunoResponseDTO;
+import com.waldorf.application.service.AlunoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -1,8 +1,8 @@
 package br.edu.waldorf.api.controller;
 
-import br.edu.waldorf.application.dto.turma.TurmaRequestDTO;
-import br.edu.waldorf.application.dto.turma.TurmaResponseDTO;
-import br.edu.waldorf.application.service.TurmaService;
+import com.waldorf.application.dto.turma.TurmaRequestDTO;
+import com.waldorf.application.dto.turma.TurmaResponseDTO;
+import com.waldorf.application.service.TurmaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

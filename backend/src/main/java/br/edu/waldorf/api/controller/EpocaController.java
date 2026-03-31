@@ -1,8 +1,8 @@
 package br.edu.waldorf.api.controller;
 
-import br.edu.waldorf.application.dto.epoca.EpocaRequestDTO;
-import br.edu.waldorf.application.dto.epoca.EpocaResponseDTO;
-import br.edu.waldorf.application.service.EpocaService;
+import com.waldorf.application.dto.epoca.EpocaRequestDTO;
+import com.waldorf.application.dto.epoca.EpocaResponseDTO;
+import com.waldorf.application.service.EpocaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
