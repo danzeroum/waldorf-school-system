@@ -3,7 +3,7 @@
 ## Arquitetura
 
 - **Framework**: Spring Boot 3.2.2
-- **Java**: 17 LTS
+- **Java**: 21 LTS
 - **Build**: Maven
 - **Arquitetura**: DDD (Domain-Driven Design)
 - **Banco**: MySQL 8.0+ com Flyway
