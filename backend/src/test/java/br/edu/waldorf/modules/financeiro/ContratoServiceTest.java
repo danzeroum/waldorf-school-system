@@ -45,22 +45,29 @@ public class ContratoServiceTest {
     }
 
     // ------------------------------------------------------------------
-    // Número de contrato deve ser gerado automaticamente
+    // Número de contrato segue o padrão gerado internamente pelo service
     // ------------------------------------------------------------------
     @Test
-    @DisplayName("Número de contrato gerado deve seguir padrão YYYY-NNNNNN")
+    @DisplayName("Número de contrato gerado deve seguir padrão CTR-YYYY-NNNNN-MMDD")
     void numeroContratoDeveSerGeradoAutomaticamente() {
-        when(contratoRepository.save(any(Contrato.class))).thenAnswer(inv -> {
-            Contrato c = inv.getArgument(0);
-            if (c.getNumeroContrato() != null) {
-                assertThat(c.getNumeroContrato()).matches("\\d{4}-\\d{6}");
-            }
-            return c;
-        });
+        // FIX: gerarNumeroContrato(Contrato) é privado; testa via criar().
+        // O save precisa retornar o contrato para o service completar o fluxo.
+        when(contratoRepository.save(any(Contrato.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(contratoRepository.findByAlunoIdAndAnoLetivoAndSituacaoNot(any(), any(), any()))
+                .thenReturn(java.util.Optional.empty());
 
-        // Garante que o service não lança exceção na geração
-        assertThatCode(() -> contratoService.gerarNumeroContrato(2026, 1L))
-                .doesNotThrowAnyException();
+        // Prepara contrato com Aluno mínimo para não NPE
+        br.edu.waldorf.modules.pessoa.domain.model.Aluno aluno =
+                new br.edu.waldorf.modules.pessoa.domain.model.Aluno();
+        aluno.setId(1L);
+
+        contratoBase.setAluno(aluno);
+
+        Contrato salvo = contratoService.criar(contratoBase);
+
+        assertThat(salvo.getNumeroContrato())
+                .isNotBlank()
+                .matches("CTR-\\d{4}-\\d{5}-\\d{4}");
     }
 
     // ------------------------------------------------------------------
@@ -72,7 +79,6 @@ public class ContratoServiceTest {
         contratoBase.setId(1L);
         int numeroParcelas = 12;
 
-        // Verifica que o service calcula corretamente o valor por parcela
         BigDecimal valorParcela = contratoBase.getValorFinal()
                 .divide(new BigDecimal(numeroParcelas), 2, java.math.RoundingMode.HALF_UP);
 
@@ -86,7 +92,7 @@ public class ContratoServiceTest {
     @Test
     @DisplayName("Desconto de irmão de 10% deve reduzir valor final corretamente")
     void descontoIrmaoDeve_reduzirValorFinal() {
-        BigDecimal valorBase = new BigDecimal("1200.00");
+        BigDecimal valorBase        = new BigDecimal("1200.00");
         BigDecimal percentualDesconto = new BigDecimal("10");
         BigDecimal desconto = valorBase
                 .multiply(percentualDesconto)
@@ -105,7 +111,5 @@ public class ContratoServiceTest {
     void mensalidadeVencidaDeve_terStatusAtrasada() {
         java.time.LocalDate ontem = java.time.LocalDate.now().minusDays(1);
         assertThat(ontem).isBefore(java.time.LocalDate.now());
-        // Confirma que a lógica de comparação de datas está correta
-        // O Event SQL faz UPDATE mensalidades SET status='ATRASADA' WHERE data_vencimento < CURDATE()
     }
 }

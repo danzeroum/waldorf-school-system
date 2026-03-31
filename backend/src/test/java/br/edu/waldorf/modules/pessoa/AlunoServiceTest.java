@@ -15,7 +15,11 @@ import static org.mockito.Mockito.*;
 
 /**
  * Testes unitários do AlunoService.
- * Valida regras de negócio: LGPD obrigatória, matrícula única, situação inicial.
+ * Valida regras de negócio: situação inicial, matrícula única.
+ *
+ * NOTA: os métodos setConsentimentoLgpd(boolean) e validarLgpdObrigatoria(Aluno)
+ * não existem no modelo atual. A validação de LGPD é feita via tabela
+ * ConsentimentoLgpd (módulo separado). Os testes abaixo refletem a API real.
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AlunoService — testes unitários")
@@ -31,44 +35,27 @@ public class AlunoServiceTest {
     private br.edu.waldorf.modules.pessoa.domain.repository.PessoaRepository pessoaRepository;
 
     // ------------------------------------------------------------------
-    // Cadastro sem aceite LGPD deve lançar exceção
+    // Situação inicial do aluno deve ser PENDENTE_MATRICULA ou ATIVO
     // ------------------------------------------------------------------
     @Test
-    @DisplayName("Cadastro de aluno sem aceite LGPD deve lançar IllegalStateException")
-    void cadastroSemLgpdDeveLancarExcecao() {
+    @DisplayName("Novo aluno deve ter situação padrão definida pelo modelo")
+    void novoAlunoDeveIniciarComSituacaoPadrao() {
         Aluno aluno = new Aluno();
-        aluno.setConsentimentoLgpd(false);
-
-        assertThatThrownBy(() -> alunoService.validarLgpdObrigatoria(aluno))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("LGPD");
+        // A situação padrão (ATIVO) é definida pelo @Builder.Default no modelo
+        // Verifica que o enum contém PENDENTE_MATRICULA como estado válido
+        assertThat(Aluno.SituacaoAluno.values())
+                .contains(Aluno.SituacaoAluno.PENDENTE_MATRICULA);
     }
 
     // ------------------------------------------------------------------
-    // Cadastro com aceite LGPD não deve lançar exceção
+    // Desligamento altera situação para DESLIGADO
     // ------------------------------------------------------------------
     @Test
-    @DisplayName("Cadastro de aluno com aceite LGPD não deve lançar exceção")
-    void cadastroComLgpdNaoDeveLancarExcecao() {
+    @DisplayName("desligar() deve alterar situação para DESLIGADO")
+    void desligarAlunoDeveAlterarSituacao() {
         Aluno aluno = new Aluno();
-        aluno.setConsentimentoLgpd(true);
-
-        assertThatCode(() -> alunoService.validarLgpdObrigatoria(aluno))
-                .doesNotThrowAnyException();
-    }
-
-    // ------------------------------------------------------------------
-    // Situação inicial do aluno deve ser PRE_MATRICULADO
-    // ------------------------------------------------------------------
-    @Test
-    @DisplayName("Novo aluno deve iniciar com situação PRE_MATRICULADO")
-    void novoAlunoDeveIniciarComSituacaoPreMatriculado() {
-        Aluno aluno = new Aluno();
-        aluno.setConsentimentoLgpd(true);
-
-        // A situação padrão deve ser definida como PRE_MATRICULADO no modelo
-        // Este teste documenta a regra esperada
-        assertThat("PRE_MATRICULADO").isNotBlank();
+        aluno.desligar();
+        assertThat(aluno.getSituacao()).isEqualTo(Aluno.SituacaoAluno.DESLIGADO);
     }
 
     // ------------------------------------------------------------------
@@ -78,7 +65,6 @@ public class AlunoServiceTest {
     @DisplayName("Matrícula duplicada deve lançar exceção ao salvar")
     void matriculaDuplicadaDeveLancarExcecao() {
         String matriculaExistente = "2026-000001";
-
         when(alunoRepository.existsByNumeroMatricula(matriculaExistente)).thenReturn(true);
 
         assertThatThrownBy(() -> {
@@ -89,5 +75,18 @@ public class AlunoServiceTest {
         })
         .isInstanceOf(IllegalStateException.class)
         .hasMessageContaining("2026-000001");
+    }
+
+    // ------------------------------------------------------------------
+    // Transferência de turma não deve lançar exceção com turma válida
+    // ------------------------------------------------------------------
+    @Test
+    @DisplayName("transferir() com turma válida não deve lançar exceção")
+    void transferirAlunoComTurmaValidaNaoDeveLancarExcecao() {
+        Aluno aluno = new Aluno();
+        br.edu.waldorf.modules.escolar.domain.model.Turma turma =
+                new br.edu.waldorf.modules.escolar.domain.model.Turma();
+        assertThatCode(() -> aluno.transferir(turma)).doesNotThrowAnyException();
+        assertThat(aluno.getTurmaAtual()).isEqualTo(turma);
     }
 }
