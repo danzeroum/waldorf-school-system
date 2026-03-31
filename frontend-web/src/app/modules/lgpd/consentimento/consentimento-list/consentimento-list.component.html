@@ -1,89 +1,63 @@
-<div class="space-y-6 animate-fade-in-up">
-
-  <div class="flex items-center justify-between">
+<div class="space-y-5 animate-fade-in-up">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <div>
-      <h1 class="text-2xl font-serif text-waldorf-gray-900">LGPD — Consentimentos</h1>
-      <p class="text-sm text-waldorf-gray-500 mt-0.5">Gestão de consentimentos e conformidade</p>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Consentimentos LGPD</h1>
+      <p class="text-sm text-waldorf-gray-500 mt-0.5">Registro de consentimentos dos responsáveis</p>
     </div>
     <div class="flex gap-2">
-      <a [routerLink]="['/lgpd/solicitacoes']" class="btn-secondary flex items-center gap-2 text-sm">
-        <span class="material-icons text-base">inbox</span>
-        Solicitações
+      <a routerLink="/lgpd/solicitacoes" class="btn-secondary flex items-center gap-2 text-sm">
+        <span class="material-icons text-base">inbox</span> Solicitações
       </a>
-      <a [routerLink]="['/lgpd/relatorio']" class="btn-ghost flex items-center gap-2 text-sm">
-        <span class="material-icons text-base">bar_chart</span>
-        Relatório
+      <a routerLink="/lgpd/relatorio" class="btn-ghost flex items-center gap-2 text-sm">
+        <span class="material-icons text-base">assessment</span> Relatório
       </a>
     </div>
   </div>
 
-  <!-- Métricas LGPD -->
-  <div *ngIf="resumo()" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="card text-center">
-      <p class="text-3xl font-bold text-waldorf-green-600">{{ resumo()!.percentualConformidade }}%</p>
-      <p class="text-xs text-waldorf-gray-500 mt-1">Conformidade</p>
-    </div>
-    <div class="card text-center">
-      <p class="text-3xl font-bold text-waldorf-gray-800">{{ resumo()!.consentimentosAtivos }}</p>
-      <p class="text-xs text-waldorf-gray-500 mt-1">Consentimentos Ativos</p>
-    </div>
-    <div class="card text-center">
-      <p class="text-3xl font-bold text-amber-500">{{ resumo()!.consentimentosPendentes }}</p>
-      <p class="text-xs text-waldorf-gray-500 mt-1">Pendentes</p>
-    </div>
-    <div class="card text-center">
-      <p class="text-3xl font-bold text-red-500">{{ resumo()!.solicitacoesPendentes }}</p>
-      <p class="text-xs text-waldorf-gray-500 mt-1">Solicitações Pendentes</p>
-    </div>
-  </div>
-
-  <!-- Filtros -->
-  <div class="flex gap-2 flex-wrap">
-    <button *ngFor="let s of ['', 'ACEITO', 'PENDENTE', 'REVOGADO', 'RECUSADO']"
-            (click)="filtroStatus.set(s); carregar()"
-            [class]="filtroStatus() === s ? 'btn-primary text-sm' : 'btn-ghost text-sm'">
+  <div class="flex flex-wrap gap-2">
+    <button *ngFor="let s of statusOpcoes"
+            (click)="filtrar(s)"
+            [class]="'btn-chip ' + (filtroStatus() === s ? 'btn-chip-active' : '')">
       {{ s || 'Todos' }}
     </button>
   </div>
 
-  <!-- Tabela -->
-  <div class="card p-0 overflow-hidden">
-    <table class="w-full">
-      <thead>
+  <div *ngIf="carregando()" class="space-y-2">
+    <div *ngFor="let i of [1,2,3]" class="card flex gap-3 animate-pulse">
+      <div class="skeleton h-4 w-1/4"></div>
+      <div class="skeleton h-4 w-1/4"></div>
+      <div class="skeleton h-4 w-1/6"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!carregando()" class="card overflow-x-auto p-0">
+    <table class="w-full text-sm">
+      <thead class="bg-waldorf-cream-50 text-waldorf-gray-600 text-xs uppercase">
         <tr>
-          <th class="table-header text-left">Aluno</th>
-          <th class="table-header text-left hidden sm:table-cell">Responsável</th>
-          <th class="table-header text-left hidden md:table-cell">Tipo</th>
-          <th class="table-header text-left">Status</th>
-          <th class="table-header text-left hidden lg:table-cell">Data Aceite</th>
+          <th class="px-4 py-3 text-left">Aluno</th>
+          <th class="px-4 py-3 text-left">Responsável</th>
+          <th class="px-4 py-3 text-left">Tipo</th>
+          <th class="px-4 py-3 text-left">Status</th>
+          <th class="px-4 py-3 text-left">Data aceite</th>
+          <th class="px-4 py-3 text-left">Versão</th>
         </tr>
       </thead>
-      <tbody>
-        <ng-container *ngIf="carregando()">
-          <tr *ngFor="let i of [1,2,3]" class="table-row-hover">
-            <td class="table-cell"><div class="skeleton h-4 w-36"></div></td>
-            <td class="table-cell hidden sm:table-cell"><div class="skeleton h-4 w-32"></div></td>
-            <td class="table-cell hidden md:table-cell"><div class="skeleton h-4 w-24"></div></td>
-            <td class="table-cell"><div class="skeleton h-5 w-16 rounded-full"></div></td>
-            <td class="table-cell hidden lg:table-cell"><div class="skeleton h-4 w-20"></div></td>
-          </tr>
-        </ng-container>
-        <ng-container *ngIf="!carregando()">
-          <tr *ngFor="let c of consentimentos()" class="table-row-hover">
-            <td class="table-cell font-medium text-waldorf-gray-800">{{ c.alunoNome }}</td>
-            <td class="table-cell text-sm text-waldorf-gray-600 hidden sm:table-cell">{{ c.responsavelNome }}</td>
-            <td class="table-cell text-sm text-waldorf-gray-500 hidden md:table-cell">{{ c.tipo }}</td>
-            <td class="table-cell">
-              <span [class]="'badge ' + (c.status | statusConsentimento:'css')">{{ c.status | statusConsentimento }}</span>
-            </td>
-            <td class="table-cell text-sm text-waldorf-gray-500 hidden lg:table-cell">
-              {{ c.dataAceite ? (c.dataAceite | date:'dd/MM/yyyy') : '—' }}
-            </td>
-          </tr>
-          <tr *ngIf="consentimentos().length === 0">
-            <td colspan="5" class="py-10 text-center text-waldorf-gray-400">Nenhum consentimento encontrado</td>
-          </tr>
-        </ng-container>
+      <tbody class="divide-y divide-waldorf-cream-100">
+        <tr *ngFor="let c of consentimentos()" class="hover:bg-waldorf-cream-50 transition-colors">
+          <td class="px-4 py-3 font-medium text-waldorf-gray-900">{{ c.alunoNome }}</td>
+          <td class="px-4 py-3 text-waldorf-gray-600">{{ c.responsavelNome }}</td>
+          <td class="px-4 py-3 text-waldorf-gray-600">{{ c.tipo | titlecase }}</td>
+          <td class="px-4 py-3">
+            <span [class]="'badge ' + (c.status === 'ACEITO' ? 'badge-success' : c.status === 'PENDENTE' ? 'badge-warning' : c.status === 'REVOGADO' ? 'badge-danger' : 'badge-default')">
+              {{ c.status }}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-waldorf-gray-500">{{ c.dataAceite ? (c.dataAceite | date:'dd/MM/yyyy') : '—' }}</td>
+          <td class="px-4 py-3 text-waldorf-gray-400">{{ c.versaoTermos }}</td>
+        </tr>
+        <tr *ngIf="consentimentos().length === 0">
+          <td colspan="6" class="px-4 py-12 text-center text-waldorf-gray-400">Nenhum consentimento encontrado</td>
+        </tr>
       </tbody>
     </table>
   </div>
