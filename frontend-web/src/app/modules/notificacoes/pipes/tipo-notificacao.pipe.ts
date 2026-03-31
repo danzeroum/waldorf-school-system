@@ -1,19 +1,19 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { TipoNotificacao } from '../services/notificacao.service';
 
-const MAP: Record<TipoNotificacao, { label: string; icone: string; css: string }> = {
-  MENSALIDADE_VENCENDO: { label: 'Mensalidade',    icone: 'schedule',       css: 'text-amber-500'  },
-  MENSALIDADE_VENCIDA:  { label: 'Vencida',         icone: 'warning',        css: 'text-red-500'    },
-  NOVA_OBSERVACAO:      { label: 'Observação',      icone: 'edit_note',      css: 'text-blue-500'   },
-  COMUNICADO:           { label: 'Comunicado',      icone: 'campaign',       css: 'text-purple-500' },
-  EVENTO:               { label: 'Evento',           icone: 'event',          css: 'text-green-500'  },
-  SOLICITACAO_LGPD:     { label: 'LGPD',             icone: 'security',       css: 'text-gray-600'   },
-  SISTEMA:              { label: 'Sistema',          icone: 'info',           css: 'text-gray-400'   },
+const CONFIG: Record<TipoNotificacao, { icone: string; css: string }> = {
+  MENSALIDADE_VENCENDO: { icone: 'schedule',   css: 'text-yellow-500' },
+  MENSALIDADE_VENCIDA:  { icone: 'warning',    css: 'text-red-500'    },
+  NOVA_OBSERVACAO:      { icone: 'edit_note',  css: 'text-blue-500'   },
+  COMUNICADO:           { icone: 'campaign',   css: 'text-purple-500' },
+  EVENTO:               { icone: 'event',      css: 'text-green-500'  },
+  SOLICITACAO_LGPD:     { icone: 'privacy_tip',css: 'text-orange-500' },
+  SISTEMA:              { icone: 'info',       css: 'text-gray-500'   },
 };
 
-@Pipe({ name: 'tipoNotificacao', standalone: false })
+@Pipe({ name: 'tipoNotificacao' })
 export class TipoNotificacaoPipe implements PipeTransform {
-  transform(value: TipoNotificacao, formato: 'label' | 'icone' | 'css' = 'label'): string {
-    return MAP[value]?.[formato] ?? value;
+  transform(tipo: TipoNotificacao, campo: 'icone' | 'css'): string {
+    return CONFIG[tipo]?.[campo] ?? (campo === 'icone' ? 'notifications' : 'text-gray-400');
   }
 }
