@@ -1,0 +1,63 @@
+<div class="p-6">
+
+  <!-- Cabeçalho -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Painel Geral</h1>
+    <p class="text-gray-500 mt-1">
+      Bem-vindo, <strong>{{ usuario?.nomeCompleto || usuario?.username }}</strong> ·
+      <span class="text-xs text-gray-400">{{ usuario?.primaryRole | titlecase }}</span>
+    </p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="flex justify-center py-16">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+  </div>
+
+  <!-- Aviso de mock -->
+  <mat-card *ngIf="!loading && erro" class="mb-4 bg-yellow-50 border border-yellow-300">
+    <mat-card-content class="flex items-center gap-2 text-yellow-700 text-sm">
+      <mat-icon>warning</mat-icon>
+      Backend offline — exibindo dados de demonstração.
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Cards de métricas -->
+  <div *ngIf="!loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
+    <mat-card
+      *ngFor="let card of cards"
+      class="cursor-pointer hover:shadow-md transition-shadow"
+      [routerLink]="card.rota"
+    >
+      <mat-card-content class="pt-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 mb-1">{{ card.label }}</p>
+            <p class="text-3xl font-bold text-gray-800">{{ getStatValue(card.key) }}</p>
+          </div>
+          <mat-icon [class]="card.color + ' text-4xl opacity-80'">{{ card.icon }}</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Atalhos rápidos -->
+  <div *ngIf="!loading">
+    <h2 class="text-lg font-semibold text-gray-700 mb-3">Ações Rápidas</h2>
+    <div class="flex flex-wrap gap-3">
+      <button mat-stroked-button color="primary" routerLink="/pessoas/alunos/novo">
+        <mat-icon>person_add</mat-icon> Novo Aluno
+      </button>
+      <button mat-stroked-button color="primary" routerLink="/pedagogia/observacoes/nova">
+        <mat-icon>edit_note</mat-icon> Nova Observação
+      </button>
+      <button mat-stroked-button color="primary" routerLink="/financeiro/contratos/novo">
+        <mat-icon>add_circle</mat-icon> Novo Contrato
+      </button>
+      <button mat-stroked-button routerLink="/escolar/turmas">
+        <mat-icon>groups</mat-icon> Ver Turmas
+      </button>
+    </div>
+  </div>
+
+</div>

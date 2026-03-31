@@ -6,10 +6,10 @@ import { jwtDecode } from 'jwt-decode';
 
 // ─── DTOs alinhados com LoginRequestDTO / LoginResponseDTO do backend ───────
 export interface LoginRequest {
-  username: string;    // backend espera 'username' (nao 'email')
+  username: string;   // backend Spring Security espera 'username'
   password: string;
   deviceId?:   string;
-  deviceType?: string; // WEB, MOBILE
+  deviceType?: string;
 }
 
 export interface UsuarioResumo {
@@ -18,7 +18,7 @@ export interface UsuarioResumo {
   email:        string;
   nomeCompleto: string;
   primaryRole:  string;
-  roles:        string[]; // backend retorna 'roles' (nao 'perfis')
+  roles:        string[];
 }
 
 export interface LoginResponse {
@@ -27,7 +27,7 @@ export interface LoginResponse {
   refreshToken:     string;
   expiresIn:        number;
   refreshExpiresIn: number;
-  user:             UsuarioResumo; // backend retorna 'user' (nao 'usuario')
+  user:             UsuarioResumo;
 }
 
 export interface RefreshTokenRequest {
@@ -86,8 +86,10 @@ export class AuthService {
 
   // ── Logout ─────────────────────────────────────────────────────────────────
   logout(): void {
-    // Notifica o backend (best-effort)
-    this.http.post(`${this.base}/logout`, {}).subscribe({ error: () => {} });
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      this.http.post(`${this.base}/logout`, {}).subscribe({ error: () => {} });
+    }
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('usuario');
@@ -122,7 +124,6 @@ export class AuthService {
   hasRole(role: string): boolean {
     const usuario = this.getUsuario();
     if (!usuario) return false;
-    // Aceita tanto 'ROLE_ADMIN' quanto 'ADMIN'
     return usuario.roles.some(r => r === role || r === `ROLE_${role}`);
   }
 

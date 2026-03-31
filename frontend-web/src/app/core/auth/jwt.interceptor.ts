@@ -17,13 +17,9 @@ export class JwtInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshDone$ = new BehaviorSubject<boolean>(false);
 
-  constructor(
-    private auth: AuthService,
-    private router: Router
-  ) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // Nao injeta token em requisicoes de auth para evitar loop
     if (req.url.includes('/auth/login') || req.url.includes('/auth/refresh')) {
       return next.handle(req);
     }
@@ -45,15 +41,11 @@ export class JwtInterceptor implements HttpInterceptor {
     return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
   }
 
-  private handle401(
-    req: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-
+  private handle401(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (!this.auth.getRefreshTokenValue()) {
       this.auth.logout();
       this.router.navigate(['/auth/login']);
-      return throwError(() => new Error('Sessao expirada: sem refresh token'));
+      return throwError(() => new Error('Sessão expirada'));
     }
 
     if (!this.isRefreshing) {
@@ -75,9 +67,8 @@ export class JwtInterceptor implements HttpInterceptor {
       );
     }
 
-    // Outras requisicoes aguardam o refresh completar
     return this.refreshDone$.pipe(
-      filter(done => done === true),
+      filter(done => done),
       take(1),
       switchMap(() => {
         const newToken = this.auth.getAccessToken()!;

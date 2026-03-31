@@ -10,29 +10,32 @@ import { AuthService } from '../../../core/auth/auth.service';
 export class LoginComponent {
   form: FormGroup;
   loading = false;
-  error = '';
+  error   = '';
 
   constructor(
-    private fb: FormBuilder,
+    private fb:          FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router:      Router
   ) {
     this.form = this.fb.group({
-      username: ['', [Validators.required]],  // backend espera 'username'
+      username: ['', [Validators.required]],
       password: ['', Validators.required],
     });
   }
 
-  submit() {
+  submit(): void {
     if (this.form.invalid) return;
     this.loading = true;
-    this.error = '';
+    this.error   = '';
     this.authService.login(this.form.value).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
-      error: (e: any) => {
-        this.error = e?.error?.message || 'Credenciais invalidas';
+      next: ()         => this.router.navigate(['/dashboard']),
+      error: (e: any)  => {
+        this.error   = e?.error?.message || 'Credenciais inválidas. Verifique usuário e senha.';
         this.loading = false;
       },
     });
   }
+
+  get usernameCtrl() { return this.form.get('username'); }
+  get passwordCtrl() { return this.form.get('password'); }
 }
