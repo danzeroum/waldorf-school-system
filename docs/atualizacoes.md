@@ -1,7 +1,7 @@
 # 📋 ATUALIZAÇÕES DO SISTEMA ESCOLAR WALDORF
 
 > Documento de rastreamento de iterações e status de implementação.
-> Atualizado em: 11/03/2026
+> Atualizado em: 31/03/2026
 
 ---
 
@@ -139,9 +139,37 @@
 - `.env.example` atualizado com todas as variáveis necessárias
 - `docs/atualizacoes.md` consolidado com todas as 27 iterações
 
+### Iteração 28 — Frontend Angular: Fase 3 — Módulos Notificações, LGPD e Comunidade (completados)
+
+> PR #6 — branch `feat/fase-3-modulos` → `main` — 31/03/2026
+
+Diagnóstico real: os três módulos tinham `NgModule` incorretos (rota inline sem declarar componentes reais) e vários componentes referenciados no routing mas inexistentes, causando erros de compilação.
+
+**🔔 Notificações (4 arquivos)**
+- `notificacoes.module.ts` — corrigido para usar `NotificacoesRoutingModule` + declarar `NotificacaoPainelComponent`, `NotificacaoPreferenciasComponent`, `TipoNotificacaoPipe`
+- `pipes/tipo-notificacao.pipe.ts` — **novo** — pipe obrigatório para o HTML do painel (`| tipoNotificacao:'icone'|'css'`); mapeia os 7 tipos de notificação para ícones Material e classes CSS
+- `preferencias/notificacao-preferencias.component.ts` — **novo** — formulário reativo com canais (email, push, sms, inApp), frequência (IMEDIATO/RESUMO_DIARIO/RESUMO_SEMANAL) e horário de silêncio; integrado com `NotificacaoService.buscarPreferencias()` e `salvarPreferencias()`
+- `preferencias/notificacao-preferencias.component.html` — **novo** — template responsivo com skeleton loading e feedback visual de salvo
+
+**⚖️ LGPD (6 arquivos)**
+- `lgpd.module.ts` — corrigido para usar `LgpdRoutingModule` + declarar `ConsentimentoListComponent`, `SolicitacaoListComponent`, `RelatorioLgpdComponent`, `StatusSolicitacaoPipe`
+- `pipes/status-solicitacao.pipe.ts` — **novo** — transforma `PENDENTE|EM_ANALISE|CONCLUIDA|NEGADA` em label PT-BR e classe badge CSS
+- `consentimento/consentimento-list/consentimento-list.component.ts` — **novo** — tabela com filtro por status, signals, mock fallback; integrado com `LgpdService.listarConsentimentos()`
+- `consentimento/consentimento-list/consentimento-list.component.html` — **novo** — tabela responsiva com chips de filtro e skeleton
+- `relatorio/relatorio-lgpd.component.ts` — **novo** — carrega `ResumoLgpd` via `lgpdService.resumo()` com mock fallback (índice 89%, 47 consentimentos)
+- `relatorio/relatorio-lgpd.component.html` — **novo** — cards de métricas + indicador circular de conformidade em % + alerta de prazo 15 dias LGPD
+
+**🌳 Comunidade (6 arquivos)**
+- `comunidade.module.ts` — corrigido para usar `ComunidadeRoutingModule` + declarar `MuralComponent`, `ComunicadoListComponent`, `ComunicadoFormComponent`, `PortalPaisComponent`, `TipoCanalPipe`
+- `pipes/tipo-canal.pipe.ts` — **novo** — pipe com 9 tipos (`AVISO`, `COMUNICADO`, `EVENTO`, `MUTIRAO`, `FESTIVAL`, `GERAL`, `TURMA`, `URGENTE`, `CARDAPIO`); retorna label, ícone Material e CSS
+- `comunicado/comunicado-form/comunicado-form.component.ts` — **novo** — form com `assunto`, `corpo`, `destinatarios` (`TODOS|RESPONSAVEIS|PROFESSORES|TURMA`); integrado com `ComunicadoService.criar()` usando `CreateComunicadoRequest`
+- `comunicado/comunicado-form/comunicado-form.component.html` — **novo** — formulário com validação inline e feedback de erro
+- `portal-pais/portal-pais.component.ts` — **novo** — carrega avisos via `AvisoService.listar()`, exibe nome do usuário via `AuthService.getUsuario()`; mock fallback com 3 avisos
+- `portal-pais/portal-pais.component.html` — **novo** — lista de avisos com ícones por tipo via `TipoCanalPipe`, badge de fixado, dados de autor e data
+
 ---
 
-## 📊 STATUS FINAL DO PROJETO (Iteração 27)
+## 📊 STATUS FINAL DO PROJETO (Iteração 28)
 
 ### Completude por camada
 
@@ -152,10 +180,10 @@
 | Pedagogia Waldorf | ✅ 100% | ✅ 80% | ✅ 85% | ✅ 90% | 0% |
 | Segurança / Auth | ✅ 100% | ✅ 90% | ✅ 90% | ✅ 95% | ✅ 90% |
 | Financeiro | ✅ 100% | ✅ 70% | ✅ 70% | ✅ 90% | ✅ 80% |
-| Comunidade | ✅ 100% | ✅ 60% | ✅ 60% | ✅ 85% | 0% |
-| Notificações | ✅ 100% | ✅ 70% | ✅ 70% | ✅ 95% | 0% |
-| LGPD | ✅ 100% | ✅ 75% | ✅ 75% | ✅ 90% | 0% |
-| **MÉDIA** | **✅ 100%** | **✅ ~76%** | **✅ ~78%** | **✅ ~91%** | **~34%** |
+| Comunidade | ✅ 100% | ✅ 60% | ✅ 60% | ✅ 100% | 0% |
+| Notificações | ✅ 100% | ✅ 70% | ✅ 70% | ✅ 100% | 0% |
+| LGPD | ✅ 100% | ✅ 75% | ✅ 75% | ✅ 100% | 0% |
+| **MÉDIA** | **✅ 100%** | **✅ ~76%** | **✅ ~78%** | **✅ ~94%** | **~34%** |
 
 ### Migrations aplicadas
 
@@ -175,12 +203,12 @@
 
 ## 🔜 PRÓXIMAS EVOLUÇÕES SUGERIDAS
 
+- **Backend Java**: completar endpoints de Comunidade (`/api/v1/community`) e Notificações (`/api/v1/notifications`) — hoje em ~60–70%
 - **Mobile Flutter**: módulos Pedagogia e Comunidade para os pais
-- **Backend**: completar endpoints de Comunidade e Notificações
 - **Testes**: aumentar cobertura para 80%+ (Jacoco)
 - **Deploy Staging**: Kubernetes + Helm charts
 - **Monitoring**: Prometheus + Grafana + Sentry
 
 ---
 
-*Última atualização: Iteração 27 — 11/03/2026*
+*Última atualização: Iteração 28 — 31/03/2026*
