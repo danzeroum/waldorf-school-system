@@ -1,0 +1,125 @@
+# Docker Compose — Ambiente de HOMOLOGAÇÃO
+# Uso: docker-compose -f docker-compose.homologacao.yml up -d
+#
+# Diferenças do ambiente de produção:
+#  - Portas mapeadas localmente para inspeção
+#  - Variáveis de ambiente explícitas para homologação
+#  - Volume de dados separado (waldorf_homolog_*)
+#  - Spring profile: homologacao
+#  - Frontend com build de produção
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: waldorf-homolog-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: homolog_root_pass
+      MYSQL_DATABASE: waldorf_homolog
+      MYSQL_USER: waldorf
+      MYSQL_PASSWORD: waldorf_homolog_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - waldorf_homolog_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: waldorf-homolog-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - waldorf_homolog_redis:/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: waldorf-homolog-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: waldorf
+      RABBITMQ_DEFAULT_PASS: waldorf_homolog_pass
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    volumes:
+      - waldorf_homolog_rabbitmq:/var/lib/rabbitmq
+
+  minio:
+    image: minio/minio:latest
+    container_name: waldorf-homolog-minio
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: waldorf_homolog
+      MINIO_ROOT_PASSWORD: waldorf_homolog_pass
+    ports:
+      - "9002:9000"
+      - "9003:9001"
+    volumes:
+      - waldorf_homolog_minio:/data
+
+  backend:
+    image: ghcr.io/danzeroum/waldorf-school-system/backend:main
+    container_name: waldorf-homolog-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: homologacao
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/waldorf_homolog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo
+      SPRING_DATASOURCE_USERNAME: waldorf
+      SPRING_DATASOURCE_PASSWORD: waldorf_homolog_pass
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: waldorf
+      SPRING_RABBITMQ_PASSWORD: waldorf_homolog_pass
+      JWT_SECRET: homolog-secret-change-before-use-min-256bits
+      JWT_EXPIRATION: 3600000
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: waldorf_homolog
+      MINIO_SECRET_KEY: waldorf_homolog_pass
+      MINIO_BUCKET: waldorf-homolog
+    ports:
+      - "8081:8080"
+
+  frontend:
+    image: ghcr.io/danzeroum/waldorf-school-system/frontend:main
+    container_name: waldorf-homolog-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      API_URL: http://backend:8080/api/v1
+    ports:
+      - "4201:80"
+
+  nginx:
+    image: nginx:alpine
+    container_name: waldorf-homolog-nginx
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "8090:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.homologacao.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  waldorf_homolog_db:
+  waldorf_homolog_redis:
+  waldorf_homolog_rabbitmq:
+  waldorf_homolog_minio:
