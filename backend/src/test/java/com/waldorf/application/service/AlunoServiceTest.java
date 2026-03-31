@@ -78,19 +78,24 @@ class AlunoServiceTest {
                 "Ana Clara", LocalDate.of(2016, 3, 20), Genero.FEMININO,
                 "ana@mail.com", null, null, 2026, null,
                 null, null, null, null, null, null, null);
-        when(alunoRepository.save(any(Aluno.class))).thenAnswer(inv -> {
+
+        // 1º saveAndFlush: simula INSERT e retorna aluno com ID gerado
+        // 2º saveAndFlush: salva matrícula definitiva
+        when(alunoRepository.saveAndFlush(any(Aluno.class))).thenAnswer(inv -> {
             Aluno a = inv.getArgument(0);
-            a.setId(2L);
-            a.setCreatedAt(LocalDateTime.now());
-            a.setUpdatedAt(LocalDateTime.now());
+            if (a.getId() == null) {
+                a.setId(2L);
+                a.setCreatedAt(LocalDateTime.now());
+                a.setUpdatedAt(LocalDateTime.now());
+            }
             return a;
         });
 
         AlunoResponseDTO resp = alunoService.criar(dto);
         assertThat(resp.nome()).isEqualTo("Ana Clara");
         assertThat(resp.matricula()).startsWith("2026");
-        // service agora chama save apenas 1 vez
-        verify(alunoRepository, times(1)).save(any(Aluno.class));
+        // service chama saveAndFlush 2 vezes
+        verify(alunoRepository, times(2)).saveAndFlush(any(Aluno.class));
     }
 
     @Test
@@ -109,7 +114,6 @@ class AlunoServiceTest {
     @DisplayName("listar deve aplicar filtros e retornar página")
     void listarComFiltros() {
         var page = new PageImpl<>(List.of(aluno));
-        // todos os argumentos precisam usar matchers quando qualquer um usa matcher
         when(alunoRepository.findWithFilters(
                 eq("Pedro"), isNull(), eq(true), any(Pageable.class)))
                 .thenReturn(page);
