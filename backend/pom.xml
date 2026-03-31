@@ -144,8 +144,8 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <!-- mainClass única — elimina ambiguidade entre com.waldorf e br.edu.waldorf -->
-                    <mainClass>com.waldorf.WaldorfApplication</mainClass>
+                    <!-- mainClass única — pacote consolidado em br.edu.waldorf -->
+                    <mainClass>br.edu.waldorf.WaldorfApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
