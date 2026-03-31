@@ -25,7 +25,7 @@ public class LgpdService {
     private final SolicitacaoTitularRepository solicitacaoRepository;
     private final ConsentimentoLgpdRepository consentimentoRepository;
 
-    // ── Consentimentos ──────────────────────────────────────────────────────
+    // ── Consentimentos ────────────────────────────────────────────────────────
 
     public List<ConsentimentoDTO> listarConsentimentos(String status) {
         List<ConsentimentoLgpd> lista = status != null && !status.isBlank()
@@ -34,7 +34,7 @@ public class LgpdService {
         return lista.stream().map(this::toConsentimentoDTO).toList();
     }
 
-    // ── Solicitações ────────────────────────────────────────────────────────
+    // ── Solicitações ──────────────────────────────────────────────────────────
 
     public List<SolicitacaoDTO> listarSolicitacoes(String status) {
         List<SolicitacaoTitular> lista = status != null && !status.isBlank()
@@ -46,29 +46,29 @@ public class LgpdService {
 
     @Transactional
     public SolicitacaoDTO responder(Long id, ResponderSolicitacaoRequest req) {
-        SolicitacaoTitular s = solicitacaoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada: " + id));
+        SolicitacaoTitular s = findOrThrow(id);
         s.setStatus(StatusSolicitacao.valueOf(req.novoStatus()));
         s.setResposta(req.resposta());
         return toSolicitacaoDTO(solicitacaoRepository.save(s));
     }
 
-    // ── Resumo / relatório ─────────────────────────────────────────────────
+    // ── Resumo ────────────────────────────────────────────────────────────────
 
     public ResumoLgpdDTO resumo() {
         long total        = consentimentoRepository.count();
         long ativos       = consentimentoRepository.countAtivos();
         long pendentes    = consentimentoRepository.countByStatus(StatusConsentimento.PENDENTE);
         long revogados    = consentimentoRepository.countByStatus(StatusConsentimento.REVOGADO);
+        // FIX: StatusSolicitacao não tem PENDENTE → usa ABERTA
         long solPendentes = solicitacaoRepository.findAll().stream()
-                .filter(s -> s.getStatus() == StatusSolicitacao.PENDENTE).count();
+                .filter(s -> s.getStatus() == StatusSolicitacao.ABERTA).count();
         long solAnalise   = solicitacaoRepository.findAll().stream()
                 .filter(s -> s.getStatus() == StatusSolicitacao.EM_ANALISE).count();
         int conformidade  = total > 0 ? (int) ((ativos * 100) / total) : 100;
         return new ResumoLgpdDTO(total, ativos, pendentes, revogados, solPendentes, solAnalise, conformidade);
     }
 
-    // ── Legado (mantido por compatibilidade) ────────────────────────────────
+    // ── Legado (mantido por compatibilidade) ──────────────────────────────────
 
     @Transactional
     public void avancarStatus(Long id) {
@@ -100,7 +100,7 @@ public class LgpdService {
                 .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada: " + id));
     }
 
-    // ── Mappers ─────────────────────────────────────────────────────────────
+    // ── Mappers ───────────────────────────────────────────────────────────────
 
     private ConsentimentoDTO toConsentimentoDTO(ConsentimentoLgpd c) {
         return new ConsentimentoDTO(

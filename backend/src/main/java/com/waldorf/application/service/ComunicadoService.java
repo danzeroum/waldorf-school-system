@@ -55,7 +55,8 @@ public class ComunicadoService {
                 c.getDestinatarios().name(),
                 c.getTurma() != null ? c.getTurma().getId() : null,
                 c.getTurma() != null ? c.getTurma().getNome() : null,
-                c.getAutor().getNomeCompleto(),
+                // FIX: Usuario.java tem campo 'nome', não 'nomeCompleto'
+                c.getAutor().getNome(),
                 c.getDataEnvio() != null ? c.getDataEnvio().toString() : null,
                 c.getTotalDestinatarios(),
                 c.getTotalLidos()

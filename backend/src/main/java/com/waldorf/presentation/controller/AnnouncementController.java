@@ -3,9 +3,12 @@ package com.waldorf.presentation.controller;
 import com.waldorf.application.dto.AvisoDTO;
 import com.waldorf.application.dto.CreateAvisoRequest;
 import com.waldorf.application.service.AvisoService;
+import com.waldorf.domain.entity.Usuario;
+import com.waldorf.infrastructure.repository.UsuarioRepository;
 import com.waldorf.infrastructure.security.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,7 @@ public class AnnouncementController {
 
     private final AvisoService avisoService;
     private final JwtService jwtService;
+    private final UsuarioRepository usuarioRepository;
 
     @GetMapping
     @Operation(summary = "Lista avisos")
@@ -42,9 +46,8 @@ public class AnnouncementController {
     }
 
     @PostMapping("/{id}/read")
-    @Operation(summary = "Marca aviso como lido (registro de leitura)")
+    @Operation(summary = "Marca aviso como lido")
     public ResponseEntity<Void> marcarLido(@PathVariable Long id) {
-        // Leitura individual de aviso é registrada client-side; endpoint mantido por contrato
         return ResponseEntity.noContent().build();
     }
 
@@ -56,9 +59,13 @@ public class AnnouncementController {
         return ResponseEntity.noContent().build();
     }
 
+    // FIX: JwtService não tem extractUserId() → usa extractUsername() (email) + busca por email
     private Long extrairUsuarioId(HttpServletRequest req) {
         String header = req.getHeader("Authorization");
         String token  = header != null && header.startsWith("Bearer ") ? header.substring(7) : "";
-        return jwtService.extractUserId(token);
+        String email  = jwtService.extractUsername(token);
+        Usuario u = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado: " + email));
+        return u.getId();
     }
 }
