@@ -44,20 +44,12 @@ public class AuthService {
     }
 
     /**
-     * Invalida o token do usuário autenticado.
-     * Se o JwtService suportar blacklist, o token é adicionado a ela.
-     * Caso contrário, o logout é stateless (cliente descarta o token).
+     * Logout stateless: o servidor retorna 204 e o cliente descarta o token.
+     * Para blacklist futura, adicionar invalidarToken() no JwtService.
      */
     public void logout(String token, String email) {
-        try {
-            if (jwtService.isTokenValid(token,
-                    usuarioRepository.findByEmail(email)
-                            .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado")))) {
-                jwtService.invalidarToken(token);
-            }
-        } catch (Exception ex) {
-            log.warn("Logout: não foi possível invalidar token para {}: {}", email, ex.getMessage());
-        }
+        log.info("Logout solicitado para: {}", email);
+        // Stateless — nenhuma ação server-side necessária.
     }
 
     private LoginResponseDTO buildResponse(Usuario usuario) {
