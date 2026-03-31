@@ -1,44 +1,41 @@
-<div class="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
+<div class="space-y-5 animate-fade-in-up max-w-2xl">
   <div class="flex items-center gap-3">
-    <button (click)="router.navigate(['/comunidade/comunicados'])" class="btn-icon">
+    <a routerLink="/comunidade/comunicados" class="btn-ghost p-2">
       <span class="material-icons">arrow_back</span>
-    </button>
-    <h1 class="text-2xl font-serif text-waldorf-gray-900">Novo Comunicado</h1>
-  </div>
-
-  <div *ngIf="erro()" class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex gap-2">
-    <span class="material-icons text-base">error_outline</span> {{ erro() }}
-  </div>
-
-  <form [formGroup]="form" (ngSubmit)="enviar()" class="card space-y-4">
+    </a>
     <div>
-      <label class="form-label">Assunto *</label>
-      <input type="text" formControlName="assunto" placeholder="Assunto do comunicado"
-             [class]="form.get('assunto')?.invalid && form.get('assunto')?.touched ? 'form-input-error' : 'form-input'">
-      <p class="form-error" *ngIf="form.get('assunto')?.invalid && form.get('assunto')?.touched">Mínimo 5 caracteres</p>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Novo Comunicado</h1>
+      <p class="text-sm text-waldorf-gray-500">Envie um comunicado para a comunidade escolar</p>
     </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="salvar()" class="card space-y-4">
     <div>
-      <label class="form-label">Destinatários *</label>
-      <select formControlName="destinatarios" class="form-input">
-        <option value="TODOS">Toda a escola</option>
+      <label class="label">Destinatários</label>
+      <select formControlName="destinatarios" class="input w-full">
+        <option value="TODOS">Toda a comunidade</option>
         <option value="RESPONSAVEIS">Apenas responsáveis</option>
         <option value="PROFESSORES">Apenas professores</option>
         <option value="TURMA">Turma específica</option>
       </select>
     </div>
     <div>
-      <label class="form-label">Mensagem *</label>
-      <textarea formControlName="corpo" rows="8" placeholder="Texto do comunicado..."
-                [class]="form.get('corpo')?.invalid && form.get('corpo')?.touched ? 'form-input-error' : 'form-input'"></textarea>
-      <p class="form-error" *ngIf="form.get('corpo')?.hasError('minlength') && form.get('corpo')?.touched">Mínimo 20 caracteres</p>
+      <label class="label">Assunto <span class="text-red-500">*</span></label>
+      <input formControlName="assunto" type="text" class="input w-full" placeholder="Ex: Reunião de pais — Classe 3" />
+      <p *ngIf="form.get('assunto')?.touched && form.get('assunto')?.invalid" class="text-xs text-red-500 mt-1">Assunto obrigatório (mín. 5 caracteres)</p>
     </div>
-    <div class="flex justify-end gap-3">
-      <button type="button" (click)="router.navigate(['/comunidade/comunicados'])" class="btn-secondary">Cancelar</button>
-      <button type="submit" [disabled]="salvando()" class="btn-primary flex items-center gap-2">
-        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
-        <span class="material-icons text-base" *ngIf="!salvando()">send</span>
-        {{ salvando() ? 'Enviando...' : 'Enviar Comunicado' }}
+    <div>
+      <label class="label">Mensagem <span class="text-red-500">*</span></label>
+      <textarea formControlName="corpo" rows="5" class="input w-full resize-none" placeholder="Escreva o conteúdo do comunicado..."></textarea>
+      <p *ngIf="form.get('corpo')?.touched && form.get('corpo')?.invalid" class="text-xs text-red-500 mt-1">Mensagem obrigatória (mín. 10 caracteres)</p>
+    </div>
+    <p *ngIf="erro" class="text-sm text-red-600">{{ erro }}</p>
+    <div class="flex gap-3 pt-2">
+      <button type="submit" [disabled]="salvando" class="btn-primary flex items-center gap-2">
+        <span *ngIf="salvando" class="material-icons animate-spin text-base">refresh</span>
+        Publicar comunicado
       </button>
+      <a routerLink="/comunidade/comunicados" class="btn-ghost">Cancelar</a>
     </div>
   </form>
 </div>

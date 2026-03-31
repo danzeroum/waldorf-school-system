@@ -1,8 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NotificacaoService, PreferenciaNotificacao } from '../services/notificacao.service';
-import { ToastService } from '@shared/services/toast.service';
 
 @Component({
   selector: 'wld-notificacao-preferencias',
@@ -13,13 +11,9 @@ export class NotificacaoPreferenciasComponent implements OnInit {
   form!: FormGroup;
   carregando = signal(true);
   salvando   = signal(false);
+  salvo      = signal(false);
 
-  constructor(
-    private fb: FormBuilder,
-    private notificacaoService: NotificacaoService,
-    private toastService: ToastService,
-    private router: Router,
-  ) {}
+  constructor(private svc: NotificacaoService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -28,27 +22,24 @@ export class NotificacaoPreferenciasComponent implements OnInit {
       sms:            [false],
       inApp:          [true],
       agregacao:      ['IMEDIATO'],
-      silencioInicio: ['22:00'],
-      silencioFim:    ['07:00'],
+      silencioInicio: [''],
+      silencioFim:    [''],
     });
-
-    this.notificacaoService.buscarPreferencias().subscribe({
-      next: (p) => { this.form.patchValue(p); this.carregando.set(false); },
-      error: ()  => this.carregando.set(false),
+    this.svc.buscarPreferencias().subscribe({
+      next:  (p) => { this.form.patchValue(p); this.carregando.set(false); },
+      error: ()  => { this.carregando.set(false); },
     });
   }
 
   salvar(): void {
     this.salvando.set(true);
-    this.notificacaoService.salvarPreferencias(this.form.value as PreferenciaNotificacao).subscribe({
+    this.svc.salvarPreferencias(this.form.value as PreferenciaNotificacao).subscribe({
       next: () => {
         this.salvando.set(false);
-        this.toastService.success('Preferências salvas com sucesso!');
+        this.salvo.set(true);
+        setTimeout(() => this.salvo.set(false), 3000);
       },
-      error: () => {
-        this.salvando.set(false);
-        this.toastService.error('Erro ao salvar preferências.');
-      },
+      error: () => this.salvando.set(false),
     });
   }
 }
