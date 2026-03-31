@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,11 +20,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Testes unitários do AuthController.
- * Usa @WebMvcTest (sem subir contexto completo) com AuthService mockado.
- */
+// FIX: addFilters=false desabilita Spring Security nos testes de unidade do controller
+// evitando 403/401 antes mesmo de chegar no handler
 @WebMvcTest(br.edu.waldorf.modules.security.api.controller.AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @DisplayName("AuthController — testes unitários")
 public class AuthControllerTest {
 
@@ -37,9 +36,6 @@ public class AuthControllerTest {
     @MockBean
     private AuthService authService;
 
-    // ------------------------------------------------------------------
-    // POST /api/v1/auth/login — credenciais válidas → 200 + tokens
-    // ------------------------------------------------------------------
     @Test
     @DisplayName("Login com credenciais válidas deve retornar 200 e tokens JWT")
     void loginComCredenciaisValidasDeveRetornar200() throws Exception {
@@ -66,9 +62,6 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.refreshToken").value("eyJ.refresh.token"));
     }
 
-    // ------------------------------------------------------------------
-    // POST /api/v1/auth/login — credenciais inválidas → 401
-    // ------------------------------------------------------------------
     @Test
     @DisplayName("Login com credenciais inválidas deve retornar 401")
     void loginComCredenciaisInvalidasDeveRetornar401() throws Exception {
@@ -85,9 +78,6 @@ public class AuthControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    // ------------------------------------------------------------------
-    // POST /api/v1/auth/login — body vazio → 400
-    // ------------------------------------------------------------------
     @Test
     @DisplayName("Login com body vazio deve retornar 400 Bad Request")
     void loginComBodyVazioDeveRetornar400() throws Exception {
@@ -97,9 +87,6 @@ public class AuthControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // ------------------------------------------------------------------
-    // POST /api/v1/auth/refresh — refresh token válido → 200
-    // ------------------------------------------------------------------
     @Test
     @DisplayName("Refresh com token válido deve retornar 200 e novos tokens")
     void refreshComTokenValidoDeveRetornar200() throws Exception {
@@ -123,9 +110,6 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.accessToken").value("eyJ.new.access"));
     }
 
-    // ------------------------------------------------------------------
-    // POST /api/v1/auth/refresh — refresh token inválido → 401
-    // ------------------------------------------------------------------
     @Test
     @DisplayName("Refresh com token inválido deve retornar 401")
     void refreshComTokenInvalidoDeveRetornar401() throws Exception {
