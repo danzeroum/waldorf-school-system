@@ -18,7 +18,7 @@ export class LoginComponent {
     private router: Router
   ) {
     this.form = this.fb.group({
-      email:    ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],  // backend espera 'username'
       password: ['', Validators.required],
     });
   }
@@ -30,7 +30,7 @@ export class LoginComponent {
     this.authService.login(this.form.value).subscribe({
       next: () => this.router.navigate(['/dashboard']),
       error: (e: any) => {
-        this.error = e?.error?.message || 'Credenciais inválidas';
+        this.error = e?.error?.message || 'Credenciais invalidas';
         this.loading = false;
       },
     });
