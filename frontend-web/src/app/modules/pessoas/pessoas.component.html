@@ -1,0 +1,258 @@
+<div class="p-6">
+
+  <!-- Cabeçalho -->
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Alunos</h1>
+    <button mat-raised-button color="primary" (click)="novo()">
+      <mat-icon>person_add</mat-icon> Novo Aluno
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="flex items-center gap-3 mb-4 flex-wrap">
+    <mat-form-field appearance="outline" class="flex-1 min-w-[200px]">
+      <mat-label>Buscar por nome</mat-label>
+      <input matInput placeholder="Digite o nome..." [(ngModel)]="filtroNome"
+             (keyup.enter)="filtrar()" />
+      <mat-icon matSuffix style="cursor:pointer" (click)="filtrar()">search</mat-icon>
+    </mat-form-field>
+
+    <button mat-stroked-button
+            (click)="filtroAtivo = filtroAtivo === true ? null : true; filtrar()">
+      {{ filtroAtivo === true ? 'Ver Todos' : 'Só Ativos' }}
+    </button>
+
+    <button mat-stroked-button color="warn"
+            *ngIf="filtroNome || filtroAtivo !== null"
+            (click)="limparFiltro()">
+      Limpar
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="flex justify-center py-16">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+  </div>
+
+  <!-- Tabela -->
+  <div *ngIf="!loading" class="bg-white rounded-lg shadow overflow-hidden">
+    <table mat-table [dataSource]="alunos" class="w-full">
+
+      <ng-container matColumnDef="matricula">
+        <th mat-header-cell *matHeaderCellDef>Matrícula</th>
+        <td mat-cell *matCellDef="let row"
+            class="font-mono text-sm text-gray-500">{{ row.matricula }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef>Nome</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="font-medium text-gray-800">{{ row.nome }}</span>
+          <span class="text-xs text-gray-400 block" *ngIf="row.temperamento">
+            {{ row.temperamento }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="turma">
+        <th mat-header-cell *matHeaderCellDef>Turma</th>
+        <td mat-cell *matCellDef="let row">{{ row.turmaNome || '—' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>E-mail</th>
+        <td mat-cell *matCellDef="let row"
+            class="text-sm text-gray-600">{{ row.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let row">
+          <span [class]="row.ativo ? 'badge-ativo' : 'badge-inativo'">
+            {{ row.ativo ? 'Ativo' : 'Inativo' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button color="primary"
+                  matTooltip="Editar" (click)="editar(row)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn"
+                  matTooltip="Inativar" *ngIf="row.ativo"
+                  (click)="inativar(row)">
+            <mat-icon>person_off</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+          class="hover:bg-gray-50 transition-colors"></tr>
+    </table>
+
+    <!-- Empty state -->
+    <div *ngIf="alunos.length === 0" class="flex flex-col items-center py-16 text-gray-400">
+      <mat-icon style="font-size:48px;width:48px;height:48px" class="mb-3">people_outline</mat-icon>
+      <p class="font-medium">Nenhum aluno encontrado</p>
+      <p class="text-sm mt-1">Tente ajustar os filtros ou cadastre um novo aluno</p>
+      <button mat-stroked-button color="primary" class="mt-4" (click)="novo()">
+        Cadastrar primeiro aluno
+      </button>
+    </div>
+
+    <mat-paginator
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[10, 25, 50]"
+      (page)="mudarPagina($event)">
+    </mat-paginator>
+  </div>
+
+</div>
+
+<!-- Formulário lateral -->
+<div *ngIf="formularioVisivel"
+     class="fixed inset-0 z-40"
+     (click)="fecharFormulario()">
+</div>
+<div *ngIf="formularioVisivel"
+     class="fixed inset-y-0 right-0 w-[440px] bg-white shadow-2xl border-l z-50 flex flex-col">
+
+  <!-- Header do painel -->
+  <div class="flex items-center justify-between px-6 py-4 border-b">
+    <h2 class="text-lg font-semibold text-gray-800">
+      {{ editandoId ? 'Editar Aluno' : 'Novo Aluno' }}
+    </h2>
+    <button mat-icon-button (click)="fecharFormulario()" matTooltip="Fechar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Corpo do formulário -->
+  <div class="flex-1 overflow-y-auto px-6 py-4">
+    <form [formGroup]="form" (ngSubmit)="salvar()" class="flex flex-col gap-3" id="form-aluno">
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Nome completo *</mat-label>
+        <input matInput formControlName="nome" placeholder="Nome do aluno" />
+        <mat-error *ngIf="form.get('nome')?.hasError('required')">Nome é obrigatório</mat-error>
+      </mat-form-field>
+
+      <div class="grid grid-cols-2 gap-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Nascimento *</mat-label>
+          <input matInput type="date" formControlName="dataNascimento" />
+          <mat-error *ngIf="form.get('dataNascimento')?.hasError('required')">Obrigatório</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Gênero</mat-label>
+          <mat-select formControlName="genero">
+            <mat-option value="MASCULINO">Masculino</mat-option>
+            <mat-option value="FEMININO">Feminino</mat-option>
+            <mat-option value="OUTRO">Outro</mat-option>
+            <mat-option value="NAO_INFORMADO">Não informado</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>E-mail *</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="aluno@escola.com.br" />
+        <mat-error *ngIf="form.get('email')?.hasError('required')">E-mail é obrigatório</mat-error>
+        <mat-error *ngIf="form.get('email')?.hasError('email')">E-mail inválido</mat-error>
+      </mat-form-field>
+
+      <div class="grid grid-cols-2 gap-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Telefone</mat-label>
+          <input matInput formControlName="telefone" placeholder="(11) 98765-4321" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ano de ingresso</mat-label>
+          <input matInput type="number" formControlName="anoIngresso" />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Temperamento (Waldorf)</mat-label>
+        <input matInput formControlName="temperamento"
+               placeholder="Colérico, Sanguíneo, Melâncolico, Fleumático" />
+        <mat-hint>Campo de observação pedagógica</mat-hint>
+      </mat-form-field>
+
+      <!-- Endereço (colapsável) -->
+      <details class="border rounded-lg p-3">
+        <summary class="text-sm font-medium text-gray-600 cursor-pointer">
+          Endereço (opcional)
+        </summary>
+        <div class="grid grid-cols-2 gap-3 mt-3">
+          <mat-form-field appearance="outline" class="col-span-2">
+            <mat-label>Rua</mat-label>
+            <input matInput formControlName="enderecoRua" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Número</mat-label>
+            <input matInput formControlName="enderecoNumero" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>CEP</mat-label>
+            <input matInput formControlName="enderecoCep" placeholder="00000-000" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="enderecoBairro" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="enderecoCidade" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Estado</mat-label>
+            <input matInput formControlName="enderecoEstado" maxlength="2" />
+          </mat-form-field>
+        </div>
+      </details>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Observações</mat-label>
+        <textarea matInput formControlName="observacoes" rows="3"
+                  placeholder="Informações adicionais sobre o aluno"></textarea>
+      </mat-form-field>
+
+    </form>
+  </div>
+
+  <!-- Footer com ações -->
+  <div class="px-6 py-4 border-t flex justify-end gap-3">
+    <button mat-stroked-button type="button" (click)="fecharFormulario()">
+      Cancelar
+    </button>
+    <button mat-raised-button color="primary"
+            type="submit" form="form-aluno"
+            [disabled]="form.invalid">
+      <mat-icon>{{ editandoId ? 'save' : 'person_add' }}</mat-icon>
+      {{ editandoId ? 'Salvar' : 'Cadastrar' }}
+    </button>
+  </div>
+
+</div>
+
+<style>
+  .badge-ativo {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 0.75rem; font-weight: 500;
+    background: #ECFDF5; color: #065F46;
+  }
+  .badge-inativo {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 0.75rem; font-weight: 500;
+    background: #FEF2F2; color: #991B1B;
+  }
+</style>
