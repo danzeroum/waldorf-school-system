@@ -5,8 +5,8 @@ import com.waldorf.application.dto.financeiro.MensalidadeResponseDTO;
 import com.waldorf.domain.entity.Contrato;
 import com.waldorf.domain.entity.Mensalidade;
 import com.waldorf.domain.entity.Mensalidade.StatusMensalidade;
-import com.waldorf.domain.repository.ContratoRepository;
-import com.waldorf.domain.repository.MensalidadeRepository;
+import com.waldorf.infrastructure.repository.ContratoRepository;
+import com.waldorf.infrastructure.repository.MensalidadeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,7 +86,6 @@ public class MensalidadeService {
         m.setFormaPagamento(dto.formaPagamento());
         m.setObservacao(dto.observacao());
 
-        // Determina status pelo valor pago
         int cmp = dto.valorPago().compareTo(m.getValor());
         if (cmp >= 0) {
             m.setStatus(StatusMensalidade.PAGA);

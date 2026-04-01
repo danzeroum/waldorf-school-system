@@ -4,9 +4,9 @@ import com.waldorf.application.dto.observacao.ObservacaoRequestDTO;
 import com.waldorf.application.dto.observacao.ObservacaoResponseDTO;
 import com.waldorf.domain.entity.ObservacaoDesenvolvimento;
 import com.waldorf.domain.entity.Professor;
-import com.waldorf.domain.repository.AlunoRepository;
-import com.waldorf.domain.repository.ObservacaoRepository;
-import com.waldorf.domain.repository.ProfessorRepository;
+import com.waldorf.infrastructure.repository.AlunoRepository;
+import com.waldorf.infrastructure.repository.ObservacaoRepository;
+import com.waldorf.infrastructure.repository.ProfessorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,10 +31,6 @@ public class ObservacaoService {
         this.professorRepository = professorRepository;
     }
 
-    /**
-     * Despacha para filtro por aspecto ou lista completa por aluno.
-     * Chamado pelos controllers de ambos os pacotes.
-     */
     @Transactional(readOnly = true)
     public List<ObservacaoResponseDTO> listar(Long alunoId, String aspecto) {
         if (alunoId != null && aspecto != null && !aspecto.isBlank()) {
@@ -45,7 +41,6 @@ public class ObservacaoService {
         if (alunoId != null) {
             return listarPorAluno(alunoId);
         }
-        // sem filtro: retorna todas (admin/diretor)
         return observacaoRepository.findAll().stream().map(this::toDTO).toList();
     }
 
