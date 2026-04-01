@@ -8,7 +8,7 @@
     <div class="flex gap-2">
       <select
         [value]="filtroStatus()"
-        (change)="filtroStatus.set(($event.target as HTMLSelectElement).value)"
+        (change)="alterarFiltroStatus($event)"
         class="form-input w-44"
       >
         <option value="">Todas as situações</option>
