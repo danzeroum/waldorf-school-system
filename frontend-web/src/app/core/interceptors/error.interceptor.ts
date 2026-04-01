@@ -5,21 +5,18 @@ import {
 import { Observable, throwError, EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private router: Router) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(
       catchError((err: HttpErrorResponse) => {
-        if (err.status === 401) {
-          this.authService.logout();
-          this.router.navigate(['/auth/login']);
-          return EMPTY;
-        }
+        // 401 é responsabilidade exclusiva do JwtInterceptor:
+        // ele tenta refresh e só faz logout se o refresh também falhar.
+        // Tratar 401 aqui causaria logout forçado antes do refresh ser tentado.
         if (err.status === 403) {
           this.router.navigate(['/dashboard']);
           return EMPTY;
