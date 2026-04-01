@@ -122,10 +122,10 @@
           {{ epoca.descricao }}
         </p>
       </div>
-      <span [ngClass]="epoca.situacao === 'EM_ANDAMENTO' ? 'badge badge-success' :
-                       epoca.situacao === 'PLANEJADA'    ? 'badge badge-warning' : 'badge badge-neutral'">
-        {{ epoca.situacao === 'EM_ANDAMENTO' ? 'Em andamento' :
-           epoca.situacao === 'PLANEJADA'    ? 'Planejada'    : 'Concluída' }}
+      <span [ngClass]="epoca.status === 'EM_ANDAMENTO' ? 'badge badge-success' :
+                       epoca.status === 'PLANEJADA'    ? 'badge badge-warning' : 'badge badge-neutral'">
+        {{ epoca.status === 'EM_ANDAMENTO' ? 'Em andamento' :
+           epoca.status === 'PLANEJADA'    ? 'Planejada'    : 'Concluída' }}
       </span>
     </div>
   </div>
