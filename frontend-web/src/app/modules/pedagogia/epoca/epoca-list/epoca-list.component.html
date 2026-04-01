@@ -62,10 +62,10 @@
         </div>
 
         <div class="flex flex-col items-end gap-2 flex-shrink-0">
-          <span [class]="epoca.situacao === 'EM_ANDAMENTO' ? 'badge badge-success' :
-                         epoca.situacao === 'PLANEJADA'    ? 'badge badge-warning' : 'badge badge-neutral'">
-            {{ epoca.situacao === 'EM_ANDAMENTO' ? 'Em andamento' :
-               epoca.situacao === 'PLANEJADA' ? 'Planejada' : 'Concluída' }}
+          <span [class]="epoca.status === 'EM_ANDAMENTO' ? 'badge badge-success' :
+                         epoca.status === 'PLANEJADA'    ? 'badge badge-warning' : 'badge badge-neutral'">
+            {{ epoca.status === 'EM_ANDAMENTO' ? 'Em andamento' :
+               epoca.status === 'PLANEJADA' ? 'Planejada' : 'Concluída' }}
           </span>
           <span class="text-xs text-waldorf-gray-400">{{ epoca.aspecto | aspecto }}</span>
         </div>

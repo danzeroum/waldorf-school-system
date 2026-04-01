@@ -16,14 +16,13 @@ export class FinanceiroDashboardComponent implements OnInit {
 
   constructor(
     private financeiroService: FinanceiroService,
-    private router: Router,
+    protected router: Router,
   ) {}
 
   ngOnInit(): void {
     this.carregar();
   }
 
-  /** Usado pelo template: evita type cast 'as T' no event binding (NG5002) */
   alterarAnoLetivo(event: Event): void {
     this.anoLetivo.set(+(event.target as HTMLSelectElement).value);
     this.carregar();

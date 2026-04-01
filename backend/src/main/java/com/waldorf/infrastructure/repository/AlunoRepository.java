@@ -23,7 +23,7 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
             @Param("ativo") Boolean ativo,
             Pageable pageable);
 
+    List<Aluno> findByTurmaId(Long turmaId);
     List<Aluno> findByTurmaIdAndAtivoTrue(Long turmaId);
-
     int countByTurmaIdAndAtivoTrue(Long turmaId);
 }
