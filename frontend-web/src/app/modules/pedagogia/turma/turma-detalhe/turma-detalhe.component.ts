@@ -11,11 +11,11 @@ type TabAtiva = 'alunos' | 'epocas' | 'horarios';
   standalone: false,
 })
 export class TurmaDetalheComponent implements OnInit {
-  turma       = signal<Turma | null>(null);
-  alunos      = signal<AlunoTurma[]>([]);
-  epocas      = signal<Epoca[]>([]);
-  carregando  = signal(true);
-  tabAtiva    = signal<TabAtiva>('alunos');
+  turma      = signal<Turma | null>(null);
+  alunos     = signal<AlunoTurma[]>([]);
+  epocas     = signal<Epoca[]>([]);
+  carregando = signal(true);
+  tabAtiva   = signal<TabAtiva>('alunos');
 
   readonly tabs: { id: TabAtiva; label: string; icone: string }[] = [
     { id: 'alunos',   label: 'Alunos',   icone: 'group'    },
@@ -25,7 +25,7 @@ export class TurmaDetalheComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    readonly router: Router,
     private pedagogiaService: PedagogiaService,
     private epocaService: EpocaService,
   ) {}
