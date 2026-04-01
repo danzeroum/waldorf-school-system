@@ -41,6 +41,12 @@ export class ContratoListComponent implements OnInit {
     });
   }
 
+  /** Usado pelo template: evita type cast 'as T' no event binding (NG5002) */
+  alterarFiltroStatus(event: Event): void {
+    this.filtroStatus.set((event.target as HTMLSelectElement).value);
+    this.carregar();
+  }
+
   novoContrato(): void { this.router.navigate(['/financeiro/contratos/novo']); }
   verContrato(id: number): void { this.router.navigate(['/financeiro/contratos', id]); }
 

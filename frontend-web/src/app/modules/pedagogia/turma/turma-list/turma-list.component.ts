@@ -45,6 +45,12 @@ export class TurmaListComponent implements OnInit {
     });
   }
 
+  /** Usado pelo template: evita type cast 'as T' no event binding (NG5002) */
+  alterarAnoLetivo(event: Event): void {
+    this.anoLetivo.set(+(event.target as HTMLSelectElement).value);
+    this.carregar();
+  }
+
   verTurma(id: number): void {
     if (this.formularioVisivel) return;
     this.router.navigate(['/pedagogia/turmas', id]);
