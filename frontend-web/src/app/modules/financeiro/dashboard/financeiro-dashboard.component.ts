@@ -23,13 +23,18 @@ export class FinanceiroDashboardComponent implements OnInit {
     this.carregar();
   }
 
+  /** Usado pelo template: evita type cast 'as T' no event binding (NG5002) */
+  alterarAnoLetivo(event: Event): void {
+    this.anoLetivo.set(+(event.target as HTMLSelectElement).value);
+    this.carregar();
+  }
+
   carregar(): void {
     this.carregando.set(true);
 
     this.financeiroService.resumo(this.anoLetivo()).subscribe({
       next: (r) => { this.resumo.set(r); this.carregando.set(false); },
       error: () => {
-        // Mock para desenvolvimento
         this.resumo.set({
           totalReceita: 284000,
           totalRecebido: 196500,

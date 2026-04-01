@@ -28,10 +28,15 @@ export class EpocaListComponent implements OnInit {
     });
   }
 
+  /** Usado pelo template: evita type cast 'as T' no event binding (NG5002) */
+  alterarFiltroStatus(event: Event): void {
+    this.filtroStatus.set((event.target as HTMLSelectElement).value);
+  }
+
   novaEpoca(): void { this.router.navigate(['/pedagogia/epocas/nova']); }
 
   get epocasFiltradas(): Epoca[] {
     const f = this.filtroStatus();
-    return f ? this.epocas().filter(e => e.status === f) : this.epocas(); // era: e.situacao
+    return f ? this.epocas().filter(e => e.status === f) : this.epocas();
   }
 }
