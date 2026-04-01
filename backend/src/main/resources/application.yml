@@ -43,4 +43,4 @@ springdoc:
 
 logging:
   level:
-    br.edu.waldorf: INFO
+    com.waldorf: INFO
