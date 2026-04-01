@@ -10,6 +10,8 @@ interface DashboardSecretaria {
   contratosPendentes:    number;
   mensalidadesAtrasadas: number;
   lgpdPendentes:         number;
+  notificacoesNaoLidas:  number;
+  turmasAtivas:          number;
 }
 
 @Component({
@@ -18,9 +20,9 @@ interface DashboardSecretaria {
 })
 export class DashboardComponent implements OnInit {
 
-  usuario      = this.authService.getUsuario();
-  loading      = true;
-  erro         = false;
+  usuario = this.authService.getUsuario();
+  loading = true;
+  erro    = false;
 
   stats: DashboardSecretaria = {
     totalAlunosAtivos:     0,
@@ -28,19 +30,22 @@ export class DashboardComponent implements OnInit {
     contratosPendentes:    0,
     mensalidadesAtrasadas: 0,
     lgpdPendentes:         0,
+    notificacoesNaoLidas:  0,
+    turmasAtivas:          0,
   };
 
   cards = [
-    { label: 'Alunos Ativos',          icon: 'people',       color: 'text-blue-600',   key: 'totalAlunosAtivos',     rota: '/pessoas/alunos' },
-    { label: 'Matrículas Ativas',       icon: 'school',       color: 'text-green-600',  key: 'matriculasAtivas',      rota: '/escolar/turmas' },
-    { label: 'Contratos Pendentes',     icon: 'description',  color: 'text-orange-500', key: 'contratosPendentes',    rota: '/financeiro/contratos' },
-    { label: 'Mensalidades em Atraso',  icon: 'payments',     color: 'text-red-600',    key: 'mensalidadesAtrasadas', rota: '/financeiro/mensalidades' },
-    { label: 'Consentimentos LGPD',     icon: 'policy',       color: 'text-purple-600', key: 'lgpdPendentes',         rota: '/lgpd' },
+    { label: 'Alunos Ativos',          icon: 'people',        color: 'text-blue-600',   key: 'totalAlunosAtivos',     rota: '/pessoas/alunos' },
+    { label: 'Turmas Ativas',          icon: 'school',        color: 'text-teal-600',   key: 'turmasAtivas',          rota: '/escolar/turmas' },
+    { label: 'Contratos Ativos',       icon: 'description',   color: 'text-green-600',  key: 'contratosPendentes',    rota: '/financeiro/contratos' },
+    { label: 'Mensalidades em Atraso', icon: 'payments',      color: 'text-red-600',    key: 'mensalidadesAtrasadas', rota: '/financeiro/mensalidades' },
+    { label: 'Notificações',           icon: 'notifications', color: 'text-amber-600',  key: 'notificacoesNaoLidas',  rota: null },
+    { label: 'Consentimentos LGPD',    icon: 'policy',        color: 'text-purple-600', key: 'lgpdPendentes',         rota: '/lgpd' },
   ];
 
   constructor(
     private http:        HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -49,13 +54,14 @@ export class DashboardComponent implements OnInit {
       .pipe(
         catchError(() => {
           this.erro = true;
-          // Mock data para desenvolvimento sem backend
           return of<DashboardSecretaria>({
             totalAlunosAtivos:     42,
             matriculasAtivas:      38,
-            contratosPendentes:     5,
+            contratosPendentes:    12,
             mensalidadesAtrasadas:  3,
             lgpdPendentes:          2,
+            notificacoesNaoLidas:   5,
+            turmasAtivas:           6,
           });
         })
       )
