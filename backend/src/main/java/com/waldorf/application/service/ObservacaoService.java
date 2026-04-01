@@ -31,6 +31,24 @@ public class ObservacaoService {
         this.professorRepository = professorRepository;
     }
 
+    /**
+     * Despacha para filtro por aspecto ou lista completa por aluno.
+     * Chamado pelos controllers de ambos os pacotes.
+     */
+    @Transactional(readOnly = true)
+    public List<ObservacaoResponseDTO> listar(Long alunoId, String aspecto) {
+        if (alunoId != null && aspecto != null && !aspecto.isBlank()) {
+            return observacaoRepository
+                    .findByAlunoIdAndAspecto(alunoId, aspecto)
+                    .stream().map(this::toDTO).toList();
+        }
+        if (alunoId != null) {
+            return listarPorAluno(alunoId);
+        }
+        // sem filtro: retorna todas (admin/diretor)
+        return observacaoRepository.findAll().stream().map(this::toDTO).toList();
+    }
+
     @Transactional(readOnly = true)
     public List<ObservacaoResponseDTO> listarPorAluno(Long alunoId) {
         return observacaoRepository.findByAlunoIdOrderByDataDesc(alunoId)
@@ -79,8 +97,6 @@ public class ObservacaoService {
                     .orElseThrow(() -> new EntityNotFoundException(
                             "Professor não encontrado: " + dto.professorId())));
         } else {
-            // Fallback homologacao: primeiro professor ativo
-            // TODO: substituir por @AuthenticationPrincipal em producao
             Professor fallback = professorRepository.findAll().stream()
                     .filter(Professor::isAtivo)
                     .findFirst()

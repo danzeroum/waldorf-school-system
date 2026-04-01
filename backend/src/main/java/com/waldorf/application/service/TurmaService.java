@@ -1,7 +1,9 @@
 package com.waldorf.application.service;
 
+import com.waldorf.application.dto.aluno.AlunoResponseDTO;
 import com.waldorf.application.dto.turma.TurmaRequestDTO;
 import com.waldorf.application.dto.turma.TurmaResponseDTO;
+import com.waldorf.domain.entity.Aluno;
 import com.waldorf.domain.entity.Professor;
 import com.waldorf.domain.entity.Turma;
 import com.waldorf.domain.repository.AlunoRepository;
@@ -31,6 +33,16 @@ public class TurmaService {
         this.professorRepository = professorRepository;
     }
 
+    // Chamado pelos controllers com filtro de ano letivo (Integer pode ser null)
+    @Transactional(readOnly = true)
+    public List<TurmaResponseDTO> listar(Integer anoLetivo) {
+        if (anoLetivo != null) {
+            return turmaRepository.findByAnoLetivo(anoLetivo).stream().map(this::toDTO).toList();
+        }
+        return turmaRepository.findAll().stream().map(this::toDTO).toList();
+    }
+
+    // Overload com Pageable para uso interno/futuro
     @Transactional(readOnly = true)
     public Page<TurmaResponseDTO> listar(Pageable pageable) {
         return turmaRepository.findAll(pageable).map(this::toDTO);
@@ -69,6 +81,16 @@ public class TurmaService {
         turmaRepository.delete(t);
     }
 
+    // Chamado por GET /api/v1/turmas/{id}/alunos
+    @Transactional(readOnly = true)
+    public List<AlunoResponseDTO> listarAlunos(Long turmaId) {
+        buscarEntidade(turmaId); // valida existência
+        return alunoRepository.findByTurmaId(turmaId)
+                .stream()
+                .map(this::alunoToDTO)
+                .toList();
+    }
+
     // --- helpers ---
 
     private Turma buscarEntidade(Long id) {
@@ -93,6 +115,18 @@ public class TurmaService {
         );
     }
 
+    private AlunoResponseDTO alunoToDTO(Aluno a) {
+        return new AlunoResponseDTO(
+                a.getId(),
+                a.getNome(),
+                a.getMatricula(),
+                a.getTurma() != null ? a.getTurma().getId() : null,
+                a.getTurma() != null ? a.getTurma().getNome() : null,
+                a.isAtivo(),
+                a.getCreatedAt()
+        );
+    }
+
     private void aplicarDTO(Turma t, TurmaRequestDTO dto) {
         t.setNome(dto.nome());
         t.setAnoLetivo(dto.anoLetivo());
@@ -106,7 +140,6 @@ public class TurmaService {
         } else {
             t.setProfessorRegente(null);
         }
-        // ativa: só altera se explicitamente enviado (null = mantém valor atual)
         if (dto.ativa() != null) {
             t.setAtiva(dto.ativa());
         }

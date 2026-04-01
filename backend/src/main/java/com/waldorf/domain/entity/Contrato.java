@@ -49,6 +49,9 @@ public class Contrato {
     @Enumerated(EnumType.STRING)
     private SituacaoContrato situacao = SituacaoContrato.ATIVO;
 
+    @Column(name = "observacoes", columnDefinition = "TEXT")
+    private String observacoes;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
