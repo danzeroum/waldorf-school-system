@@ -6,9 +6,9 @@ import com.waldorf.application.dto.turma.TurmaResponseDTO;
 import com.waldorf.domain.entity.Aluno;
 import com.waldorf.domain.entity.Professor;
 import com.waldorf.domain.entity.Turma;
-import com.waldorf.domain.repository.AlunoRepository;
-import com.waldorf.domain.repository.ProfessorRepository;
-import com.waldorf.domain.repository.TurmaRepository;
+import com.waldorf.infrastructure.repository.AlunoRepository;
+import com.waldorf.infrastructure.repository.ProfessorRepository;
+import com.waldorf.infrastructure.repository.TurmaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -90,7 +90,7 @@ public class TurmaService {
     }
 
     /**
-     * TurmaResponseDTO — 11 campos na ordem exata:
+     * TurmaResponseDTO — 11 campos:
      * id, nome, anoLetivo, anoEscolar, capacidadeMaxima,
      * professorRegenteId, professorRegenteNome, totalAlunos,
      * ativa, createdAt, updatedAt
@@ -113,7 +113,7 @@ public class TurmaService {
     }
 
     /**
-     * AlunoResponseDTO — 12 campos na ordem exata:
+     * AlunoResponseDTO — 12 campos:
      * id, matricula, nome, dataNascimento, genero, email,
      * anoIngresso, turmaNome, temperamento, ativo, createdAt, updatedAt
      */
