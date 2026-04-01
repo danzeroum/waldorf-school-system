@@ -1,41 +1,82 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
 })
-export class LoginComponent {
-  form: FormGroup;
+export class LoginComponent implements OnInit {
+  form!: FormGroup;
   loading = false;
-  error   = '';
+  errorMessage: string | null = null;
+  showPassword = false;
 
   constructor(
-    private fb:          FormBuilder,
-    private authService: AuthService,
-    private router:      Router
-  ) {
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit(): void {
+    if (this.auth.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
     this.form = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', Validators.required],
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rememberMe: [false],
     });
   }
 
-  submit(): void {
-    if (this.form.invalid) return;
+  get emailInvalid(): boolean {
+    const c = this.form.get('username');
+    return !!(c?.invalid && (c.dirty || c.touched));
+  }
+
+  get senhaInvalid(): boolean {
+    const c = this.form.get('password');
+    return !!(c?.invalid && (c.dirty || c.touched));
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.errorMessage = null;
     this.loading = true;
-    this.error   = '';
-    this.authService.login(this.form.value).subscribe({
-      next: ()         => this.router.navigate(['/dashboard']),
-      error: (e: any)  => {
-        this.error   = e?.error?.message || 'Credenciais inválidas. Verifique usuário e senha.';
+
+    const payload = {
+      username: this.form.value.username,
+      password: this.form.value.password,
+      deviceType: 'WEB' as const,
+    };
+
+    this.auth.login(payload).subscribe({
+      next: () => {
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        this.router.navigateByUrl(returnUrl);
+      },
+      error: (err) => {
+        this.errorMessage = this.translateError(err.status);
         this.loading = false;
       },
     });
   }
 
-  get usernameCtrl() { return this.form.get('username'); }
-  get passwordCtrl() { return this.form.get('password'); }
+  private translateError(status: number): string {
+    const map: Record<number, string> = {
+      0:   'Servidor indisponível. Verifique sua conexão.',
+      401: 'E-mail ou senha incorretos.',
+      403: 'Acesso negado.',
+      423: 'Conta bloqueada. Entre em contato com a secretaria.',
+      429: 'Muitas tentativas. Aguarde alguns minutos.',
+    };
+    return map[status] || 'Erro ao fazer login. Tente novamente.';
+  }
 }
