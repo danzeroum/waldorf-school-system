@@ -47,11 +47,6 @@ public class TurmaService {
     }
 
     @Transactional(readOnly = true)
-    public List<TurmaResponseDTO> listarTodas() {
-        return turmaRepository.findAll().stream().map(this::toDTO).toList();
-    }
-
-    @Transactional(readOnly = true)
     public TurmaResponseDTO buscarPorId(Long id) {
         return toDTO(buscarEntidade(id));
     }
@@ -94,6 +89,12 @@ public class TurmaService {
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada: " + id));
     }
 
+    /**
+     * TurmaResponseDTO — 11 campos na ordem exata:
+     * id, nome, anoLetivo, anoEscolar, capacidadeMaxima,
+     * professorRegenteId, professorRegenteNome, totalAlunos,
+     * ativa, createdAt, updatedAt
+     */
     private TurmaResponseDTO toDTO(Turma t) {
         int total = alunoRepository.countByTurmaIdAndAtivoTrue(t.getId());
         return new TurmaResponseDTO(
@@ -102,7 +103,7 @@ public class TurmaService {
                 t.getAnoLetivo(),
                 t.getAnoEscolar(),
                 t.getCapacidadeMaxima(),
-                t.getProfessorRegente() != null ? t.getProfessorRegente().getId() : null,
+                t.getProfessorRegente() != null ? t.getProfessorRegente().getId()   : null,
                 t.getProfessorRegente() != null ? t.getProfessorRegente().getNome() : null,
                 total,
                 t.isAtiva(),
@@ -112,7 +113,7 @@ public class TurmaService {
     }
 
     /**
-     * Mapeia Aluno -> AlunoResponseDTO respeitando os 12 campos do record na ordem correta:
+     * AlunoResponseDTO — 12 campos na ordem exata:
      * id, matricula, nome, dataNascimento, genero, email,
      * anoIngresso, turmaNome, temperamento, ativo, createdAt, updatedAt
      */
@@ -133,6 +134,10 @@ public class TurmaService {
         );
     }
 
+    /**
+     * TurmaRequestDTO — 6 campos: nome, anoLetivo, anoEscolar,
+     * professorRegenteId, capacidadeMaxima, ativa
+     */
     private void aplicarDTO(Turma t, TurmaRequestDTO dto) {
         t.setNome(dto.nome());
         t.setAnoLetivo(dto.anoLetivo());
