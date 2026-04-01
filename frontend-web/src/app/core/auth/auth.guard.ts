@@ -16,3 +16,18 @@ export class AuthGuard implements CanActivate {
     return false;
   }
 }
+
+/**
+ * GuestGuard — impede usuário já autenticado de acessar rotas públicas (ex: /auth/login).
+ * Usar em: { path: 'login', canActivate: [GuestGuard], ... }
+ */
+@Injectable({ providedIn: 'root' })
+export class GuestGuard implements CanActivate {
+  constructor(private authService: AuthService, private router: Router) {}
+
+  canActivate(): boolean {
+    if (!this.authService.isAuthenticated()) return true;
+    this.router.navigate(['/dashboard']);
+    return false;
+  }
+}
