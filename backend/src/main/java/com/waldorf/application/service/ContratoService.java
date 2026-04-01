@@ -19,6 +19,7 @@ public class ContratoService {
 
     private final ContratoRepository contratoRepository;
     private final AlunoRepository    alunoRepository;
+    private final MensalidadeService mensalidadeService;
 
     public List<ContratoResponseDTO> listar(Long alunoId) {
         if (alunoId != null) {
@@ -47,6 +48,37 @@ public class ContratoService {
         c.setSituacao(SituacaoContrato.ATIVO);
         return toDTO(contratoRepository.save(c));
     }
+
+    /**
+     * Ativa um contrato e gera automaticamente as mensalidades.
+     * Idempotente: se já existem mensalidades para o contrato, não duplica.
+     */
+    @Transactional
+    public ContratoResponseDTO ativar(Long id) {
+        Contrato c = findOrThrow(id);
+        if (c.getSituacao() == SituacaoContrato.ENCERRADO) {
+            throw new IllegalStateException("Contrato encerrado não pode ser reativado.");
+        }
+        c.setSituacao(SituacaoContrato.ATIVO);
+        contratoRepository.save(c);
+        mensalidadeService.gerarMensalidades(c);
+        return toDTO(c);
+    }
+
+    /**
+     * Encerra um contrato. Mensalidades PENDENTES permanecem — responsabilidade do financeiro.
+     */
+    @Transactional
+    public ContratoResponseDTO encerrar(Long id, String motivo) {
+        Contrato c = findOrThrow(id);
+        c.setSituacao(SituacaoContrato.ENCERRADO);
+        if (motivo != null && !motivo.isBlank()) {
+            c.setObservacoes(motivo);
+        }
+        return toDTO(contratoRepository.save(c));
+    }
+
+    // --- helpers ---
 
     private Contrato findOrThrow(Long id) {
         return contratoRepository.findById(id)
