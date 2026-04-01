@@ -8,5 +8,6 @@ public record TurmaRequestDTO(
         @NotNull Integer anoLetivo,
         Integer anoEscolar,
         Long professorRegenteId,
-        Integer capacidadeMaxima
+        Integer capacidadeMaxima,
+        Boolean ativa
 ) {}

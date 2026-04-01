@@ -3,67 +3,92 @@ package com.waldorf.application.service;
 import com.waldorf.application.dto.observacao.ObservacaoRequestDTO;
 import com.waldorf.application.dto.observacao.ObservacaoResponseDTO;
 import com.waldorf.domain.entity.ObservacaoDesenvolvimento;
-import com.waldorf.infrastructure.repository.AlunoRepository;
-import com.waldorf.infrastructure.repository.ObservacaoRepository;
-import com.waldorf.infrastructure.repository.ProfessorRepository;
+import com.waldorf.domain.entity.Professor;
+import com.waldorf.domain.repository.AlunoRepository;
+import com.waldorf.domain.repository.ObservacaoRepository;
+import com.waldorf.domain.repository.ProfessorRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@Transactional
 public class ObservacaoService {
 
-    private final ObservacaoRepository  observacaoRepository;
-    private final AlunoRepository       alunoRepository;
-    private final ProfessorRepository   professorRepository;
+    private final ObservacaoRepository observacaoRepository;
+    private final AlunoRepository alunoRepository;
+    private final ProfessorRepository professorRepository;
 
-    public List<ObservacaoResponseDTO> listar(Long alunoId, String aspecto) {
-        if (alunoId == null) {
-            return observacaoRepository.findAll().stream().map(this::toDTO).toList();
-        }
-        List<ObservacaoDesenvolvimento> obs = aspecto != null
-                ? observacaoRepository.findByAlunoIdAndAspecto(alunoId, aspecto)
-                : observacaoRepository.findByAlunoIdOrderByDataDesc(alunoId);
-        return obs.stream().map(this::toDTO).toList();
+    public ObservacaoService(ObservacaoRepository observacaoRepository,
+                             AlunoRepository alunoRepository,
+                             ProfessorRepository professorRepository) {
+        this.observacaoRepository = observacaoRepository;
+        this.alunoRepository = alunoRepository;
+        this.professorRepository = professorRepository;
     }
 
+    @Transactional(readOnly = true)
+    public List<ObservacaoResponseDTO> listarPorAluno(Long alunoId) {
+        return observacaoRepository.findByAlunoIdOrderByDataDesc(alunoId)
+                .stream().map(this::toDTO).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ObservacaoResponseDTO> listarPorAlunoPaginado(Long alunoId, Pageable pageable) {
+        return observacaoRepository.findByAlunoId(alunoId, pageable).map(this::toDTO);
+    }
+
+    @Transactional(readOnly = true)
     public ObservacaoResponseDTO buscarPorId(Long id) {
-        return toDTO(findOrThrow(id));
+        return toDTO(buscarEntidade(id));
     }
 
-    @Transactional
     public ObservacaoResponseDTO criar(ObservacaoRequestDTO dto) {
-        ObservacaoDesenvolvimento obs = new ObservacaoDesenvolvimento();
-        aplicarDTO(obs, dto);
-        return toDTO(observacaoRepository.save(obs));
+        ObservacaoDesenvolvimento o = new ObservacaoDesenvolvimento();
+        aplicarDTO(o, dto);
+        return toDTO(observacaoRepository.save(o));
     }
 
-    @Transactional
     public ObservacaoResponseDTO atualizar(Long id, ObservacaoRequestDTO dto) {
-        ObservacaoDesenvolvimento obs = findOrThrow(id);
-        aplicarDTO(obs, dto);
-        return toDTO(observacaoRepository.save(obs));
+        ObservacaoDesenvolvimento o = buscarEntidade(id);
+        aplicarDTO(o, dto);
+        return toDTO(observacaoRepository.save(o));
     }
 
-    @Transactional
     public void excluir(Long id) {
-        observacaoRepository.delete(findOrThrow(id));
+        observacaoRepository.delete(buscarEntidade(id));
     }
 
-    private ObservacaoDesenvolvimento findOrThrow(Long id) {
+    // --- helpers ---
+
+    private ObservacaoDesenvolvimento buscarEntidade(Long id) {
         return observacaoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Observação não encontrada: " + id));
     }
 
     private void aplicarDTO(ObservacaoDesenvolvimento o, ObservacaoRequestDTO dto) {
         o.setAluno(alunoRepository.findById(dto.alunoId())
-                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado")));
-        o.setProfessor(professorRepository.findById(dto.professorId())
-                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado")));
+                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado: " + dto.alunoId())));
+
+        if (dto.professorId() != null) {
+            o.setProfessor(professorRepository.findById(dto.professorId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Professor não encontrado: " + dto.professorId())));
+        } else {
+            // Fallback homologacao: primeiro professor ativo
+            // TODO: substituir por @AuthenticationPrincipal em producao
+            Professor fallback = professorRepository.findAll().stream()
+                    .filter(Professor::isAtivo)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Nenhum professor ativo encontrado para associar à observação"));
+            o.setProfessor(fallback);
+        }
+
         o.setAspecto(dto.aspecto());
         o.setConteudo(dto.conteudo());
         o.setPrivada(dto.privada());
@@ -73,10 +98,15 @@ public class ObservacaoService {
     private ObservacaoResponseDTO toDTO(ObservacaoDesenvolvimento o) {
         return new ObservacaoResponseDTO(
                 o.getId(),
-                o.getAluno().getId(), o.getAluno().getNome(),
-                o.getProfessor().getId(), o.getProfessor().getNome(),
-                o.getAspecto(), o.getConteudo(), o.isPrivada(),
-                o.getData(), o.getCreatedAt()
+                o.getAluno().getId(),
+                o.getAluno().getNome(),
+                o.getProfessor() != null ? o.getProfessor().getId() : null,
+                o.getProfessor() != null ? o.getProfessor().getNome() : null,
+                o.getAspecto(),
+                o.getConteudo(),
+                o.isPrivada(),
+                o.getData(),
+                o.getCreatedAt()
         );
     }
 }
