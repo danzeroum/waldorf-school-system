@@ -35,6 +35,7 @@ public class Notificacao {
     @Column(name = "referencia_tipo")
     private String referenciaTipo;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean lida = false;
 

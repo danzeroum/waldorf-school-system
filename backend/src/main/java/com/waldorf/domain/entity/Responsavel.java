@@ -34,6 +34,7 @@ public class Responsavel {
     private String profissao;
     private String empresa;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean autorizado = true;
 

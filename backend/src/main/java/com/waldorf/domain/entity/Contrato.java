@@ -45,6 +45,7 @@ public class Contrato {
     @Column(name = "data_fim")
     private LocalDate dataFim;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private SituacaoContrato situacao = SituacaoContrato.ATIVO;
 

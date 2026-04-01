@@ -35,6 +35,7 @@ public class Aluno {
     @Column(name = "ano_ingresso")
     private int anoIngresso;
 
+    @Builder.Default
     private boolean ativo = true;
 
     private String temperamento;

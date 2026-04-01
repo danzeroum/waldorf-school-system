@@ -34,6 +34,7 @@ public class Aviso {
     @JoinColumn(name = "autor_id", nullable = false)
     private Usuario autor;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean fixado = false;
 

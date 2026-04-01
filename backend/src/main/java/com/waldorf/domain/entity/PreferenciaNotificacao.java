@@ -20,18 +20,23 @@ public class PreferenciaNotificacao {
     @JoinColumn(name = "usuario_id", nullable = false, unique = true)
     private Usuario usuario;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean email = true;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean push = true;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean sms = false;
 
+    @Builder.Default
     @Column(name = "in_app", nullable = false)
     private boolean inApp = true;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AgregacaoNotificacao agregacao = AgregacaoNotificacao.IMEDIATO;
