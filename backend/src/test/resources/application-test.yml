@@ -46,5 +46,6 @@ jwt:
 logging:
   level:
     com.waldorf: WARN
+    br.edu.waldorf: WARN
     org.hibernate.SQL: WARN
     org.springframework.security: WARN
