@@ -33,7 +33,6 @@ public class TurmaService {
         this.professorRepository = professorRepository;
     }
 
-    // Chamado pelos controllers com filtro de ano letivo (Integer pode ser null)
     @Transactional(readOnly = true)
     public List<TurmaResponseDTO> listar(Integer anoLetivo) {
         if (anoLetivo != null) {
@@ -42,7 +41,6 @@ public class TurmaService {
         return turmaRepository.findAll().stream().map(this::toDTO).toList();
     }
 
-    // Overload com Pageable para uso interno/futuro
     @Transactional(readOnly = true)
     public Page<TurmaResponseDTO> listar(Pageable pageable) {
         return turmaRepository.findAll(pageable).map(this::toDTO);
@@ -77,14 +75,12 @@ public class TurmaService {
     }
 
     public void excluir(Long id) {
-        Turma t = buscarEntidade(id);
-        turmaRepository.delete(t);
+        turmaRepository.delete(buscarEntidade(id));
     }
 
-    // Chamado por GET /api/v1/turmas/{id}/alunos
     @Transactional(readOnly = true)
     public List<AlunoResponseDTO> listarAlunos(Long turmaId) {
-        buscarEntidade(turmaId); // valida existência
+        buscarEntidade(turmaId);
         return alunoRepository.findByTurmaId(turmaId)
                 .stream()
                 .map(this::alunoToDTO)
@@ -115,15 +111,25 @@ public class TurmaService {
         );
     }
 
+    /**
+     * Mapeia Aluno -> AlunoResponseDTO respeitando os 12 campos do record na ordem correta:
+     * id, matricula, nome, dataNascimento, genero, email,
+     * anoIngresso, turmaNome, temperamento, ativo, createdAt, updatedAt
+     */
     private AlunoResponseDTO alunoToDTO(Aluno a) {
         return new AlunoResponseDTO(
                 a.getId(),
-                a.getNome(),
                 a.getMatricula(),
-                a.getTurma() != null ? a.getTurma().getId() : null,
+                a.getNome(),
+                a.getDataNascimento(),
+                a.getGenero(),
+                a.getEmail(),
+                a.getAnoIngresso(),
                 a.getTurma() != null ? a.getTurma().getNome() : null,
+                a.getTemperamento(),
                 a.isAtivo(),
-                a.getCreatedAt()
+                a.getCreatedAt(),
+                a.getUpdatedAt()
         );
     }
 
