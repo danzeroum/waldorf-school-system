@@ -38,7 +38,7 @@ export class ContratoFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private financeiroService: FinanceiroService,
-    private router: Router,
+    protected router: Router,
     private route: ActivatedRoute,
   ) {}
 
