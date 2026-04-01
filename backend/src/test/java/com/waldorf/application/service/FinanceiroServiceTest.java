@@ -27,14 +27,15 @@ import static org.mockito.Mockito.*;
 @DisplayName("FinanceiroService — testes unitários")
 class FinanceiroServiceTest {
 
-    @Mock ContratoRepository contratoRepository;
-    @Mock AlunoRepository    alunoRepository;
+    @Mock ContratoRepository  contratoRepository;
+    @Mock AlunoRepository     alunoRepository;
+    @Mock MensalidadeService  mensalidadeService;  // obrigatório: ContratoService tem 3 deps
 
     @InjectMocks ContratoService contratoService;
 
     @Test
-    @DisplayName("criar contrato deve gerar parcelas mensais automaticamente")
-    void criarContratoGerarParcelas() {
+    @DisplayName("criar contrato deve persistir sem gerar mensalidades")
+    void criarContrato() {
         Aluno aluno = new Aluno();
         aluno.setId(1L);
         aluno.setNome("Pedro Santos");
@@ -59,13 +60,43 @@ class FinanceiroServiceTest {
         assertThat(resp.valorMensalidade()).isEqualByComparingTo(new BigDecimal("1200.00"));
         assertThat(resp.totalParcelas()).isEqualTo(12);
         verify(contratoRepository).save(any());
+        // criar() não deve gerar mensalidades — isso só acontece em ativar()
+        verifyNoInteractions(mensalidadeService);
     }
 
     @Test
-    @DisplayName("buscar contrato inexistente deve lançar exceção")
+    @DisplayName("buscar contrato inexistente deve lançar EntityNotFoundException")
     void buscarInexistente() {
         when(contratoRepository.findById(99L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> contratoService.buscarPorId(99L))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("99");
+    }
+
+    @Test
+    @DisplayName("encerrar contrato ativo deve mudar situação para ENCERRADO")
+    void encerrarContrato() {
+        Contrato c = new Contrato();
+        c.setId(2L);
+        c.setSituacao(SituacaoContrato.ATIVO);
+        Aluno aluno = new Aluno();
+        aluno.setId(1L);
+        aluno.setNome("Maria");
+        c.setAluno(aluno);
+        c.setAnoLetivo(2026);
+        c.setValorMensalidade(new BigDecimal("800.00"));
+        c.setDesconto(BigDecimal.ZERO);
+        c.setTotalParcelas(10);
+        c.setDiaVencimento(10);
+        c.setCreatedAt(LocalDateTime.now());
+
+        when(contratoRepository.findById(2L)).thenReturn(Optional.of(c));
+        when(contratoRepository.save(any())).thenReturn(c);
+
+        var resp = contratoService.encerrar(2L, "Desistiu");
+
+        assertThat(resp.situacao()).isEqualTo(SituacaoContrato.ENCERRADO);
+        verify(contratoRepository).save(c);
+        verifyNoInteractions(mensalidadeService);
     }
 }
