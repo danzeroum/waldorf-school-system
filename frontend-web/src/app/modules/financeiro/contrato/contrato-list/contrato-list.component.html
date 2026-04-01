@@ -15,7 +15,8 @@
       <input type="search" [formControl]="buscaCtrl" placeholder="Buscar por nome do aluno..."
              class="form-input pl-10">
     </div>
-    <select [value]="filtroStatus()" (change)="filtroStatus.set(($event.target as HTMLSelectElement).value); carregar()"
+    <select [value]="filtroStatus()"
+            (change)="alterarFiltroStatus($event)"
             class="form-input w-full sm:w-44">
       <option value="">Todos os status</option>
       <option value="ATIVO">Ativo</option>
