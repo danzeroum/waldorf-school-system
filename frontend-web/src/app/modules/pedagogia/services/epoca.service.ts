@@ -3,35 +3,37 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
+// Alinhado com EpocaResponseDTO do backend (com.waldorf)
 export interface Epoca {
   id: number;
+  turmaId: number;
+  turmaNome?: string;
   titulo: string;
   materia: string;
   aspecto: 'FISICO' | 'ANIMICO' | 'ESPIRITUAL';
-  turmaId: number;
-  turmaNome?: string;
   dataInicio: string;
   dataFim: string;
   descricao?: string;
   objetivos?: string;
-  situacao: 'PLANEJADA' | 'EM_ANDAMENTO' | 'CONCLUIDA';
+  status: 'PLANEJADA' | 'EM_ANDAMENTO' | 'CONCLUIDA'; // era: situacao
   totalAulas?: number;
+  createdAt?: string;
 }
 
 export interface CreateEpocaRequest {
+  turmaId: number;
   titulo: string;
   materia: string;
-  aspecto: string;
-  turmaId: number;
+  aspecto?: string;
   dataInicio: string;
-  dataFim: string;
+  dataFim?: string;
   descricao?: string;
   objetivos?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class EpocaService {
-  private readonly api = `${environment.apiUrl}/teaching-periods`;
+  private readonly api = `${environment.apiUrl}/epocas`; // era: /teaching-periods
 
   constructor(private http: HttpClient) {}
 
@@ -55,6 +57,6 @@ export class EpocaService {
   }
 
   encerrar(id: number): Observable<Epoca> {
-    return this.http.post<Epoca>(`${this.api}/${id}/conclude`, {});
+    return this.http.post<Epoca>(`${this.api}/${id}/encerrar`, {}); // era: /conclude
   }
 }

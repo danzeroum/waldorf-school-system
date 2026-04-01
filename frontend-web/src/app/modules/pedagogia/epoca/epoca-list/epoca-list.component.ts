@@ -32,6 +32,6 @@ export class EpocaListComponent implements OnInit {
 
   get epocasFiltradas(): Epoca[] {
     const f = this.filtroStatus();
-    return f ? this.epocas().filter(e => e.situacao === f) : this.epocas();
+    return f ? this.epocas().filter(e => e.status === f) : this.epocas(); // era: e.situacao
   }
 }

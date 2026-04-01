@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
+// Alinhado com ObservacaoResponseDTO do backend (com.waldorf)
 export interface ObservacaoPedagogica {
   id: number;
   alunoId: number;
@@ -15,7 +16,7 @@ export interface ObservacaoPedagogica {
   aspecto: 'FISICO' | 'ANIMICO' | 'ESPIRITUAL';
   conteudo: string;
   privada: boolean;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface CreateObservacaoRequest {
@@ -29,12 +30,12 @@ export interface CreateObservacaoRequest {
 
 @Injectable({ providedIn: 'root' })
 export class ObservacaoService {
-  private readonly api = `${environment.apiUrl}/observations`;
+  private readonly api = `${environment.apiUrl}/observacoes`; // era: /observations
 
   constructor(private http: HttpClient) {}
 
   listarPorAluno(alunoId: number): Observable<ObservacaoPedagogica[]> {
-    const params = new HttpParams().set('studentId', alunoId);
+    const params = new HttpParams().set('alunoId', alunoId); // era: studentId
     return this.http.get<ObservacaoPedagogica[]>(this.api, { params });
   }
 
