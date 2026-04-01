@@ -69,8 +69,10 @@ export interface ResumoFinanceiro {
 
 @Injectable({ providedIn: 'root' })
 export class FinanceiroService {
-  private readonly apiContratos = `${environment.apiUrl}/contracts`;
-  private readonly apiParcelas  = `${environment.apiUrl}/invoices`;
+  // URLs alinhadas com com.waldorf FinanceiroController (Opcao C)
+  private readonly apiContratos = `${environment.apiUrl}/financeiro/contratos`;
+  private readonly apiParcelas  = `${environment.apiUrl}/financeiro/parcelas`;
+  private readonly apiResumo    = `${environment.apiUrl}/financeiro/resumo`;
 
   constructor(private http: HttpClient) {}
 
@@ -78,7 +80,7 @@ export class FinanceiroService {
   listarContratos(filtros?: { status?: string; anoLetivo?: number; nome?: string }): Observable<Contrato[]> {
     let params = new HttpParams();
     if (filtros?.status)    params = params.set('status', filtros.status);
-    if (filtros?.anoLetivo) params = params.set('anoLetivo', filtros.anoLetivo);
+    if (filtros?.anoLetivo) params = params.set('anoLetivo', String(filtros.anoLetivo));
     if (filtros?.nome)      params = params.set('nome', filtros.nome);
     return this.http.get<Contrato[]>(this.apiContratos, { params });
   }
@@ -91,27 +93,35 @@ export class FinanceiroService {
     return this.http.post<Contrato>(this.apiContratos, req);
   }
 
-  encerrarContrato(id: number, motivo: string): Observable<Contrato> {
-    return this.http.post<Contrato>(`${this.apiContratos}/${id}/terminate`, { motivo });
+  ativarContrato(id: number): Observable<Contrato> {
+    return this.http.post<Contrato>(`${this.apiContratos}/${id}/ativar`, {});
   }
 
-  // === PARCELAS ===
+  encerrarContrato(id: number, motivo: string): Observable<Contrato> {
+    return this.http.post<Contrato>(`${this.apiContratos}/${id}/encerrar`, { motivo });
+  }
+
+  // === PARCELAS / MENSALIDADES ===
   listarParcelas(filtros?: { status?: string; vencimentoAte?: string; contratoId?: number }): Observable<Parcela[]> {
     let params = new HttpParams();
-    if (filtros?.status)       params = params.set('status', filtros.status);
+    if (filtros?.status)        params = params.set('status', filtros.status);
     if (filtros?.vencimentoAte) params = params.set('vencimentoAte', filtros.vencimentoAte);
-    if (filtros?.contratoId)   params = params.set('contratoId', filtros.contratoId);
+    if (filtros?.contratoId)    params = params.set('contratoId', String(filtros.contratoId));
     return this.http.get<Parcela[]>(this.apiParcelas, { params });
   }
 
-  registrarPagamento(req: BaixaPagamentoRequest): Observable<Parcela> {
-    return this.http.post<Parcela>(`${this.apiParcelas}/${req.parcelaId}/pay`, req);
+  listarParcelasPorContrato(contratoId: number): Observable<Parcela[]> {
+    return this.http.get<Parcela[]>(`${this.apiContratos}/${contratoId}/parcelas`);
   }
 
-  // === DASHBOARD ===
+  registrarPagamento(req: BaixaPagamentoRequest): Observable<Parcela> {
+    return this.http.post<Parcela>(`${this.apiParcelas}/${req.parcelaId}/pagar`, req);
+  }
+
+  // === DASHBOARD / RESUMO ===
   resumo(anoLetivo?: number): Observable<ResumoFinanceiro> {
     let params = new HttpParams();
-    if (anoLetivo) params = params.set('anoLetivo', anoLetivo);
-    return this.http.get<ResumoFinanceiro>(`${environment.apiUrl}/financial/summary`, { params });
+    if (anoLetivo) params = params.set('anoLetivo', String(anoLetivo));
+    return this.http.get<ResumoFinanceiro>(this.apiResumo, { params });
   }
 }
