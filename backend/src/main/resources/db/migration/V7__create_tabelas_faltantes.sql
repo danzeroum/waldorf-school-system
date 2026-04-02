@@ -2,6 +2,7 @@
 -- Migration V7: Tabelas faltantes identificadas na análise de gap
 -- Comparação planoBancoDadosRelacionais.md vs Migrations V1-V6
 -- CORRIGIDO: removidas referências à tabela 'pessoas' inexistente
+-- CORRIGIDO: observacoes_desenvolvimento não tem turma_id (join via alunos)
 -- A V1 criou: usuarios, professores, responsaveis, alunos, turmas
 -- ==========================================================
 
@@ -9,7 +10,7 @@
 -- 1. MÓDULO PESSOAS (complemento V1)
 -- =============================================
 CREATE TABLE IF NOT EXISTS funcionarios (
-    id            BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id            BIGINT       PRIMARY KEY AUTO_INCREMENT,
     usuario_id    BIGINT,
     cargo         VARCHAR(100) NOT NULL,
     departamento  ENUM('SECRETARIA','LIMPEZA','COZINHA','PORTARIA','MANUTENCAO','ADMINISTRATIVO','DIRECAO') NOT NULL,
@@ -158,7 +159,7 @@ CREATE TABLE IF NOT EXISTS contratos_financeiros (
     INDEX idx_numero_contrato (numero_contrato)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- NOTA: tabela mensalidades já existe na V12. Esta é criada apenas se não existir.
+-- NOTA: tabela mensalidades pode já existir na V12. Esta é criada apenas se não existir.
 CREATE TABLE IF NOT EXISTS mensalidades (
     id                     BIGINT PRIMARY KEY AUTO_INCREMENT,
     contrato_id            BIGINT NOT NULL,
@@ -261,16 +262,16 @@ CREATE TABLE IF NOT EXISTS festivais_comunitarios (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS mutiroes (
-    id                   BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nome                 VARCHAR(200) NOT NULL,
-    descricao            TEXT,
-    data_mutirao         DATE NOT NULL,
-    horario_inicio       TIME,
-    horario_fim          TIME,
-    local_mutirao        VARCHAR(200),
+    id                    BIGINT PRIMARY KEY AUTO_INCREMENT,
+    nome                  VARCHAR(200) NOT NULL,
+    descricao             TEXT,
+    data_mutirao          DATE NOT NULL,
+    horario_inicio        TIME,
+    horario_fim           TIME,
+    local_mutirao         VARCHAR(200),
     materiais_necessarios TEXT,
-    limite_participantes INT,
-    permite_criancas     BOOLEAN DEFAULT TRUE,
+    limite_participantes  INT,
+    permite_criancas      BOOLEAN DEFAULT TRUE,
     status ENUM('PLANEJADO','CONFIRMADO','EM_ANDAMENTO','CONCLUIDO','CANCELADO') DEFAULT 'PLANEJADO',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -383,15 +384,20 @@ CREATE TABLE IF NOT EXISTS solicitacoes_titulares_lgpd (
 -- =============================================
 -- 7. VIEWS ESTRATÉGICAS
 -- =============================================
+
+-- Dashboard secretaria: usa tabela contratos (V1) para matriculas_ativas
+-- e contratos_financeiros (V7) para contratos_pendentes
 CREATE OR REPLACE VIEW vw_dashboard_secretaria AS
 SELECT
-    (SELECT COUNT(*) FROM alunos WHERE ativo = TRUE)                                       AS total_alunos_ativos,
+    (SELECT COUNT(*) FROM alunos WHERE ativo = TRUE)                                        AS total_alunos_ativos,
     (SELECT COUNT(*) FROM contratos WHERE situacao = 'ATIVO'
-        AND YEAR(data_inicio) = YEAR(CURDATE()))                                            AS matriculas_ativas,
-    (SELECT COUNT(*) FROM contratos_financeiros WHERE situacao = 'PENDENTE')               AS contratos_pendentes,
-    (SELECT COUNT(*) FROM mensalidades WHERE status = 'ATRASADA')                          AS mensalidades_atrasadas,
-    (SELECT COUNT(*) FROM solicitacoes_titulares WHERE status IN ('ABERTA','EM_ANALISE')) AS lgpd_pendentes;
+        AND YEAR(data_inicio) = YEAR(CURDATE()))                                             AS matriculas_ativas,
+    (SELECT COUNT(*) FROM contratos_financeiros WHERE situacao = 'PENDENTE')                AS contratos_pendentes,
+    (SELECT COUNT(*) FROM mensalidades WHERE status = 'ATRASADA')                           AS mensalidades_atrasadas,
+    (SELECT COUNT(*) FROM solicitacoes_titulares WHERE status IN ('ABERTA','EM_ANALISE'))   AS lgpd_pendentes;
 
+-- CORRIGIDO: observacoes_desenvolvimento (V1) não tem turma_id.
+-- O join correto é via alunos: o -> a -> t
 CREATE OR REPLACE VIEW vw_resumo_pedagogico_turma AS
 SELECT
     t.id                        AS turma_id,
@@ -403,10 +409,10 @@ SELECT
     COUNT(DISTINCT r.id)        AS total_relatorios,
     COUNT(DISTINCT CASE WHEN r.status = 'RASCUNHO' THEN r.id END) AS relatorios_rascunho,
     (SELECT ep.titulo FROM epocas_pedagogicas ep
-     WHERE ep.turma_id = t.id LIMIT 1) AS epoca_atual
+     WHERE ep.turma_id = t.id ORDER BY ep.data_inicio DESC LIMIT 1) AS epoca_atual
 FROM turmas t
 LEFT JOIN alunos a                      ON a.turma_id = t.id AND a.ativo = TRUE
-LEFT JOIN observacoes_desenvolvimento o ON o.turma_id = t.id
+LEFT JOIN observacoes_desenvolvimento o ON o.aluno_id = a.id
 LEFT JOIN relatorios_narrativos r       ON r.turma_id = t.id
 WHERE t.ativa = TRUE
 GROUP BY t.id, t.nome, t.ano_letivo;
