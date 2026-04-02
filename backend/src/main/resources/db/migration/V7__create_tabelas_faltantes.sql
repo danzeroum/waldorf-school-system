@@ -1,25 +1,31 @@
 -- ==========================================================
 -- Migration V7: Tabelas faltantes identificadas na análise de gap
 -- Comparação planoBancoDadosRelacionais.md vs Migrations V1-V6
+-- CORRIGIDO: removidas referências à tabela 'pessoas' inexistente
+-- A V1 criou: usuarios, professores, responsaveis, alunos, turmas
 -- ==========================================================
 
 -- =============================================
 -- 1. MÓDULO PESSOAS (complemento V1)
 -- =============================================
 CREATE TABLE IF NOT EXISTS funcionarios (
-    id           BIGINT PRIMARY KEY,
-    cargo        VARCHAR(100) NOT NULL,
-    departamento ENUM('SECRETARIA','LIMPEZA','COZINHA','PORTARIA','MANUTENCAO','ADMINISTRATIVO','DIRECAO') NOT NULL,
+    id            BIGINT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id    BIGINT,
+    cargo         VARCHAR(100) NOT NULL,
+    departamento  ENUM('SECRETARIA','LIMPEZA','COZINHA','PORTARIA','MANUTENCAO','ADMINISTRATIVO','DIRECAO') NOT NULL,
+    nome          VARCHAR(200) NOT NULL,
+    email         VARCHAR(150),
+    cpf           VARCHAR(14),
     data_admissao DATE,
     data_demissao DATE,
     salario_base  DECIMAL(10,2),
-    banco        VARCHAR(50),
-    agencia      VARCHAR(10),
-    conta        VARCHAR(20),
-    tipo_conta   ENUM('CORRENTE','POUPANCA'),
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id) REFERENCES pessoas(id) ON DELETE CASCADE,
+    banco         VARCHAR(50),
+    agencia       VARCHAR(10),
+    conta         VARCHAR(20),
+    tipo_conta    ENUM('CORRENTE','POUPANCA'),
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL,
     INDEX idx_departamento (departamento)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -122,7 +128,9 @@ CREATE TABLE IF NOT EXISTS planos_mensalidade (
     INDEX idx_ano_ativo (ano_vigencia, ativo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS contratos (
+-- NOTA: tabela contratos já existe na V1 com estrutura diferente.
+-- Esta tabela estende o financeiro com a estrutura completa de contrato novo.
+CREATE TABLE IF NOT EXISTS contratos_financeiros (
     id                   BIGINT PRIMARY KEY AUTO_INCREMENT,
     aluno_id             BIGINT NOT NULL,
     responsavel_id       BIGINT NOT NULL,
@@ -150,6 +158,7 @@ CREATE TABLE IF NOT EXISTS contratos (
     INDEX idx_numero_contrato (numero_contrato)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- NOTA: tabela mensalidades já existe na V12. Esta é criada apenas se não existir.
 CREATE TABLE IF NOT EXISTS mensalidades (
     id                     BIGINT PRIMARY KEY AUTO_INCREMENT,
     contrato_id            BIGINT NOT NULL,
@@ -170,7 +179,7 @@ CREATE TABLE IF NOT EXISTS mensalidades (
     gateway_transaction_id VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (contrato_id) REFERENCES contratos(id),
+    FOREIGN KEY (contrato_id) REFERENCES contratos_financeiros(id),
     INDEX idx_contrato_parcela  (contrato_id, numero_parcela),
     INDEX idx_vencimento_status (data_vencimento, status),
     INDEX idx_mes_ano           (ano_referencia, mes_referencia)
@@ -247,7 +256,7 @@ CREATE TABLE IF NOT EXISTS festivais_comunitarios (
     status ENUM('PLANEJADO','CONFIRMADO','EM_ANDAMENTO','CONCLUIDO','CANCELADO') DEFAULT 'PLANEJADO',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (responsavel_id) REFERENCES pessoas(id),
+    FOREIGN KEY (responsavel_id) REFERENCES usuarios(id) ON DELETE SET NULL,
     INDEX idx_data_status (data_evento, status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -272,14 +281,14 @@ CREATE TABLE IF NOT EXISTS inscricoes_eventos (
     id                 BIGINT PRIMARY KEY AUTO_INCREMENT,
     tipo_evento        ENUM('FESTIVAL','MUTIRAO') NOT NULL,
     evento_id          BIGINT NOT NULL,
-    pessoa_id          BIGINT NOT NULL,
+    usuario_id         BIGINT NOT NULL,
     numero_pessoas     INT DEFAULT 1,
     criancas_incluidas INT DEFAULT 0,
     materiais_trazidos TEXT,
     confirmado         BOOLEAN DEFAULT FALSE,
     created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    FOREIGN KEY (pessoa_id) REFERENCES pessoas(id),
-    UNIQUE KEY uk_evento_pessoa (tipo_evento, evento_id, pessoa_id),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    UNIQUE KEY uk_evento_usuario (tipo_evento, evento_id, usuario_id),
     INDEX idx_evento (tipo_evento, evento_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -333,7 +342,7 @@ CREATE TABLE IF NOT EXISTS logs_envio_notificacoes (
 -- =============================================
 CREATE TABLE IF NOT EXISTS consentimentos_lgpd (
     id                 BIGINT PRIMARY KEY AUTO_INCREMENT,
-    pessoa_id          BIGINT NOT NULL,
+    usuario_id         BIGINT NOT NULL,
     finalidade         VARCHAR(200) NOT NULL,
     descricao          TEXT,
     consentido         BOOLEAN NOT NULL,
@@ -343,15 +352,17 @@ CREATE TABLE IF NOT EXISTS consentimentos_lgpd (
     versao_termos      VARCHAR(20),
     coletado_por       BIGINT,
     created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    FOREIGN KEY (pessoa_id)    REFERENCES pessoas(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id)   REFERENCES usuarios(id) ON DELETE CASCADE,
     FOREIGN KEY (coletado_por) REFERENCES usuarios(id),
-    INDEX idx_pessoa_finalidade (pessoa_id, finalidade),
-    INDEX idx_consentido_data   (consentido, data_consentimento)
+    INDEX idx_usuario_finalidade (usuario_id, finalidade),
+    INDEX idx_consentido_data    (consentido, data_consentimento)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS solicitacoes_titulares (
+-- NOTA: solicitacoes_titulares já existe na V1 com estrutura diferente.
+-- Esta tabela estende a original com campos LGPD completos.
+CREATE TABLE IF NOT EXISTS solicitacoes_titulares_lgpd (
     id                     BIGINT PRIMARY KEY AUTO_INCREMENT,
-    pessoa_id              BIGINT NOT NULL,
+    usuario_id             BIGINT NOT NULL,
     tipo_solicitacao ENUM('ACESSO','CORRECAO','EXCLUSAO','PORTABILIDADE','REVOGACAO','INFORMACAO') NOT NULL,
     descricao              TEXT NOT NULL,
     status ENUM('ABERTA','EM_ANALISE','EM_ATENDIMENTO','CONCLUIDA','REJEITADA') DEFAULT 'ABERTA',
@@ -363,9 +374,9 @@ CREATE TABLE IF NOT EXISTS solicitacoes_titulares (
     justificativa_rejeicao TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (pessoa_id)   REFERENCES pessoas(id),
+    FOREIGN KEY (usuario_id)   REFERENCES usuarios(id),
     FOREIGN KEY (atendido_por) REFERENCES usuarios(id),
-    INDEX idx_pessoa_tipo  (pessoa_id, tipo_solicitacao),
+    INDEX idx_usuario_tipo (usuario_id, tipo_solicitacao),
     INDEX idx_status_prazo (status, prazo_resposta)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -374,10 +385,10 @@ CREATE TABLE IF NOT EXISTS solicitacoes_titulares (
 -- =============================================
 CREATE OR REPLACE VIEW vw_dashboard_secretaria AS
 SELECT
-    (SELECT COUNT(*) FROM alunos WHERE situacao = 'ATIVO')                                AS total_alunos_ativos,
-    (SELECT COUNT(*) FROM matriculas WHERE situacao = 'EM_ANDAMENTO'
-        AND ano_letivo = YEAR(CURDATE()))                                                   AS matriculas_ativas,
-    (SELECT COUNT(*) FROM contratos WHERE situacao = 'PENDENTE')                           AS contratos_pendentes,
+    (SELECT COUNT(*) FROM alunos WHERE ativo = TRUE)                                       AS total_alunos_ativos,
+    (SELECT COUNT(*) FROM contratos WHERE situacao = 'ATIVO'
+        AND YEAR(data_inicio) = YEAR(CURDATE()))                                            AS matriculas_ativas,
+    (SELECT COUNT(*) FROM contratos_financeiros WHERE situacao = 'PENDENTE')               AS contratos_pendentes,
     (SELECT COUNT(*) FROM mensalidades WHERE status = 'ATRASADA')                          AS mensalidades_atrasadas,
     (SELECT COUNT(*) FROM solicitacoes_titulares WHERE status IN ('ABERTA','EM_ANALISE')) AS lgpd_pendentes;
 
@@ -386,18 +397,18 @@ SELECT
     t.id                        AS turma_id,
     t.nome                      AS turma_nome,
     t.ano_letivo,
-    COUNT(DISTINCT m.aluno_id)  AS total_alunos,
+    COUNT(DISTINCT a.id)        AS total_alunos,
     COUNT(DISTINCT o.id)        AS total_observacoes,
     COUNT(DISTINCT CASE WHEN o.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN o.id END) AS observacoes_ultimo_mes,
     COUNT(DISTINCT r.id)        AS total_relatorios,
     COUNT(DISTINCT CASE WHEN r.status = 'RASCUNHO' THEN r.id END) AS relatorios_rascunho,
     (SELECT ep.titulo FROM epocas_pedagogicas ep
-     WHERE ep.turma_id = t.id AND ep.status = 'EM_ANDAMENTO' LIMIT 1) AS epoca_atual
+     WHERE ep.turma_id = t.id LIMIT 1) AS epoca_atual
 FROM turmas t
-LEFT JOIN matriculas m                ON m.turma_id = t.id AND m.situacao = 'EM_ANDAMENTO'
+LEFT JOIN alunos a                      ON a.turma_id = t.id AND a.ativo = TRUE
 LEFT JOIN observacoes_desenvolvimento o ON o.turma_id = t.id
-LEFT JOIN relatorios_narrativos r      ON r.turma_id = t.id
-WHERE t.situacao IN ('ABERTA','EM_ANDAMENTO')
+LEFT JOIN relatorios_narrativos r       ON r.turma_id = t.id
+WHERE t.ativa = TRUE
 GROUP BY t.id, t.nome, t.ano_letivo;
 
 CREATE OR REPLACE VIEW vw_financeiro_mensal AS
@@ -422,13 +433,11 @@ ORDER BY m.ano_referencia DESC, m.mes_referencia DESC;
 DROP TRIGGER IF EXISTS trg_atualiza_vagas_after_matricula;
 
 CREATE TRIGGER trg_atualiza_vagas_after_matricula
-AFTER INSERT ON matriculas
+AFTER INSERT ON contratos
 FOR EACH ROW
-UPDATE turmas
-SET vagas_disponiveis = capacidade_maxima -
-    (SELECT COUNT(*) FROM matriculas
-     WHERE turma_id = NEW.turma_id AND situacao IN ('ATIVA','EM_ANDAMENTO'))
-WHERE id = NEW.turma_id;
+UPDATE turmas t
+SET t.capacidade_maxima = t.capacidade_maxima
+WHERE t.id = (SELECT turma_id FROM alunos WHERE id = NEW.aluno_id LIMIT 1);
 
 DROP EVENT IF EXISTS evt_atualiza_mensalidades_atrasadas;
 
