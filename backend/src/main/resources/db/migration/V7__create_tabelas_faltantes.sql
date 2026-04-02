@@ -3,6 +3,7 @@
 -- Comparação planoBancoDadosRelacionais.md vs Migrations V1-V6
 -- CORRIGIDO: removidas referências à tabela 'pessoas' inexistente
 -- CORRIGIDO: observacoes_desenvolvimento não tem turma_id (join via alunos)
+-- CORRIGIDO: removidos TRIGGER e EVENT (requerem SUPER privilege com binlog)
 -- A V1 criou: usuarios, professores, responsaveis, alunos, turmas
 -- ==========================================================
 
@@ -159,7 +160,7 @@ CREATE TABLE IF NOT EXISTS contratos_financeiros (
     INDEX idx_numero_contrato (numero_contrato)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- NOTA: tabela mensalidades pode já existir na V12. Esta é criada apenas se não existir.
+-- NOTA: tabela mensalidades pode já existir na V1. Criada apenas se não existir.
 CREATE TABLE IF NOT EXISTS mensalidades (
     id                     BIGINT PRIMARY KEY AUTO_INCREMENT,
     contrato_id            BIGINT NOT NULL,
@@ -434,23 +435,10 @@ GROUP BY m.ano_referencia, m.mes_referencia
 ORDER BY m.ano_referencia DESC, m.mes_referencia DESC;
 
 -- =============================================
--- 8. TRIGGERS E EVENTOS
+-- NOTA: TRIGGERS E EVENTS foram removidos desta migration.
+-- MySQL requer privilégio SUPER para criar triggers/events com
+-- binary logging ativo (log_bin=ON), o que não é disponível ao
+-- usuário da aplicação em ambientes containerizados.
+-- A lógica de atualização de vagas e status de mensalidades
+-- será implementada na camada de serviço (Java/Spring).
 -- =============================================
-DROP TRIGGER IF EXISTS trg_atualiza_vagas_after_matricula;
-
-CREATE TRIGGER trg_atualiza_vagas_after_matricula
-AFTER INSERT ON contratos
-FOR EACH ROW
-UPDATE turmas t
-SET t.capacidade_maxima = t.capacidade_maxima
-WHERE t.id = (SELECT turma_id FROM alunos WHERE id = NEW.aluno_id LIMIT 1);
-
-DROP EVENT IF EXISTS evt_atualiza_mensalidades_atrasadas;
-
-CREATE EVENT evt_atualiza_mensalidades_atrasadas
-ON SCHEDULE EVERY 1 DAY
-STARTS CURRENT_DATE + INTERVAL 1 DAY + INTERVAL 6 HOUR
-DO
-    UPDATE mensalidades
-    SET status = 'ATRASADA', updated_at = NOW()
-    WHERE status = 'ABERTA' AND data_vencimento < CURDATE();
