@@ -5,13 +5,13 @@
 -- ==========================================================
 
 ALTER TABLE consentimentos_lgpd
-    ADD COLUMN IF NOT EXISTS aluno_id        BIGINT,
-    ADD COLUMN IF NOT EXISTS responsavel_id  BIGINT,
-    ADD COLUMN IF NOT EXISTS tipo            VARCHAR(50),
-    ADD COLUMN IF NOT EXISTS status          VARCHAR(30),
-    ADD COLUMN IF NOT EXISTS data_aceite     DATE,
-    ADD COLUMN IF NOT EXISTS ip_aceite       VARCHAR(45),
-    ADD COLUMN IF NOT EXISTS updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+    ADD COLUMN aluno_id        BIGINT,
+    ADD COLUMN responsavel_id  BIGINT,
+    ADD COLUMN tipo            VARCHAR(50),
+    ADD COLUMN status          VARCHAR(30),
+    ADD COLUMN data_aceite     DATE,
+    ADD COLUMN ip_aceite       VARCHAR(45),
+    ADD COLUMN updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 ALTER TABLE consentimentos_lgpd
     ADD CONSTRAINT fk_consentimentos_aluno
