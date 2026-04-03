@@ -4,9 +4,9 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
 
-// ─── DTOs alinhados com LoginRequestDTO / LoginResponseDTO do backend ───────
+// ─── DTOs ────────────────────────────────────────────────────────────────────
 export interface LoginRequest {
-  username: string;   // backend Spring Security espera 'username'
+  email: string;
   password: string;
   deviceId?:   string;
   deviceType?: string;
@@ -16,18 +16,17 @@ export interface UsuarioResumo {
   id:           number;
   username:     string;
   email:        string;
+  nome:         string;
   nomeCompleto: string;
   primaryRole:  string;
   roles:        string[];
+  perfis:       string[];
 }
 
 export interface LoginResponse {
-  success:          boolean;
-  accessToken:      string;
-  refreshToken:     string;
-  expiresIn:        number;
-  refreshExpiresIn: number;
-  user:             UsuarioResumo;
+  accessToken:  string;
+  refreshToken: string;
+  usuario:      { id: number; nome: string; email: string; perfis: string[] };
 }
 
 export interface RefreshTokenRequest {
@@ -36,10 +35,8 @@ export interface RefreshTokenRequest {
 
 export interface MeResponse {
   id:           number;
-  username:     string;
   email:        string;
   nomeCompleto: string;
-  primaryRole:  string;
   roles:        string[];
   permissions:  string[];
 }
@@ -48,9 +45,8 @@ export interface MeResponse {
 export class AuthService {
 
   private readonly base = `${environment.apiUrl}/auth`;
-  private _usuario$ = new BehaviorSubject<UsuarioResumo | null>(this.getUsuario());
+  private _usuario$ = new BehaviorSubject<UsuarioResumo | null>(this.loadUsuario());
 
-  /** Observable para componentes reagirem a login/logout */
   readonly usuario$ = this._usuario$.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -59,10 +55,11 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.base}/login`, credentials).pipe(
       tap(res => {
+        const normalized = this.normalizeUsuario(res.usuario);
         localStorage.setItem('access_token',  res.accessToken);
         localStorage.setItem('refresh_token', res.refreshToken);
-        localStorage.setItem('usuario',       JSON.stringify(res.user));
-        this._usuario$.next(res.user);
+        localStorage.setItem('usuario',       JSON.stringify(normalized));
+        this._usuario$.next(normalized);
       })
     );
   }
@@ -73,8 +70,11 @@ export class AuthService {
     const body: RefreshTokenRequest = { refreshToken: token };
     return this.http.post<LoginResponse>(`${this.base}/refresh`, body).pipe(
       tap(res => {
+        const normalized = this.normalizeUsuario(res.usuario);
         localStorage.setItem('access_token',  res.accessToken);
         localStorage.setItem('refresh_token', res.refreshToken);
+        localStorage.setItem('usuario',       JSON.stringify(normalized));
+        this._usuario$.next(normalized);
       })
     );
   }
@@ -124,11 +124,48 @@ export class AuthService {
   hasRole(role: string): boolean {
     const usuario = this.getUsuario();
     if (!usuario) return false;
-    return usuario.roles.some(r => r === role || r === `ROLE_${role}`);
+    const roles = usuario.roles || usuario.perfis || [];
+    return roles.some((r: string) => r === role || r === `ROLE_${role}`);
   }
 
   isAdmin():       boolean { return this.hasRole('ADMIN'); }
   isCoordenador(): boolean { return this.hasRole('COORDENADOR'); }
   isProfessor():   boolean { return this.hasRole('PROFESSOR'); }
   isResponsavel(): boolean { return this.hasRole('RESPONSAVEL'); }
+
+  // ── Privado ────────────────────────────────────────────────────────────────
+
+  private normalizeUsuario(u: any): UsuarioResumo {
+    const perfis = u.perfis || u.roles || [];
+    return {
+      id:           u.id,
+      username:     u.username || u.email || '',
+      email:        u.email || '',
+      nome:         u.nome || u.nomeCompleto || '',
+      nomeCompleto: u.nomeCompleto || u.nome || '',
+      primaryRole:  u.primaryRole || perfis[0] || '',
+      roles:        perfis,
+      perfis:       perfis,
+    };
+  }
+
+  private loadUsuario(): UsuarioResumo | null {
+    try {
+      const u = this.getUsuario();
+      if (!u) return null;
+      if (!u.roles && u.perfis) (u as any).roles = u.perfis;
+      if (!u.perfis && u.roles) (u as any).perfis = u.roles;
+      if (!u.nomeCompleto && u.nome) (u as any).nomeCompleto = u.nome;
+      if (!u.nome && u.nomeCompleto) (u as any).nome = u.nomeCompleto;
+      if (!u.username) (u as any).username = u.email || '';
+      if (!u.primaryRole) {
+        const roles = u.roles || u.perfis || [];
+        (u as any).primaryRole = roles[0] || '';
+      }
+      return u;
+    } catch {
+      localStorage.removeItem('usuario');
+      return null;
+    }
+  }
 }

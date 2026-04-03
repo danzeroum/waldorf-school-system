@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
 
     const payload = {
-      username: this.form.value.username,
+      email: this.form.value.username,
       password: this.form.value.password,
       deviceType: 'WEB' as const,
     };
