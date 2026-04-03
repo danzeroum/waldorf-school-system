@@ -1,4 +1,4 @@
-// === QUINTAL AROEIRA — DESIGN SYSTEM GLOBAL ===
+// === WALDORF DESIGN SYSTEM — ESTILOS GLOBAIS ===
 
 // Tailwind base
 @tailwind base;
@@ -18,8 +18,8 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
-  background-color: #F5F0E8; // waldorf-cream-50 (areia)
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #fdfaf5; // waldorf-cream-50
   color: #3a3835;            // waldorf-gray-800
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
@@ -28,25 +28,25 @@ body {
 
 // === TIPOGRAFIA ===
 h1, h2, h3 {
-  font-family: 'Lora', Georgia, serif;
+  font-family: 'Playfair Display', Georgia, serif;
   font-weight: 600;
   color: #252321; // waldorf-gray-900
   line-height: 1.3;
 }
 
 h4, h5, h6 {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
   color: #3a3835;
 }
 
 a {
-  color: #5B7F5E;
+  color: #2d8c3a;
   text-decoration: none;
   transition: color 0.2s ease;
 
   &:hover {
-    color: #384E3A;
+    color: #1b5626;
   }
 }
 
@@ -57,15 +57,15 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: #E0D5C2; // waldorf-cream-200
+  background: #f0e4c8; // waldorf-cream-200
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #8fae91; // waldorf-green-300
+  background: #80c489; // waldorf-green-300
   border-radius: 3px;
 
   &:hover {
-    background: #5B7F5E; // waldorf-green-500
+    background: #2d8c3a; // waldorf-green-500
   }
 }
 
@@ -74,54 +74,59 @@ a {
 
   // --- Botões ---
   .btn-primary {
-    @apply bg-waldorf-green-500 text-white font-medium py-2.5 px-6 rounded-xl
+    @apply bg-waldorf-green-500 text-white font-medium py-2.5 px-6 rounded-lg
            hover:bg-waldorf-green-600 active:bg-waldorf-green-700
+           transition-all duration-200 ease-in-out
+           focus:outline-none focus:ring-2 focus:ring-waldorf-green-300 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed
+           shadow-waldorf-sm hover:shadow-waldorf;
+  }
+
+  .btn-secondary {
+    @apply bg-waldorf-cream-100 text-waldorf-gray-700 font-medium py-2.5 px-6 rounded-lg
+           border border-waldorf-cream-300
+           hover:bg-waldorf-cream-200 active:bg-waldorf-cream-300
            transition-all duration-200 ease-in-out
            focus:outline-none focus:ring-2 focus:ring-waldorf-green-300 focus:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  .btn-secondary {
-    @apply bg-waldorf-cream-100 text-waldorf-gray-700 font-medium py-2.5 px-6 rounded-xl
-           border border-waldorf-cream-300
-           hover:bg-waldorf-cream-200 hover:text-waldorf-gray-800
-           active:bg-waldorf-cream-300
+  .btn-danger {
+    @apply bg-red-500 text-white font-medium py-2.5 px-6 rounded-lg
+           hover:bg-red-600 active:bg-red-700
            transition-all duration-200 ease-in-out
-           focus:outline-none focus:ring-2 focus:ring-waldorf-cream-300 focus:ring-offset-2;
+           focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-ghost {
-    @apply text-waldorf-gray-600 font-medium py-2 px-4 rounded-xl
+    @apply text-waldorf-gray-600 font-medium py-2.5 px-4 rounded-lg
            hover:bg-waldorf-cream-100 hover:text-waldorf-gray-800
-           transition-all duration-200 ease-in-out;
+           transition-all duration-200 ease-in-out
+           focus:outline-none focus:ring-2 focus:ring-waldorf-green-200;
   }
 
   .btn-icon {
-    @apply p-2 rounded-xl text-waldorf-gray-500
+    @apply p-2 rounded-lg text-waldorf-gray-500
            hover:bg-waldorf-cream-100 hover:text-waldorf-gray-700
-           transition-all duration-200 ease-in-out;
-  }
-
-  .btn-danger {
-    @apply bg-red-500 text-white font-medium py-2.5 px-6 rounded-xl
-           hover:bg-red-600 active:bg-red-700
-           transition-all duration-200 ease-in-out;
+           transition-all duration-200 ease-in-out
+           focus:outline-none focus:ring-2 focus:ring-waldorf-green-200;
   }
 
   // --- Cards ---
   .card {
-    @apply bg-white rounded-2xl border border-waldorf-cream-200
-           shadow-waldorf-sm p-5;
+    @apply bg-white rounded-xl border border-waldorf-cream-200
+           shadow-waldorf-sm p-6;
   }
 
   .card-hover {
-    @apply card hover:shadow-waldorf-md hover:border-waldorf-cream-300
+    @apply card hover:shadow-waldorf hover:-translate-y-0.5
            transition-all duration-200 ease-in-out cursor-pointer;
   }
 
   // --- Formulários ---
   .form-input {
-    @apply w-full px-4 py-2.5 rounded-xl border border-waldorf-cream-300
+    @apply w-full px-4 py-2.5 rounded-lg border border-waldorf-cream-300
            bg-white text-waldorf-gray-800 placeholder-waldorf-gray-400
            focus:outline-none focus:ring-2 focus:ring-waldorf-green-300
            focus:border-waldorf-green-400
@@ -167,14 +172,14 @@ a {
 
   // --- Sidebar ---
   .sidebar-link {
-    @apply flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium
            text-waldorf-gray-600 hover:bg-waldorf-green-50 hover:text-waldorf-green-700
            transition-all duration-200 ease-in-out cursor-pointer;
   }
 
   .sidebar-link-active {
     @apply sidebar-link bg-waldorf-green-50 text-waldorf-green-700
-           border-l-4 border-waldorf-green-500;
+           border-r-2 border-waldorf-green-500;
   }
 
   // --- Tabelas ---
@@ -192,9 +197,11 @@ a {
   }
 
   // --- Aspect Tags (observações Waldorf) ---
+  // Três aspectos usados nos DTOs do backend (FISICO, ANIMICO, ESPIRITUAL)
   .aspect-fisico      { @apply bg-green-100  text-green-700;  }
   .aspect-animico     { @apply bg-blue-100   text-blue-700;   }
-  .aspect-espiritual  { @apply bg-indigo-100 text-indigo-700; }
+  .aspect-espiritual  { @apply bg-indigo-100 text-indigo-700; } // adicionado: ausente anterior
+  // Aspectos legados / extensões futuras
   .aspect-cognitivo   { @apply bg-orange-100 text-orange-700; }
   .aspect-social      { @apply bg-red-100    text-red-700;    }
   .aspect-artistico   { @apply bg-purple-100 text-purple-700; }
@@ -230,30 +237,3 @@ a {
 .animate-fade-in-up  { animation: fadeInUp  0.3s ease-out both; }
 .animate-fade-in     { animation: fadeIn    0.25s ease-out both; }
 .animate-slide-left  { animation: slideInLeft 0.25s ease-out both; }
-
-// === MATERIAL ANGULAR — OVERRIDE TEMA ===
-.mat-mdc-card {
-  border-radius: 1rem !important;
-  border: 1px solid #E0D5C2 !important;
-  box-shadow: 0 1px 3px rgba(91,127,94,0.08), 0 1px 2px rgba(0,0,0,0.06) !important;
-}
-
-.mat-mdc-raised-button.mat-primary {
-  background-color: #5B7F5E !important;
-  border-radius: 0.75rem !important;
-}
-
-.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
-.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
-.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
-  border-color: #5B7F5E !important;
-}
-
-.mat-mdc-checkbox.mat-primary .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
-  background-color: #5B7F5E !important;
-  border-color: #5B7F5E !important;
-}
-
-.mat-mdc-progress-spinner circle {
-  stroke: #5B7F5E !important;
-}

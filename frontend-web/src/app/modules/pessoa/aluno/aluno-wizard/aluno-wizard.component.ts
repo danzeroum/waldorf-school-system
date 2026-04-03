@@ -35,7 +35,7 @@ export class AlunoWizardComponent implements OnInit {
     private fb: FormBuilder,
     private alunoService: AlunoService,
     private cepService: BuscaCepService,
-    private router: Router,
+    readonly router: Router,
     private route: ActivatedRoute,
   ) {}
 

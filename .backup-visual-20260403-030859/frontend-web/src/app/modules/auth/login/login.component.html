@@ -1,28 +1,20 @@
-<div class="min-h-screen flex items-center justify-center"
-     style="background: linear-gradient(135deg, #F5F0E8 0%, #E0D5C2 50%, #dce5dc 100%);">
-
-  <mat-card class="w-full max-w-md p-8 shadow-lg" style="border-radius: 1.5rem !important;">
+<div class="min-h-screen flex items-center justify-center bg-waldorf-cream">
+  <mat-card class="w-full max-w-md p-8 shadow-lg">
 
     <mat-card-header class="mb-6">
-      <div class="flex flex-col items-center w-full text-center">
-        <!-- Logo Aroeira -->
-        <div class="w-16 h-16 bg-waldorf-green-500 rounded-2xl flex items-center justify-center
-                    shadow-waldorf-md mb-4">
-          <span class="material-icons text-white" style="font-size:2rem">park</span>
+      <div class="flex items-center gap-3">
+        <mat-icon class="text-waldorf-green" style="font-size:2.5rem;width:2.5rem;height:2.5rem">school</mat-icon>
+        <div>
+          <mat-card-title class="text-2xl font-bold text-waldorf-green">Escola Waldorf</mat-card-title>
+          <mat-card-subtitle>Sistema de Gestão Escolar</mat-card-subtitle>
         </div>
-        <mat-card-title class="text-2xl font-bold font-serif" style="color: #5B7F5E;">
-          Quintal Aroeira
-        </mat-card-title>
-        <mat-card-subtitle class="mt-1" style="color: #8c8278; font-family: 'Nunito', sans-serif;">
-          Escola Waldorf de Bertioga
-        </mat-card-subtitle>
       </div>
     </mat-card-header>
 
     <mat-card-content>
 
       @if (errorMessage) {
-        <div class="bg-red-50 border border-red-300 text-red-700 rounded-xl px-4 py-3 mb-4 text-sm"
+        <div class="bg-red-50 border border-red-300 text-red-700 rounded-md px-4 py-3 mb-4 text-sm"
              role="alert">
           <span class="font-medium">{{ errorMessage }}</span>
         </div>
@@ -75,8 +67,7 @@
         <!-- Submit -->
         <button mat-raised-button color="primary" type="submit"
                 [disabled]="loading || form.invalid"
-                class="h-12 text-base font-semibold mt-2"
-                style="border-radius: 0.75rem !important;">
+                class="h-12 text-base font-semibold mt-2">
           @if (loading) {
             <mat-progress-spinner diameter="20" mode="indeterminate"
               class="inline-block mr-2"></mat-progress-spinner>
@@ -87,11 +78,9 @@
       </form>
     </mat-card-content>
 
-    <mat-card-footer class="p-4 text-center text-sm" style="color: #8c8278;">
+    <mat-card-footer class="p-4 text-center text-sm text-gray-500">
       Esqueceu sua senha?
-      <a routerLink="/auth/recuperar"
-         class="font-medium hover:underline ml-1"
-         style="color: #5B7F5E;">
+      <a routerLink="/auth/recuperar" class="text-waldorf-green font-medium hover:underline ml-1">
         Recuperar acesso
       </a>
     </mat-card-footer>

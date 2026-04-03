@@ -31,7 +31,7 @@
     <!-- Situação -->
     <select
       [value]="filtroSituacao()"
-      (change)="mudarSituacao(($event.target as HTMLSelectElement).value)"
+      (change)="mudarSituacao($any($event.target).value)"
       class="form-input w-full sm:w-44"
     >
       <option value="">Todas as situações</option>

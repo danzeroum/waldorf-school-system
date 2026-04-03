@@ -5,55 +5,55 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // === WALDORF DESIGN SYSTEM ===
+      // === QUINTAL AROEIRA — DESIGN SYSTEM ===
       colors: {
-        // Primária — Verde Floresta
+        // Primária — Verde Musgo (suave, orgânico)
         'waldorf-green': {
-          50:  '#f0f7f0',
-          100: '#d9eedd',
-          200: '#b3ddb8',
-          300: '#80c489',
-          400: '#4ea85a',
-          500: '#2d8c3a',  // principal
-          600: '#237030',
-          700: '#1b5626',
-          800: '#153f1d',
-          900: '#0e2b14',
+          50:  '#f2f5f2',
+          100: '#dce5dc',
+          200: '#b8ccb9',
+          300: '#8fae91',
+          400: '#6e9471',
+          500: '#5B7F5E',  // principal — verde musgo Aroeira
+          600: '#49664B',
+          700: '#384E3A',
+          800: '#2A3A2B',
+          900: '#1C271D',
         },
-        // Secundária — Âmbar Quente
+        // Secundária — Dourado Quente
         'waldorf-amber': {
-          50:  '#fff8e7',
-          100: '#ffefc2',
-          200: '#ffd97a',
-          300: '#ffbf2a',
-          400: '#f0a500',  // principal
-          500: '#c98800',
-          600: '#a06b00',
-          700: '#7a5000',
-          800: '#573800',
-          900: '#3a2500',
+          50:  '#faf6ed',
+          100: '#f2e8ce',
+          200: '#e5d1a0',
+          300: '#D4B876',
+          400: '#C4A265',  // principal — dourado quente
+          500: '#A88845',
+          600: '#8A6D34',
+          700: '#6B5428',
+          800: '#4D3C1C',
+          900: '#332812',
         },
-        // Terciária — Terracota
+        // Terciária — Terracota Suave
         'waldorf-terra': {
-          50:  '#fdf3ee',
-          100: '#fae1d1',
-          200: '#f4bfa0',
-          300: '#ec9566',
-          400: '#e06b35',
-          500: '#c9511e',  // principal
-          600: '#a33f17',
-          700: '#7d2f11',
-          800: '#59210c',
-          900: '#3b1508',
+          50:  '#fdf4ef',
+          100: '#fae3d5',
+          200: '#f4c5aa',
+          300: '#E8A47D',
+          400: '#D4956A',  // principal — terracota suave
+          500: '#B87A50',
+          600: '#96603C',
+          700: '#74492D',
+          800: '#533320',
+          900: '#382215',
         },
-        // Neutros Quentes
+        // Neutros Quentes — Areia
         'waldorf-cream': {
-          50:  '#fdfaf5',
-          100: '#f9f3e6',
-          200: '#f0e4c8',
-          300: '#e5d0a4',
-          400: '#d4b87a',
-          500: '#c09952',
+          50:  '#F5F0E8',  // fundo principal — areia quente
+          100: '#EDE6D8',
+          200: '#E0D5C2',
+          300: '#CFBFA5',
+          400: '#BBAA88',
+          500: '#A8946D',
         },
         // Cinzas com temperatura quente
         'waldorf-gray': {
@@ -70,8 +70,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        'serif': ['Playfair Display', 'Georgia', 'serif'],
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'serif': ['Lora', 'Georgia', 'serif'],
+        'sans': ['Nunito', 'system-ui', 'sans-serif'],
         'mono': ['JetBrains Mono', 'Consolas', 'monospace'],
       },
       fontSize: {
@@ -93,10 +93,10 @@ module.exports = {
         '2xl':  '2rem',
       },
       boxShadow: {
-        'waldorf-sm': '0 1px 3px rgba(45,140,58,0.08), 0 1px 2px rgba(0,0,0,0.06)',
-        'waldorf':    '0 4px 6px rgba(45,140,58,0.07), 0 2px 4px rgba(0,0,0,0.06)',
-        'waldorf-md': '0 10px 15px rgba(45,140,58,0.07), 0 4px 6px rgba(0,0,0,0.05)',
-        'waldorf-lg': '0 20px 25px rgba(45,140,58,0.06), 0 10px 10px rgba(0,0,0,0.04)',
+        'waldorf-sm': '0 1px 3px rgba(91,127,94,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+        'waldorf':    '0 4px 6px rgba(91,127,94,0.07), 0 2px 4px rgba(0,0,0,0.06)',
+        'waldorf-md': '0 10px 15px rgba(91,127,94,0.07), 0 4px 6px rgba(0,0,0,0.05)',
+        'waldorf-lg': '0 20px 25px rgba(91,127,94,0.06), 0 10px 10px rgba(0,0,0,0.04)',
       },
       spacing: {
         '18': '4.5rem',

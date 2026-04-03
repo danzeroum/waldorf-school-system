@@ -14,27 +14,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PessoasComponent } from './pessoas.component';
+import { PessoaModule } from '../pessoa/pessoa.module';
 
 const routes: Routes = [{ path: '', component: PessoasComponent }];
 
 @NgModule({
   declarations: [PessoasComponent],
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
+    CommonModule, FormsModule, ReactiveFormsModule,
     RouterModule.forChild(routes),
-    MatTableModule,
-    MatPaginatorModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatSnackBarModule,
-    MatDialogModule,
+    MatTableModule, MatPaginatorModule, MatButtonModule, MatIconModule,
+    MatInputModule, MatSelectModule, MatFormFieldModule,
+    MatProgressSpinnerModule, MatTooltipModule, MatSnackBarModule,
+    MatDialogModule, PessoaModule,
   ],
 })
 export class PessoasModule {}

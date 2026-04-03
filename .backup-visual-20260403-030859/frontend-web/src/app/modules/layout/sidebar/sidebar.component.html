@@ -1,15 +1,11 @@
 <div class="flex flex-col h-full py-4">
 
-  <!-- Logo / marca Quintal Aroeira -->
+  <!-- Logo / marca -->
   <div class="px-4 mb-6 flex items-center gap-3" [class.justify-center]="collapsed">
-    <div class="w-9 h-9 bg-waldorf-green-500 rounded-2xl flex items-center justify-center flex-shrink-0
-                shadow-waldorf-sm">
-      <span class="material-icons text-white text-lg">park</span>
+    <div class="w-8 h-8 bg-waldorf-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+      <span class="text-white text-lg">🌿</span>
     </div>
-    <div *ngIf="!collapsed" class="flex flex-col leading-tight">
-      <span class="font-serif text-waldorf-gray-800 font-semibold text-base">Quintal Aroeira</span>
-      <span class="text-[10px] text-waldorf-gray-400 font-sans tracking-wide uppercase">Escola Waldorf</span>
-    </div>
+    <span *ngIf="!collapsed" class="font-serif text-waldorf-gray-800 font-semibold text-lg">Waldorf</span>
   </div>
 
   <!-- Navegação -->
@@ -29,10 +25,10 @@
 
   <!-- Usuário logado (rodapé) -->
   <div class="px-2 mt-4 pt-4 border-t border-waldorf-cream-200">
-    <div [class]="collapsed ? 'flex justify-center p-2' : 'flex items-center gap-3 px-3 py-2 rounded-xl
+    <div [class]="collapsed ? 'flex justify-center p-2' : 'flex items-center gap-3 px-3 py-2 rounded-lg
                  hover:bg-waldorf-cream-100 cursor-pointer transition-colors duration-200'">
-      <div class="w-8 h-8 bg-waldorf-terra-100 rounded-full flex items-center justify-center flex-shrink-0">
-        <span class="material-icons text-waldorf-terra-500 text-xl">person</span>
+      <div class="w-8 h-8 bg-waldorf-green-200 rounded-full flex items-center justify-center flex-shrink-0">
+        <span class="material-icons text-waldorf-green-700 text-xl">person</span>
       </div>
       <div *ngIf="!collapsed" class="flex-1 min-w-0">
         <p class="text-sm font-medium text-waldorf-gray-800 truncate">

@@ -6,15 +6,12 @@ import { AlunoDetalheComponent } from './aluno/aluno-detalhe/aluno-detalhe.compo
 import { ProfessorListComponent } from './professor/professor-list/professor-list.component';
 
 const routes: Routes = [
-  // Alunos
   { path: 'alunos',            component: AlunoListComponent },
   { path: 'alunos/novo',       component: AlunoWizardComponent },
   { path: 'alunos/:id',        component: AlunoDetalheComponent },
   { path: 'alunos/:id/editar', component: AlunoWizardComponent },
-  // Professores
   { path: 'professores',       component: ProfessorListComponent },
-  // Default
-  { path: '', redirectTo: 'alunos', pathMatch: 'full' },
+  { path: '',                  redirectTo: 'alunos', pathMatch: 'full' },
 ];
 
 @NgModule({

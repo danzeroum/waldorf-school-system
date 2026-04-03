@@ -3,139 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistema Waldorf</title>
+    <title>Login — Quintal Aroeira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Nunito', system-ui, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: linear-gradient(135deg, #F5F0E8 0%, #E0D5C2 50%, #dce5dc 100%);
+            color: #3a3835;
         }
         .login-container {
             background: white;
             padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px rgba(91,127,94,0.07), 0 4px 6px rgba(0,0,0,0.05);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            border: 1px solid #E0D5C2;
         }
         .logo {
             text-align: center;
             margin-bottom: 2rem;
         }
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: #5B7F5E;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 6px rgba(91,127,94,0.15);
+        }
+        .logo-icon .material-icons { color: white; font-size: 2rem; }
         .logo h1 {
-            color: #667eea;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+            font-family: 'Lora', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #5B7F5E;
         }
         .logo p {
-            color: #666;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: #8c8278;
+            margin-top: 0.25rem;
         }
-        .form-group {
-            margin-bottom: 1.5rem;
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            text-align: center;
         }
+        .logout-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .form-group { margin-bottom: 1.25rem; }
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: #333;
-            font-weight: 500;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #534e4a;
+            margin-bottom: 0.4rem;
         }
         .form-group input {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
+            padding: 0.7rem 1rem;
+            border: 1px solid #CFBFA5;
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            font-family: 'Nunito', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+            background: white;
         }
         .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
+            border-color: #5B7F5E;
+            box-shadow: 0 0 0 3px rgba(91,127,94,0.15);
         }
         .btn-login {
             width: 100%;
             padding: 0.75rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #5B7F5E;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 0.75rem;
             font-size: 1rem;
             font-weight: 600;
+            font-family: 'Nunito', sans-serif;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: background 0.2s;
         }
-        .btn-login:hover {
-            transform: translateY(-2px);
-        }
-        .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        .logout-message {
-            background: #efe;
-            color: #3c3;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
+        .btn-login:hover { background: #49664B; }
         .credentials-info {
-            background: #f0f7ff;
-            border: 1px solid #b3d9ff;
+            background: #F5F0E8;
             padding: 1rem;
-            border-radius: 5px;
+            border-radius: 0.75rem;
             margin-top: 1.5rem;
             font-size: 0.85rem;
-            color: #333;
+            color: #534e4a;
+            border: 1px solid #E0D5C2;
         }
-        .credentials-info strong {
-            color: #667eea;
+        .credentials-info strong { color: #5B7F5E; }
+        code {
+            background: #E0D5C2;
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="logo">
-            <h1>🌱 Waldorf</h1>
-            <p>Sistema de Gestão Escolar</p>
+            <div class="logo-icon">
+                <span class="material-icons">park</span>
+            </div>
+            <h1>Quintal Aroeira</h1>
+            <p>Escola Waldorf de Bertioga</p>
         </div>
 
         <div th:if="${param.error}" class="error-message">
-            ❌ Usuário ou senha inválidos
+            Usuário ou senha inválidos
         </div>
 
         <div th:if="${param.logout}" class="logout-message">
-            ✅ Logout realizado com sucesso
+            Logout realizado com sucesso
         </div>
 
         <form th:action="@{/login}" method="post">
             <div class="form-group">
-                <label for="username">👤 Usuário</label>
-                <input type="text" id="username" name="username" required autofocus>
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" required autofocus
+                       placeholder="seu@email.com">
             </div>
 
             <div class="form-group">
-                <label for="password">🔒 Senha</label>
-                <input type="password" id="password" name="password" required>
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required
+                       placeholder="Sua senha">
             </div>
 
-            <button type="submit" class="btn-login">🚀 Entrar</button>
+            <button type="submit" class="btn-login">Entrar</button>
         </form>
 
         <div class="credentials-info">
-            <strong>💡 Credenciais Padrão:</strong><br>
+            <strong>Credenciais Padrão:</strong><br>
             Usuário: <code>admin</code><br>
             Senha: <code>Admin@2024</code>
         </div>
