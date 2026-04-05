@@ -55,13 +55,13 @@ public class AlunoService {
     @Transactional
     public AlunoResponseDTO atualizar(Long id, AlunoRequestDTO dto) {
         Aluno aluno = findOrThrow(id);
-        aluno.setNome(dto.nome());
-        aluno.setDataNascimento(dto.dataNascimento());
-        aluno.setGenero(dto.genero());
-        aluno.setEmail(dto.email());
-        aluno.setTelefone(dto.telefone());
+        if (dto.nome() != null && !dto.nome().isBlank()) aluno.setNome(dto.nome());
+        if (dto.dataNascimento() != null) aluno.setDataNascimento(dto.dataNascimento());
+        if (dto.genero() != null) aluno.setGenero(dto.genero());
+        if (dto.email() != null) aluno.setEmail(dto.email());
+        if (dto.telefone() != null) aluno.setTelefone(dto.telefone());
         if (dto.anoIngresso() > 0) aluno.setAnoIngresso(dto.anoIngresso());
-        aluno.setTemperamento(dto.temperamento());
+        if (dto.temperamento() != null) aluno.setTemperamento(dto.temperamento());
         if (dto.turmaId() != null) {
             aluno.setTurma(turmaRepository.findById(dto.turmaId()).orElse(null));
         }

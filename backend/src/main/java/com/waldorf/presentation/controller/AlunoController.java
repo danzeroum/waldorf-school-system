@@ -51,7 +51,7 @@ public class AlunoController {
     @Operation(summary = "Atualizar aluno")
     public ResponseEntity<AlunoResponseDTO> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody AlunoRequestDTO dto) {
+            @RequestBody AlunoRequestDTO dto) {
         return ResponseEntity.ok(alunoService.atualizar(id, dto));
     }
 
