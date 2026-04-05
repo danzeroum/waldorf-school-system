@@ -149,6 +149,9 @@ export class AuthService {
     };
   }
 
+  usuario(): any { return this._usuario$.value; }
+  perfisUsuario(): string[] { const u = this.getUsuario(); return u ? (u.roles || u.perfis || []) : []; }
+  temAlgumPerfil(perfis: string[]): boolean { if (!perfis.length) return true; return perfis.some(p => this.perfisUsuario().includes(p)); }
   private loadUsuario(): UsuarioResumo | null {
     try {
       const u = this.getUsuario();

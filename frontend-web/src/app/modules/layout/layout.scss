@@ -1,0 +1,56 @@
+.sidebar-container { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.sidebar-expanded { width: 260px; }
+.sidebar-collapsed { width: 68px; }
+.sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 15; animation: fadeIn 0.2s ease; }
+.sidebar-brand { @apply flex items-center gap-3 border-b border-waldorf-cream-100; padding: 16px 16px 14px; min-height: 60px; }
+.sidebar-brand-collapsed { @apply justify-center; padding: 16px 8px 14px; }
+.sidebar-brand-icon { @apply flex items-center justify-center flex-shrink-0; width: 36px; height: 36px; background: #5B7F5E; border-radius: 12px; box-shadow: 0 2px 8px rgba(91,127,94,0.25); }
+.sidebar-brand-text { @apply flex flex-col leading-tight overflow-hidden; }
+.sidebar-section-label { @apply text-waldorf-gray-400 uppercase tracking-wider font-bold; font-size: 10px; padding: 14px 14px 6px; letter-spacing: 1.2px; white-space: nowrap; overflow: hidden; }
+.sidebar-section-divider { @apply border-t border-waldorf-cream-100; margin: 6px 12px; }
+.sidebar-nav { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+.sidebar-nav:hover { scrollbar-color: rgba(91,127,94,0.2) transparent; }
+.sidebar-link { @apply flex items-center gap-2.5 text-waldorf-gray-600 cursor-pointer; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: all 0.15s ease; margin-bottom: 1px; }
+.sidebar-link:hover { @apply bg-waldorf-cream-50 text-waldorf-gray-800; }
+.sidebar-link-active { @apply flex items-center gap-2.5 cursor-pointer; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 600; white-space: nowrap; text-decoration: none; margin-bottom: 1px; background: linear-gradient(135deg,rgba(91,127,94,0.08),rgba(91,127,94,0.04)); color: #49664B; }
+.sidebar-link-active .sidebar-link-icon { color: #5B7F5E; }
+.sidebar-link-icon { @apply flex-shrink-0; font-size: 20px; width: 20px; text-align: center; transition: color 0.15s ease; }
+.sidebar-link-text { @apply overflow-hidden truncate; }
+.sidebar-badge { @apply text-white font-bold; margin-left: auto; background: #D4956A; font-size: 10px; padding: 1px 8px; border-radius: 10px; line-height: 1.6; }
+.sidebar-badge-collapsed { position: absolute; top: 2px; right: 4px; padding: 0 4px; font-size: 8px; min-width: 14px; text-align: center; }
+.sidebar-expand-arrow { @apply text-waldorf-gray-400; font-size: 18px; margin-left: auto; transition: transform 0.2s ease; }
+.sidebar-expand-arrow-open { transform: rotate(180deg); }
+.sidebar-children { overflow: hidden; max-height: 0; transition: max-height 0.25s cubic-bezier(0.4,0,0.2,1),opacity 0.2s ease; opacity: 0; }
+.sidebar-children-open { max-height: 300px; opacity: 1; }
+.sidebar-child { @apply flex items-center gap-2 text-waldorf-gray-500 cursor-pointer; padding: 6px 12px 6px 20px; font-size: 13px; border-radius: 8px; transition: all 0.15s ease; text-decoration: none; margin-left: 22px; }
+.sidebar-child:hover { @apply text-waldorf-gray-800 bg-waldorf-cream-50; }
+.sidebar-child-active { @apply text-waldorf-green-600 font-semibold; background: rgba(91,127,94,0.05); }
+.sidebar-child-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.4; flex-shrink: 0; }
+.sidebar-child-active .sidebar-child-dot { opacity: 1; background: #5B7F5E; }
+.sidebar-footer { @apply border-t border-waldorf-cream-100; padding: 10px 8px; }
+.sidebar-user { @apply flex items-center gap-2.5 cursor-pointer; padding: 8px 10px; border-radius: 12px; transition: background 0.15s ease; }
+.sidebar-user:hover { @apply bg-waldorf-cream-50; }
+.sidebar-user-avatar { @apply flex items-center justify-center flex-shrink-0; width: 32px; height: 32px; border-radius: 50%; background: #fae3d5; }
+.sidebar-user-info { @apply flex-1 min-w-0 overflow-hidden; }
+.sidebar-user-name { @apply text-waldorf-gray-800 font-semibold truncate; font-size: 13px; line-height: 1.3; margin: 0; }
+.sidebar-user-role { @apply text-waldorf-gray-500 truncate; font-size: 11px; margin: 0; }
+.sidebar-logout-btn { @apply flex items-center justify-center text-waldorf-gray-400 cursor-pointer; background: none; border: none; padding: 4px; border-radius: 8px; transition: all 0.15s ease; flex-shrink: 0; }
+.sidebar-logout-btn:hover { @apply text-red-500 bg-red-50; }
+.header-icon-btn { @apply flex items-center justify-center text-waldorf-gray-500; width: 36px; height: 36px; border-radius: 10px; border: none; background: transparent; cursor: pointer; font-size: 20px; transition: all 0.15s ease; }
+.header-icon-btn:hover { @apply bg-waldorf-cream-50 text-waldorf-gray-700; }
+.header-search-bar { @apply flex items-center gap-2 border border-waldorf-cream-200; background: #F5F0E8; border-radius: 10px; padding: 6px 12px; width: 240px; transition: all 0.2s ease; }
+.header-search-bar:focus-within { @apply border-waldorf-green-300; background: #fff; box-shadow: 0 0 0 3px rgba(91,127,94,0.08); }
+.header-search-input { @apply text-waldorf-gray-700; border: none; background: transparent; outline: none; font-size: 13px; font-family: 'Nunito',sans-serif; width: 100%; }
+.header-search-input::placeholder { @apply text-waldorf-gray-400; }
+.header-search-shortcut { @apply text-waldorf-gray-400 border border-waldorf-cream-200; font-size: 10px; padding: 1px 5px; border-radius: 4px; font-family: 'Nunito',sans-serif; background: rgba(255,255,255,0.5); flex-shrink: 0; }
+.header-notification-badge { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: #D4956A; border-radius: 50%; border: 2px solid #fff; }
+.header-user-btn { @apply flex items-center gap-2; padding: 4px 10px 4px 4px; border-radius: 12px; border: none; background: transparent; cursor: pointer; transition: background 0.15s ease; }
+.header-user-btn:hover { @apply bg-waldorf-cream-50; }
+.header-user-avatar { @apply flex items-center justify-center; width: 30px; height: 30px; border-radius: 50%; background: #dce5dc; }
+.header-dropdown { @apply bg-white border border-waldorf-cream-200; position: absolute; right: 0; top: calc(100% + 4px); width: 220px; border-radius: 14px; box-shadow: 0 10px 25px rgba(91,127,94,0.08),0 4px 6px rgba(0,0,0,0.04); z-index: 50; padding: 4px 0; overflow: hidden; }
+.header-dropdown-item { @apply flex items-center gap-2.5 text-waldorf-gray-600; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: all 0.15s ease; text-decoration: none; border: none; background: none; width: 100%; text-align: left; }
+.header-dropdown-item:hover { @apply bg-waldorf-cream-50 text-waldorf-gray-800; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-fade-in { animation: fadeIn 0.15s ease; }
+@media (max-width: 1024px) { .sidebar-expanded { position: fixed; left: 0; top: 0; bottom: 0; z-index: 20; box-shadow: 4px 0 24px rgba(0,0,0,0.1); } .header-search-bar { width: 180px; } }
+@media (max-width: 640px) { .header-search-bar { display: none; } .header-search-shortcut { display: none; } }

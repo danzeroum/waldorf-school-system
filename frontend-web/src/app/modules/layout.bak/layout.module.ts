@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
@@ -22,7 +21,6 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
-    FormsModule,
     RouterModule.forChild(routes),
   ],
   exports: [
@@ -31,4 +29,4 @@ const routes: Routes = [
     HeaderComponent,
   ],
 })
-export class LayoutModule {}
+export class LayoutModule { }
