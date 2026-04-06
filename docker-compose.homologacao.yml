@@ -66,6 +66,7 @@ services:
       - waldorf_homolog_minio:/data
 
   backend:
+    build: ./backend
     image: waldorf-backend:local
     container_name: waldorf-homolog-backend
     restart: unless-stopped
