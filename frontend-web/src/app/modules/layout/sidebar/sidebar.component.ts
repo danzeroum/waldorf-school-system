@@ -47,7 +47,7 @@ export class SidebarComponent {
           label: 'Pessoas',
           icon: 'people',
           route: '/pessoas',
-          roles: [TipoPerfil.ADMIN, TipoPerfil.SECRETARIA, TipoPerfil.DIRECAO],
+          roles: [TipoPerfil.ADMIN, TipoPerfil.SECRETARIA, TipoPerfil.DIRETOR],
           children: [
             { label: 'Alunos', icon: 'school', route: '/pessoas/alunos', roles: [] },
             { label: 'Professores', icon: 'person', route: '/pessoas/professores', roles: [] },
@@ -57,7 +57,7 @@ export class SidebarComponent {
           label: 'Pedagogia',
           icon: 'auto_stories',
           route: '/pedagogia',
-          roles: [TipoPerfil.ADMIN, TipoPerfil.PROFESSOR, TipoPerfil.DIRECAO],
+          roles: [TipoPerfil.ADMIN, TipoPerfil.PROFESSOR, TipoPerfil.DIRETOR],
           children: [
             { label: 'Turmas', icon: 'groups', route: '/pedagogia/turmas', roles: [] },
             { label: 'Épocas', icon: 'event_note', route: '/pedagogia/epocas', roles: [] },

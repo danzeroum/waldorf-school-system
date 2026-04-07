@@ -32,133 +32,99 @@ public class UsuarioService {
 
     public List<UsuarioListResponseDTO> listarTodos() {
         return usuarioRepository.findAll().stream()
-                .map(this::toListResponseDTO)
-                .collect(Collectors.toList());
+                .map(this::toListResponseDTO).collect(Collectors.toList());
     }
 
     public UsuarioListResponseDTO buscarPorId(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado com ID: " + id));
-        return toListResponseDTO(usuario);
+        Usuario u = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado: " + id));
+        return toListResponseDTO(u);
     }
 
     @Transactional
     public UsuarioListResponseDTO criar(UsuarioRequestDTO dto) {
-        if (usuarioRepository.existsByEmail(dto.email())) {
-            throw new IllegalArgumentException("Ja existe um usuario com este e-mail: " + dto.email());
-        }
+        if (usuarioRepository.existsByEmail(dto.email()))
+            throw new IllegalArgumentException("E-mail ja existe: " + dto.email());
         Set<Perfil> perfis = resolverPerfis(dto.perfis());
-        if (perfis.isEmpty()) {
+        if (perfis.isEmpty())
             throw new IllegalArgumentException("Pelo menos um perfil valido deve ser informado");
-        }
-        String senhaHash = dto.senha() != null
-                ? passwordEncoder.encode(dto.senha())
-                : passwordEncoder.encode("waldorf2024");
-        Usuario usuario = Usuario.builder()
-                .nome(dto.nome())
-                .email(dto.email())
-                .senha(senhaHash)
-                .ativo(dto.ativo() != null ? dto.ativo() : true)
-                .perfis(perfis)
-                .build();
-        usuario = usuarioRepository.save(usuario);
-        log.info("Usuario criado: {} ({})", usuario.getNome(), usuario.getEmail());
-        return toListResponseDTO(usuario);
+        String hash = dto.senha() != null ? passwordEncoder.encode(dto.senha()) : passwordEncoder.encode("waldorf2024");
+        Usuario u = Usuario.builder().nome(dto.nome()).email(dto.email()).senha(hash)
+                .ativo(dto.ativo() != null ? dto.ativo() : true).perfis(perfis).build();
+        u = usuarioRepository.save(u);
+        log.info("Usuario criado: {} ({})", u.getNome(), u.getEmail());
+        return toListResponseDTO(u);
     }
 
     @Transactional
     public UsuarioListResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado com ID: " + id));
-        if (!usuario.getEmail().equals(dto.email()) && usuarioRepository.existsByEmail(dto.email())) {
-            throw new IllegalArgumentException("Ja existe um usuario com este e-mail: " + dto.email());
-        }
-        usuario.setNome(dto.nome());
-        usuario.setEmail(dto.email());
-        if (dto.ativo() != null) {
-            usuario.setAtivo(dto.ativo());
-        }
+        Usuario u = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado: " + id));
+        if (!u.getEmail().equals(dto.email()) && usuarioRepository.existsByEmail(dto.email()))
+            throw new IllegalArgumentException("E-mail ja existe: " + dto.email());
+        u.setNome(dto.nome());
+        u.setEmail(dto.email());
+        if (dto.ativo() != null) u.setAtivo(dto.ativo());
         if (dto.perfis() != null && !dto.perfis().isEmpty()) {
             Set<Perfil> perfis = resolverPerfis(dto.perfis());
-            if (!perfis.isEmpty()) {
-                usuario.setPerfis(perfis);
-            }
+            if (!perfis.isEmpty()) u.setPerfis(perfis);
         }
-        usuario = usuarioRepository.save(usuario);
-        log.info("Usuario atualizado: {} ({})", usuario.getNome(), usuario.getEmail());
-        return toListResponseDTO(usuario);
+        u = usuarioRepository.save(u);
+        log.info("Usuario atualizado: {} ({})", u.getNome(), u.getEmail());
+        return toListResponseDTO(u);
     }
 
     @Transactional
     public UsuarioListResponseDTO toggleAtivo(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado com ID: " + id));
-        usuario.setAtivo(!usuario.isAtivo());
-        usuario = usuarioRepository.save(usuario);
-        log.info("Usuario {} {}: {}", usuario.isAtivo() ? "ativado" : "desativado", usuario.getNome(), usuario.getEmail());
-        return toListResponseDTO(usuario);
+        Usuario u = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado: " + id));
+        u.setAtivo(!u.isAtivo());
+        u = usuarioRepository.save(u);
+        log.info("Usuario {} {}: {}", u.isAtivo() ? "ativado" : "desativado", u.getNome(), u.getEmail());
+        return toListResponseDTO(u);
     }
 
     @Transactional
     public void alterarSenha(AlterarSenhaRequestDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuario = usuarioRepository.findByEmail(auth.getName())
+        Usuario u = usuarioRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado"));
-        if (!passwordEncoder.matches(dto.senhaAtual(), usuario.getSenha())) {
+        if (!passwordEncoder.matches(dto.senhaAtual(), u.getSenha()))
             throw new IllegalArgumentException("Senha atual incorreta");
-        }
-        usuario.setSenha(passwordEncoder.encode(dto.novaSenha()));
-        usuarioRepository.save(usuario);
-        log.info("Senha alterada para: {}", usuario.getEmail());
+        u.setSenha(passwordEncoder.encode(dto.novaSenha()));
+        usuarioRepository.save(u);
     }
 
     @Transactional
     public void resetarSenha(Long id, String novaSenha) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado com ID: " + id));
-        usuario.setSenha(passwordEncoder.encode(novaSenha));
-        usuarioRepository.save(usuario);
-        log.info("Senha resetada pelo admin para: {}", usuario.getEmail());
+        Usuario u = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado: " + id));
+        u.setSenha(passwordEncoder.encode(novaSenha));
+        usuarioRepository.save(u);
     }
 
     @Transactional
     public void deletar(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado com ID: " + id));
-        usuarioRepository.delete(usuario);
-        log.info("Usuario deletado: {} ({})", usuario.getNome(), usuario.getEmail());
+        Usuario u = usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado: " + id));
+        usuarioRepository.delete(u);
     }
 
     public List<String> listarPerfisDisponiveis() {
-        return perfilRepository.findAll().stream()
-                .map(Perfil::getNome)
-                .sorted()
-                .collect(Collectors.toList());
+        return perfilRepository.findAll().stream().map(Perfil::getNome).sorted().collect(Collectors.toList());
     }
 
-    private Set<Perfil> resolverPerfis(Set<String> nomesPerfis) {
+    private Set<Perfil> resolverPerfis(Set<String> nomes) {
         Set<Perfil> perfis = new HashSet<>();
-        for (String nome : nomesPerfis) {
-            String nomeNormalizado = nome.trim().toUpperCase();
-            perfilRepository.findByNome(nomeNormalizado)
-                    .ifPresentOrElse(
-                            perfis::add,
-                            () -> log.warn("Perfil nao encontrado e sera ignorado: {}", nomeNormalizado)
-                    );
+        for (String nome : nomes) {
+            perfilRepository.findByNome(nome.trim().toUpperCase())
+                    .ifPresentOrElse(perfis::add, () -> log.warn("Perfil ignorado: {}", nome));
         }
         return perfis;
     }
 
-    private UsuarioListResponseDTO toListResponseDTO(Usuario usuario) {
-        return new UsuarioListResponseDTO(
-                usuario.getId(),
-                usuario.getNome(),
-                usuario.getEmail(),
-                usuario.isAtivo(),
-                usuario.getPerfis().stream()
-                        .map(Perfil::getNome)
-                        .collect(Collectors.toSet()),
-                usuario.getCreatedAt()
-        );
+    private UsuarioListResponseDTO toListResponseDTO(Usuario u) {
+        return new UsuarioListResponseDTO(u.getId(), u.getNome(), u.getEmail(), u.isAtivo(),
+                u.getPerfis().stream().map(Perfil::getNome).collect(Collectors.toSet()), u.getCreatedAt());
     }
 }
