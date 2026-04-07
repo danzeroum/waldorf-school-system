@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PessoaRoutingModule } from './pessoa-routing.module';
 import { AlunoListComponent } from './aluno/aluno-list/aluno-list.component';
 import { AlunoWizardComponent } from './aluno/aluno-wizard/aluno-wizard.component';
@@ -25,6 +26,7 @@ import { ParentescoPipe } from './pipes/parentesco.pipe';
     FormsModule,
     RouterModule,
     PessoaRoutingModule,
+    MatSnackBarModule,
   ],
 })
 export class PessoaModule {}

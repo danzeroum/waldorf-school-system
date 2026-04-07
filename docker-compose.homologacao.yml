@@ -97,6 +97,7 @@ services:
       - "8081:8080"
 
   frontend:
+    build: ./frontend-web
     image: waldorf-frontend:local
     container_name: waldorf-homolog-frontend
     restart: unless-stopped

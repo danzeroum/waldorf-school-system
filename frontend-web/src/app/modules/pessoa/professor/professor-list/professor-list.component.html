@@ -1,14 +1,96 @@
-<div class="space-y-5 animate-fade-in-up">
-  <div class="flex items-center justify-between">
+<div class="p-6 animate-fade-in-up">
+  <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-serif text-waldorf-gray-900">Professores</h1>
-    <button class="btn-primary flex items-center gap-2">
+    <button class="btn-primary flex items-center gap-2" (click)="novo()">
       <span class="material-icons text-base">person_add</span>
       Novo Professor
     </button>
   </div>
-  <div class="card text-center py-16">
-    <span class="material-icons text-4xl text-waldorf-gray-300">construction</span>
-    <p class="text-waldorf-gray-500 mt-2">Módulo de professores em desenvolvimento</p>
-    <p class="text-xs text-waldorf-gray-400 mt-1">Iteração 19</p>
+
+  <div *ngIf="carregando()" class="flex justify-center py-16">
+    <div class="skeleton w-full h-48 rounded-2xl"></div>
+  </div>
+
+  <div *ngIf="!carregando()">
+    <div *ngIf="professores().length > 0" class="card overflow-hidden !p-0">
+      <table class="w-full">
+        <thead>
+          <tr class="table-header">
+            <th class="text-left">Nome</th>
+            <th class="text-left">E-mail</th>
+            <th class="text-left">Especialidade</th>
+            <th class="text-center">Status</th>
+            <th class="text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of professores()" class="table-row-hover">
+            <td class="table-cell font-medium text-waldorf-gray-800">{{ p.nome }}</td>
+            <td class="table-cell">{{ p.email }}</td>
+            <td class="table-cell">{{ p.especialidade || '—' }}</td>
+            <td class="table-cell text-center">
+              <span [class]="p.ativo ? 'badge-success' : 'badge-neutral'">
+                {{ p.ativo ? 'Ativo' : 'Inativo' }}
+              </span>
+            </td>
+            <td class="table-cell text-right whitespace-nowrap">
+              <button class="btn-icon" (click)="editar(p)" title="Editar">
+                <span class="material-icons text-base">edit</span>
+              </button>
+              <button class="btn-icon" *ngIf="p.ativo" (click)="inativar(p)" title="Inativar">
+                <span class="material-icons text-base">person_off</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="professores().length === 0" class="card text-center py-16">
+      <span class="material-icons text-4xl text-waldorf-gray-300">school</span>
+      <p class="text-waldorf-gray-500 mt-2 font-medium">Nenhum professor cadastrado</p>
+      <p class="text-xs text-waldorf-gray-400 mt-1">Clique em "Novo Professor" para começar</p>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div *ngIf="formularioVisivel" class="fixed inset-0 z-40 bg-black/30" (click)="fecharFormulario()"></div>
+
+<!-- Painel lateral -->
+<div *ngIf="formularioVisivel"
+     class="fixed inset-y-0 right-0 w-[440px] bg-white shadow-2xl border-l border-waldorf-cream-200 z-50 flex flex-col">
+  <div class="flex items-center justify-between px-6 py-4 border-b border-waldorf-cream-200">
+    <h2 class="text-lg font-semibold text-waldorf-gray-800">
+      {{ editandoId ? 'Editar Professor' : 'Novo Professor' }}
+    </h2>
+    <button class="btn-icon" (click)="fecharFormulario()">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto px-6 py-4">
+    <form [formGroup]="form" (ngSubmit)="salvar()" class="flex flex-col gap-4" id="form-professor">
+      <div>
+        <label class="form-label">Nome completo *</label>
+        <input type="text" class="form-input" formControlName="nome" placeholder="Nome do professor" />
+        <p *ngIf="form.get('nome')?.hasError('required')" class="form-error">Nome é obrigatório</p>
+      </div>
+      <div>
+        <label class="form-label">E-mail *</label>
+        <input type="email" class="form-input" formControlName="email" placeholder="professor@escola.com.br" />
+        <p *ngIf="form.get('email')?.hasError('required')" class="form-error">E-mail é obrigatório</p>
+        <p *ngIf="form.get('email')?.hasError('email')" class="form-error">E-mail inválido</p>
+      </div>
+      <div>
+        <label class="form-label">Especialidade</label>
+        <input type="text" class="form-input" formControlName="especialidade" placeholder="Ex: Matemática, Pedagogia..." />
+      </div>
+    </form>
+  </div>
+  <div class="px-6 py-4 border-t border-waldorf-cream-200 flex justify-end gap-3">
+    <button type="button" class="btn-secondary" (click)="fecharFormulario()">Cancelar</button>
+    <button type="submit" class="btn-primary" form="form-professor" [disabled]="form.invalid">
+      {{ editandoId ? 'Salvar' : 'Cadastrar' }}
+    </button>
   </div>
 </div>

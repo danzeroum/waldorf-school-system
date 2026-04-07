@@ -12,6 +12,7 @@ public record ContratoRequestDTO(
         @NotNull Integer anoLetivo,
         @NotNull @Positive BigDecimal valorMensalidade,
         BigDecimal desconto,
+        BigDecimal valorMatricula,
         @NotNull Integer totalParcelas,
         Integer diaVencimento,
         @NotNull LocalDate dataInicio,

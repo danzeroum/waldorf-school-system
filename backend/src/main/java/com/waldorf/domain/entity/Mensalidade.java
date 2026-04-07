@@ -1,33 +1,47 @@
 package com.waldorf.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "mensalidades")
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Mensalidade {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contrato_id", nullable = false)
     private Contrato contrato;
 
-    @Column(nullable = false)
-    private Integer numero;
+    @Column(name = "numero_parcela", nullable = false)
+    private Integer numeroParcela;
 
-    @Column(nullable = false, length = 100)
-    private String descricao;
+    @Column(name = "mes_referencia", nullable = false)
+    private Integer mesReferencia;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal valor;
+    @Column(name = "ano_referencia", nullable = false)
+    private Integer anoReferencia;
+
+    @Column(name = "valor_parcela", nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorParcela;
+
+    @Column(name = "valor_desconto", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal valorDesconto = BigDecimal.ZERO;
+
+    @Column(name = "valor_juros", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal valorJuros = BigDecimal.ZERO;
+
+    @Column(name = "valor_multa", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal valorMulta = BigDecimal.ZERO;
 
     @Column(name = "valor_pago", precision = 10, scale = 2)
     private BigDecimal valorPago;
@@ -36,17 +50,24 @@ public class Mensalidade {
     private LocalDate dataVencimento;
 
     @Column(name = "data_pagamento")
-    private LocalDate dataPagamento;
+    private LocalDateTime dataPagamento;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private StatusMensalidade status = StatusMensalidade.PENDENTE;
+    @Column(length = 50)
+    @Builder.Default
+    private StatusMensalidade status = StatusMensalidade.ABERTA;
 
-    @Column(name = "forma_pagamento", length = 50)
-    private String formaPagamento;
+    @Column(name = "nosso_numero", length = 50)
+    private String nossoNumero;
 
-    @Column(length = 500)
-    private String observacao;
+    @Column(name = "codigo_barras", length = 100)
+    private String codigoBarras;
+
+    @Column(name = "pix_qr_code", columnDefinition = "TEXT")
+    private String pixQrCode;
+
+    @Column(name = "gateway_transaction_id", length = 100)
+    private String gatewayTransactionId;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -55,17 +76,16 @@ public class Mensalidade {
     private LocalDateTime updatedAt;
 
     @PrePersist
-    void prePersist() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+    protected void onCreate() {
+        createdAt = updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
-    void preUpdate() {
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
     public enum StatusMensalidade {
-        PENDENTE, PAGA, VENCIDA, CANCELADA, PARCIAL
+        ABERTA, PENDENTE, PAGA, ATRASADA, VENCIDA, CANCELADA, PARCIAL
     }
 }

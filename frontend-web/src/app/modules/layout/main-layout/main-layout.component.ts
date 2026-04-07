@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'wld-main-layout',

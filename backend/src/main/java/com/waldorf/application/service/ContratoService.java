@@ -8,11 +8,13 @@ import com.waldorf.infrastructure.repository.AlunoRepository;
 import com.waldorf.infrastructure.repository.ContratoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ContratoService {
@@ -35,54 +37,28 @@ public class ContratoService {
     @Transactional
     public ContratoResponseDTO criar(ContratoRequestDTO dto) {
         var aluno = alunoRepository.findById(dto.alunoId())
-                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
-        Contrato c = new Contrato();
-        c.setAluno(aluno);
-        c.setAnoLetivo(dto.anoLetivo());
-        c.setValorMensalidade(dto.valorMensalidade());
-        c.setDesconto(dto.desconto());
-        c.setTotalParcelas(dto.totalParcelas());
-        c.setDiaVencimento(dto.diaVencimento() != null ? dto.diaVencimento() : 10);
-        c.setDataInicio(dto.dataInicio());
-        c.setDataFim(dto.dataFim());
-        c.setSituacao(SituacaoContrato.ATIVO);
-        return toDTO(contratoRepository.save(c));
-    }
-
-    /**
-     * Ativa um contrato e gera automaticamente as mensalidades.
-     * Idempotente: se já existem mensalidades para o contrato, não duplica.
-     */
-    @Transactional
-    public ContratoResponseDTO ativar(Long id) {
-        Contrato c = findOrThrow(id);
-        if (c.getSituacao() == SituacaoContrato.ENCERRADO) {
-            throw new IllegalStateException("Contrato encerrado não pode ser reativado.");
-        }
-        c.setSituacao(SituacaoContrato.ATIVO);
-        contratoRepository.save(c);
+                .orElseThrow(() -> new EntityNotFoundException("Aluno nao encontrado"));
+        Contrato c = Contrato.builder()
+                .aluno(aluno)
+                .anoLetivo(dto.anoLetivo())
+                .valorMensalidade(dto.valorMensalidade())
+                .desconto(dto.desconto())
+                .valorMatricula(dto.valorMatricula())
+                .totalParcelas(dto.totalParcelas())
+                .diaVencimento(dto.diaVencimento() != null ? dto.diaVencimento() : 10)
+                .dataInicio(dto.dataInicio())
+                .dataFim(dto.dataFim())
+                .situacao(SituacaoContrato.ATIVO)
+                .build();
+        c = contratoRepository.save(c);
         mensalidadeService.gerarMensalidades(c);
+        log.info("Contrato {} criado com {} parcelas para aluno {}", c.getId(), c.getTotalParcelas(), aluno.getNome());
         return toDTO(c);
     }
 
-    /**
-     * Encerra um contrato. Mensalidades PENDENTES permanecem — responsabilidade do financeiro.
-     */
-    @Transactional
-    public ContratoResponseDTO encerrar(Long id, String motivo) {
-        Contrato c = findOrThrow(id);
-        c.setSituacao(SituacaoContrato.ENCERRADO);
-        if (motivo != null && !motivo.isBlank()) {
-            c.setObservacoes(motivo);
-        }
-        return toDTO(contratoRepository.save(c));
-    }
-
-    // --- helpers ---
-
     private Contrato findOrThrow(Long id) {
         return contratoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Contrato não encontrado: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Contrato nao encontrado: " + id));
     }
 
     private ContratoResponseDTO toDTO(Contrato c) {
