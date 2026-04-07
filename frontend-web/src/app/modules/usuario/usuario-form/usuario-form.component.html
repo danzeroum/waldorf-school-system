@@ -1,0 +1,70 @@
+<div class="min-h-screen bg-waldorf-cream/30 p-6">
+  <div class="mb-6">
+    <div class="flex items-center gap-2 mb-1">
+      <button class="btn-ghost text-sm" (click)="cancelar()"><span class="material-icons text-lg">arrow_back</span> Voltar</button>
+    </div>
+    <h1 class="text-2xl font-bold text-waldorf-gray" style="font-family: 'Playfair Display', serif;">{{ isEdit ? 'Editar Usuario' : 'Novo Usuario' }}</h1>
+    <p class="text-sm text-waldorf-gray/60 mt-1">{{ isEdit ? 'Atualize as informacoes e permissoes do usuario' : 'Crie uma nova conta de acesso ao sistema' }}</p>
+  </div>
+  <div *ngIf="loading" class="flex justify-center py-20"><mat-spinner diameter="40"></mat-spinner></div>
+  <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()" class="max-w-2xl">
+    <div class="card p-6 mb-6">
+      <h2 class="text-lg font-semibold text-waldorf-gray mb-4 flex items-center gap-2"><span class="material-icons text-waldorf-green">person</span> Dados do Usuario</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <label class="form-label">Nome completo *</label>
+          <input type="text" formControlName="nome" class="form-input" placeholder="Ex: Maria Silva" />
+        </div>
+        <div class="md:col-span-2">
+          <label class="form-label">E-mail *</label>
+          <input type="email" formControlName="email" class="form-input" placeholder="Ex: maria@waldorf.edu.br" />
+        </div>
+        <div>
+          <label class="form-label">Senha {{ isEdit ? '(vazio = manter atual)' : '*' }}</label>
+          <div class="relative">
+            <input [type]="senhaVisivel ? 'text' : 'password'" formControlName="senha" class="form-input pr-10" placeholder="Minimo 6 caracteres" />
+            <button type="button" (click)="senhaVisivel = !senhaVisivel" class="absolute right-2 top-1/2 -translate-y-1/2 text-waldorf-gray/50 hover:text-waldorf-gray">
+              <span class="material-icons text-lg">{{ senhaVisivel ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 pt-6">
+          <label class="form-label mb-0">Status:</label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" formControlName="ativo" class="w-4 h-4 rounded" />
+            <span class="text-sm" [class.text-waldorf-green]="form.value.ativo" [class.text-red-500]="!form.value.ativo">{{ form.value.ativo ? 'Ativo' : 'Inativo' }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="card p-6 mb-6">
+      <h2 class="text-lg font-semibold text-waldorf-gray mb-1 flex items-center gap-2"><span class="material-icons text-waldorf-green">admin_panel_settings</span> Perfis de Acesso</h2>
+      <p class="text-sm text-waldorf-gray/60 mb-4">Selecione os perfis que definem as permissoes do usuario</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <button *ngFor="let perfil of perfisDisponiveis" type="button" class="flex items-center gap-3 p-3 rounded-lg border-2 transition-all text-left"
+          [ngClass]="{'border-waldorf-green bg-waldorf-green/5': selectedPerfis.includes(perfil), 'border-waldorf-cream bg-white hover:border-waldorf-green/30': !selectedPerfis.includes(perfil)}" (click)="togglePerfil(perfil)">
+          <span class="material-icons text-xl" [ngClass]="selectedPerfis.includes(perfil) ? 'text-waldorf-green' : 'text-waldorf-gray/40'">{{ selectedPerfis.includes(perfil) ? 'check_circle' : 'radio_button_unchecked' }}</span>
+          <div><p class="text-sm font-medium text-waldorf-gray">{{ labelsPerfis[perfil] || perfil }}</p><p class="text-xs text-waldorf-gray/50">{{ perfil }}</p></div>
+        </button>
+      </div>
+      <p *ngIf="selectedPerfis.length === 0" class="text-red-500 text-sm mt-3">Selecione pelo menos um perfil</p>
+    </div>
+    <div class="card p-6 mb-6 border-l-4 border-l-waldorf-amber">
+      <h2 class="text-lg font-semibold text-waldorf-gray mb-3 flex items-center gap-2"><span class="material-icons text-waldorf-amber">info</span> Guia de Perfis</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+        <div class="flex items-start gap-2"><span class="material-icons text-base text-waldorf-green mt-0.5">person</span><div><p class="font-medium text-waldorf-gray">Professor</p><p class="text-waldorf-gray/60">Acessa turmas, alunos, observacoes, avisos</p></div></div>
+        <div class="flex items-start gap-2"><span class="material-icons text-base text-waldorf-amber mt-0.5">family_restroom</span><div><p class="font-medium text-waldorf-gray">Pais / Responsavel</p><p class="text-waldorf-gray/60">Visualiza dados do filho, financeiro, comunicados</p></div></div>
+        <div class="flex items-start gap-2"><span class="material-icons text-base text-blue-500 mt-0.5">assignment</span><div><p class="font-medium text-waldorf-gray">Secretaria</p><p class="text-waldorf-gray/60">Gerencia alunos, professores, contratos</p></div></div>
+        <div class="flex items-start gap-2"><span class="material-icons text-base text-red-500 mt-0.5">shield</span><div><p class="font-medium text-waldorf-gray">Admin</p><p class="text-waldorf-gray/60">Acesso total, incluindo gestao de usuarios</p></div></div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button type="submit" class="btn-primary flex items-center gap-2" [disabled]="saving">
+        <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+        <span class="material-icons text-lg" *ngIf="!saving">{{ isEdit ? 'save' : 'person_add' }}</span>
+        {{ saving ? 'Salvando...' : (isEdit ? 'Salvar' : 'Criar Usuario') }}
+      </button>
+      <button type="button" class="btn-secondary" (click)="cancelar()" [disabled]="saving">Cancelar</button>
+    </div>
+  </form>
+</div>

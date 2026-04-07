@@ -1,0 +1,46 @@
+<div class="min-h-screen bg-waldorf-cream/30 p-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-waldorf-gray" style="font-family: 'Playfair Display', serif;">Gestao de Usuarios</h1>
+      <p class="text-sm text-waldorf-gray/60 mt-1">Cadastre e gerencie os usuarios que acessam o sistema</p>
+    </div>
+    <button *ngIf="isAdmin()" class="btn-primary flex items-center gap-2" (click)="novo()">
+      <span class="material-icons text-lg">person_add</span> Novo Usuario
+    </button>
+  </div>
+  <div class="card mb-4">
+    <div class="flex items-center gap-3">
+      <span class="material-icons text-waldorf-gray/50">search</span>
+      <input type="text" [(ngModel)]="filtro" (ngModelChange)="aplicarFiltro()" placeholder="Buscar por nome, e-mail ou perfil..." class="flex-1 bg-transparent outline-none text-waldorf-gray placeholder-waldorf-gray/40" />
+      <span *ngIf="filtro" class="text-sm text-waldorf-gray/50">{{ filteredUsuarios.length }} resultado(s)</span>
+    </div>
+  </div>
+  <div *ngIf="loading" class="flex justify-center py-20"><mat-spinner diameter="40"></mat-spinner></div>
+  <div *ngIf="!loading && filteredUsuarios.length === 0" class="card p-12 text-center">
+    <span class="material-icons text-5xl text-waldorf-gray/30 mb-4 block">group_off</span>
+    <p class="text-waldorf-gray/60 text-lg">{{ filtro ? 'Nenhum usuario encontrado' : 'Nenhum usuario cadastrado' }}</p>
+  </div>
+  <div *ngIf="!loading && filteredUsuarios.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div *ngFor="let usuario of filteredUsuarios" class="card card-hover p-5">
+      <div class="flex items-start justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm" [ngClass]="{'bg-waldorf-green': usuario.ativo, 'bg-gray-400': !usuario.ativo}">{{ usuario.nome.charAt(0).toUpperCase() }}</div>
+          <div>
+            <h3 class="font-semibold text-waldorf-gray text-sm leading-tight">{{ usuario.nome }}</h3>
+            <p class="text-xs text-waldorf-gray/60 mt-0.5">{{ usuario.email }}</p>
+          </div>
+        </div>
+        <span class="text-xs font-medium px-2 py-1 rounded-full" [ngClass]="{'bg-green-100 text-green-700': usuario.ativo, 'bg-red-100 text-red-700': !usuario.ativo}">{{ usuario.ativo ? 'Ativo' : 'Inativo' }}</span>
+      </div>
+      <div class="flex flex-wrap gap-1.5 mb-4">
+        <span *ngFor="let perfil of usuario.perfis" class="text-xs px-2 py-0.5 rounded-full font-medium" [ngClass]="getPerfilColor(perfil)">{{ getPerfilLabel(perfil) }}</span>
+      </div>
+      <div *ngIf="isAdmin()" class="flex items-center gap-2 border-t border-waldorf-cream pt-3">
+        <button class="btn-ghost text-xs flex items-center gap-1" (click)="editar(usuario.id)"><span class="material-icons text-sm">edit</span> Editar</button>
+        <button class="btn-ghost text-xs flex items-center gap-1" (click)="resetarSenha(usuario)"><span class="material-icons text-sm">key</span> Senha</button>
+        <button class="btn-ghost text-xs flex items-center gap-1" [ngClass]="{'text-red-500': usuario.ativo, 'text-green-600': !usuario.ativo}" (click)="toggleAtivo(usuario)"><span class="material-icons text-sm">{{ usuario.ativo ? 'toggle_off' : 'toggle_on' }}</span> {{ usuario.ativo ? 'Desativar' : 'Ativar' }}</button>
+        <button class="btn-ghost text-xs flex items-center gap-1 text-red-500 hover:text-red-700 ml-auto" (click)="deletar(usuario)"><span class="material-icons text-sm">delete</span> Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>

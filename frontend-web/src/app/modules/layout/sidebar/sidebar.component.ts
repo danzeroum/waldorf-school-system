@@ -69,6 +69,8 @@ export class SidebarComponent {
           icon: 'payments',
           route: '/financeiro',
           roles: [TipoPerfil.ADMIN, TipoPerfil.SECRETARIA],
+    },
+    {      label: 'Usuarios',      icon: 'admin_panel_settings',      route: '/usuarios',      roles: [TipoPerfil.ADMIN],
           children: [
             { label: 'Dashboard', icon: 'bar_chart', route: '/financeiro', roles: [] },
             { label: 'Contratos', icon: 'description', route: '/financeiro/contratos', roles: [] },
