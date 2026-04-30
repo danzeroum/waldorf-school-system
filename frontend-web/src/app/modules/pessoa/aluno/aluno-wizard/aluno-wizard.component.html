@@ -48,8 +48,14 @@
     {{ erroSalvar() }}
   </div>
 
+  <!-- Carregando dados do aluno (modo edição) -->
+  <div *ngIf="carregando()" class="card p-6 flex items-center justify-center gap-3 text-waldorf-gray-500">
+    <span class="material-icons animate-spin">refresh</span>
+    <span>Carregando dados do aluno...</span>
+  </div>
+
   <!-- === PASSO 1: DADOS PESSOAIS === -->
-  <div *ngIf="passoAtual() === 0" class="card space-y-4" [formGroup]="formPasso1">
+  <div *ngIf="passoAtual() === 0 && !carregando()" class="card space-y-4" [formGroup]="formPasso1">
     <h2 class="text-lg font-semibold text-waldorf-gray-800">Dados Pessoais</h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -206,19 +212,29 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="form-label">Turma *</label>
-        <select formControlName="turmaId"
+
+        <!-- Carregando turmas -->
+        <div *ngIf="carregandoTurmas()" class="form-input flex items-center gap-2 text-waldorf-gray-400">
+          <span class="material-icons animate-spin text-base">refresh</span>
+          <span class="text-sm">Carregando turmas...</span>
+        </div>
+
+        <!-- Select dinâmico com turmas da API -->
+        <select *ngIf="!carregandoTurmas()" formControlName="turmaId"
                 [class]="formPasso4.get('turmaId')?.invalid && formPasso4.get('turmaId')?.touched ? 'form-input-error' : 'form-input'">
           <option value="">Selecionar turma...</option>
-          <option value="1">Jardim de Infância</option>
-          <option value="2">Classe 1</option>
-          <option value="3">Classe 2</option>
-          <option value="4">Classe 3</option>
-          <option value="5">Classe 4</option>
-          <option value="6">Classe 5</option>
-          <option value="7">Classe 6</option>
-          <option value="8">Classe 7</option>
-          <option value="9">Classe 8</option>
+          <option *ngFor="let turma of turmas()" [value]="turma.id">
+            {{ turma.nome }}
+          </option>
         </select>
+
+        <!-- Aviso se não há turmas cadastradas -->
+        <p *ngIf="!carregandoTurmas() && turmas().length === 0"
+           class="text-xs text-amber-600 mt-1 flex items-center gap-1">
+          <span class="material-icons text-sm">warning</span>
+          Nenhuma turma cadastrada. Acesse o módulo de Turmas para criar.
+        </p>
+
         <p class="form-error" *ngIf="formPasso4.get('turmaId')?.invalid && formPasso4.get('turmaId')?.touched">Selecione uma turma</p>
       </div>
 
