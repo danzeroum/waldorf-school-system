@@ -2,9 +2,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlunoService } from '../../services/aluno.service';
-import { TurmaService } from '../../services/turma.service';
+import { TurmaService, TurmaDTO } from '../../services/turma.service';
 import { BuscaCepService } from '../../services/busca-cep.service';
-import { TurmaResumo } from '@models/pessoa.models';
 
 @Component({
   selector: 'wld-aluno-wizard',
@@ -22,14 +21,14 @@ export class AlunoWizardComponent implements OnInit {
   carregando = signal(false);
 
   // Lista de turmas carregadas da API
-  turmas = signal<TurmaResumo[]>([]);
+  turmas = signal<TurmaDTO[]>([]);
   carregandoTurmas = signal(false);
 
   // Forms por passo
-  formPasso1!: FormGroup; // Dados pessoais
-  formPasso2!: FormGroup; // Dados médicos
-  formPasso3!: FormGroup; // Responsáveis
-  formPasso4!: FormGroup; // Matrícula + Endereço
+  formPasso1!: FormGroup;
+  formPasso2!: FormGroup;
+  formPasso3!: FormGroup;
+  formPasso4!: FormGroup;
 
   readonly passos = [
     { titulo: 'Dados Pessoais',  icone: 'person'   },
@@ -60,7 +59,6 @@ export class AlunoWizardComponent implements OnInit {
         next: (aluno: any) => {
           this.alunoIdCriado.set(aluno.id);
 
-          // Passo 1 — Dados pessoais
           this.formPasso1.patchValue({
             nomeCompleto:   aluno.nomeCompleto  || aluno.nome || '',
             nomeSocial:     aluno.nomeSocial    || '',
@@ -72,7 +70,6 @@ export class AlunoWizardComponent implements OnInit {
             nacionalidade:  aluno.nacionalidade || 'Brasileira',
           });
 
-          // Passo 2 — Saúde
           this.formPasso2.patchValue({
             tipoSanguineo:           aluno.tipoSanguineo           || '',
             planoSaude:              aluno.planoSaude              || '',
@@ -82,7 +79,6 @@ export class AlunoWizardComponent implements OnInit {
             observacoesMedicas:      aluno.observacoesMedicas      || aluno.observacoes || '',
           });
 
-          // Passo 4 — Matrícula + Endereço
           this.formPasso4.patchValue({
             turmaId:       aluno.turmaAtual?.id   || aluno.turmaId    || '',
             anoLetivo:     aluno.anoIngresso      || new Date().getFullYear(),
@@ -110,8 +106,9 @@ export class AlunoWizardComponent implements OnInit {
   private carregarTurmas(): void {
     this.carregandoTurmas.set(true);
     this.turmaService.listar().subscribe({
-      next: (page) => {
-        this.turmas.set(page.content);
+      next: (lista) => {
+        // A API retorna um array simples de TurmaDTO
+        this.turmas.set(lista);
         this.carregandoTurmas.set(false);
       },
       error: () => {
