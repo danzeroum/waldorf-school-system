@@ -9,26 +9,33 @@
       <h1 class="text-2xl font-serif text-waldorf-gray-900">
         {{ modoEdicao() ? 'Editar Aluno' : 'Novo Aluno' }}
       </h1>
-      <p class="text-sm text-waldorf-gray-500">Passo {{ passoAtual() + 1 }} de {{ totalPassos }}</p>
+      <p class="text-sm text-waldorf-gray-500">
+        Clique em qualquer aba para navegar livremente
+      </p>
     </div>
   </div>
 
-  <!-- Indicador de passos -->
+  <!-- Indicador de passos (CLICÁVEIS) -->
   <div class="card p-4">
     <div class="flex items-center justify-between mb-3">
       <div
         *ngFor="let passo of passos; let i = index"
-        class="flex flex-col items-center gap-1 flex-1"
+        class="flex flex-col items-center gap-1 flex-1 cursor-pointer select-none group"
+        (click)="irParaPasso(i)"
+        [title]="passo.titulo"
       >
-        <div
-          [class]="i < passoAtual()
-            ? 'w-9 h-9 rounded-full flex items-center justify-center bg-waldorf-green-500 text-white'
-            : i === passoAtual()
-            ? 'w-9 h-9 rounded-full flex items-center justify-center bg-waldorf-green-500 text-white ring-4 ring-waldorf-green-100'
-            : 'w-9 h-9 rounded-full flex items-center justify-center bg-waldorf-cream-200 text-waldorf-gray-500'"
-        >
-          <span class="material-icons text-base" *ngIf="i < passoAtual()">check</span>
-          <span class="material-icons text-base" *ngIf="i >= passoAtual()">{{ passo.icone }}</span>
+        <!-- Círculo da aba -->
+        <div [ngClass]="{
+          'w-9 h-9 rounded-full flex items-center justify-center ring-4 ring-waldorf-green-100 bg-waldorf-green-500 text-white': i === passoAtual(),
+          'w-9 h-9 rounded-full flex items-center justify-center bg-waldorf-green-500 text-white': i !== passoAtual() && i < passoAtual(),
+          'w-9 h-9 rounded-full flex items-center justify-center bg-waldorf-cream-200 text-waldorf-gray-500 group-hover:bg-waldorf-green-100 group-hover:text-waldorf-green-700 transition-colors': i !== passoAtual() && i > passoAtual()
+        }">
+          <!-- Erro no passo -->
+          <span class="material-icons text-base text-red-400" *ngIf="passoComErro(i)">warning</span>
+          <!-- Check em passos concluídos -->
+          <span class="material-icons text-base" *ngIf="!passoComErro(i) && i < passoAtual()">check</span>
+          <!-- Ícone normal -->
+          <span class="material-icons text-base" *ngIf="!passoComErro(i) && i >= passoAtual()">{{ passo.icone }}</span>
         </div>
         <span class="text-xs text-waldorf-gray-500 hidden sm:block text-center">{{ passo.titulo }}</span>
       </div>
@@ -48,15 +55,20 @@
     {{ erroSalvar() }}
   </div>
 
-  <!-- Carregando dados do aluno (modo edição) -->
+  <!-- Carregando dados (edição) -->
   <div *ngIf="carregando()" class="card p-6 flex items-center justify-center gap-3 text-waldorf-gray-500">
     <span class="material-icons animate-spin">refresh</span>
     <span>Carregando dados do aluno...</span>
   </div>
 
-  <!-- === PASSO 1: DADOS PESSOAIS === -->
+  <!-- ========== PASSO 1: DADOS PESSOAIS ========== -->
   <div *ngIf="passoAtual() === 0 && !carregando()" class="card space-y-4" [formGroup]="formPasso1">
-    <h2 class="text-lg font-semibold text-waldorf-gray-800">Dados Pessoais</h2>
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-waldorf-gray-800">Dados Pessoais</h2>
+      <span class="text-xs text-waldorf-gray-400 bg-waldorf-cream-100 px-2 py-0.5 rounded-full">
+        * campos obrigatórios
+      </span>
+    </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="sm:col-span-2">
@@ -107,11 +119,14 @@
     </div>
   </div>
 
-  <!-- === PASSO 2: DADOS MÉDICOS === -->
+  <!-- ========== PASSO 2: SAÚDE ========== -->
   <div *ngIf="passoAtual() === 1" class="card space-y-4" [formGroup]="formPasso2">
-    <h2 class="text-lg font-semibold text-waldorf-gray-800">Saúde e Dados Médicos
-      <span class="text-sm font-normal text-waldorf-gray-500 ml-2">(todos opcionais)</span>
-    </h2>
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-waldorf-gray-800">Saúde e Dados Médicos</h2>
+      <span class="text-xs text-waldorf-gray-400 bg-waldorf-cream-100 px-2 py-0.5 rounded-full">
+        todos opcionais
+      </span>
+    </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
@@ -149,20 +164,23 @@
     </div>
   </div>
 
-  <!-- === PASSO 3: RESPONSÁVEIS === -->
+  <!-- ========== PASSO 3: RESPONSÁVEIS ========== -->
   <div *ngIf="passoAtual() === 2" class="card space-y-4" [formGroup]="formPasso3">
-    <h2 class="text-lg font-semibold text-waldorf-gray-800">Responsável Principal</h2>
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-waldorf-gray-800">Responsável Principal</h2>
+      <span class="text-xs text-waldorf-gray-400 bg-waldorf-cream-100 px-2 py-0.5 rounded-full">
+        todos opcionais
+      </span>
+    </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="sm:col-span-2">
-        <label class="form-label">Nome Completo *</label>
-        <input type="text" formControlName="resp1Nome" placeholder="Nome completo"
-               [class]="formPasso3.get('resp1Nome')?.invalid && formPasso3.get('resp1Nome')?.touched ? 'form-input-error' : 'form-input'">
-        <p class="form-error" *ngIf="formPasso3.get('resp1Nome')?.invalid && formPasso3.get('resp1Nome')?.touched">Obrigatório</p>
+        <label class="form-label">Nome Completo</label>
+        <input type="text" formControlName="resp1Nome" placeholder="Nome completo" class="form-input">
       </div>
 
       <div>
-        <label class="form-label">Parentesco *</label>
+        <label class="form-label">Parentesco</label>
         <select formControlName="resp1Parentesco" class="form-input">
           <option value="MAE">Mãe</option>
           <option value="PAI">Pai</option>
@@ -181,15 +199,14 @@
       </div>
 
       <div>
-        <label class="form-label">Celular *</label>
-        <input type="tel" formControlName="resp1Celular" placeholder="(00) 00000-0000"
-               [class]="formPasso3.get('resp1Celular')?.invalid && formPasso3.get('resp1Celular')?.touched ? 'form-input-error' : 'form-input'">
-        <p class="form-error" *ngIf="formPasso3.get('resp1Celular')?.invalid && formPasso3.get('resp1Celular')?.touched">Obrigatório</p>
+        <label class="form-label">Celular</label>
+        <input type="tel" formControlName="resp1Celular" placeholder="(00) 00000-0000" class="form-input">
       </div>
 
       <div>
         <label class="form-label">E-mail</label>
         <input type="email" formControlName="resp1Email" placeholder="email@exemplo.com" class="form-input">
+        <p class="form-error" *ngIf="formPasso3.get('resp1Email')?.hasError('email') && formPasso3.get('resp1Email')?.touched">E-mail inválido</p>
       </div>
 
       <div class="sm:col-span-2 flex flex-col gap-2">
@@ -205,36 +222,32 @@
     </div>
   </div>
 
-  <!-- === PASSO 4: MATRÍCULA + ENDEREÇO === -->
+  <!-- ========== PASSO 4: MATRÍCULA ========== -->
   <div *ngIf="passoAtual() === 3" class="card space-y-4" [formGroup]="formPasso4">
-    <h2 class="text-lg font-semibold text-waldorf-gray-800">Matrícula e Endereço</h2>
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-waldorf-gray-800">Matrícula e Endereço</h2>
+      <span class="text-xs text-waldorf-gray-400 bg-waldorf-cream-100 px-2 py-0.5 rounded-full">
+        * campos obrigatórios para concluir
+      </span>
+    </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="form-label">Turma *</label>
-
-        <!-- Carregando turmas -->
         <div *ngIf="carregandoTurmas()" class="form-input flex items-center gap-2 text-waldorf-gray-400">
           <span class="material-icons animate-spin text-base">refresh</span>
           <span class="text-sm">Carregando turmas...</span>
         </div>
-
-        <!-- Select dinâmico com turmas da API -->
         <select *ngIf="!carregandoTurmas()" formControlName="turmaId"
                 [class]="formPasso4.get('turmaId')?.invalid && formPasso4.get('turmaId')?.touched ? 'form-input-error' : 'form-input'">
           <option value="">Selecionar turma...</option>
-          <option *ngFor="let turma of turmas()" [value]="turma.id">
-            {{ turma.nome }}
-          </option>
+          <option *ngFor="let turma of turmas()" [value]="turma.id">{{ turma.nome }}</option>
         </select>
-
-        <!-- Aviso se não há turmas cadastradas -->
         <p *ngIf="!carregandoTurmas() && turmas().length === 0"
            class="text-xs text-amber-600 mt-1 flex items-center gap-1">
           <span class="material-icons text-sm">warning</span>
           Nenhuma turma cadastrada. Acesse o módulo de Turmas para criar.
         </p>
-
         <p class="form-error" *ngIf="formPasso4.get('turmaId')?.invalid && formPasso4.get('turmaId')?.touched">Selecione uma turma</p>
       </div>
 
@@ -251,7 +264,7 @@
       <!-- Endereço -->
       <div class="sm:col-span-2">
         <div class="divider"></div>
-        <h3 class="text-sm font-semibold text-waldorf-gray-700 mb-3">Endereço</h3>
+        <h3 class="text-sm font-semibold text-waldorf-gray-700 mb-3">Endereço <span class="font-normal text-waldorf-gray-400">(opcional)</span></h3>
       </div>
 
       <div>
@@ -313,8 +326,10 @@
     </div>
   </div>
 
-  <!-- Botões de navegação -->
-  <div class="flex justify-between gap-3">
+  <!-- ========== BOTÕES DE NAVEGAÇÃO ========== -->
+  <div class="flex justify-between items-center gap-3">
+
+    <!-- Anterior -->
     <button
       *ngIf="passoAtual() > 0"
       (click)="anterior()"
@@ -325,14 +340,19 @@
     </button>
     <div class="flex-1"></div>
 
+    <!-- Salvar passo (visível quando já existe ID, exceto passo 0 que usa Próximo) -->
     <button
-      *ngIf="passoAtual() === 2"
-      (click)="passoAtual.set(3)"
-      class="btn-ghost text-sm"
+      *ngIf="alunoIdCriado() && passoAtual() > 0 && passoAtual() < 3"
+      (click)="salvarAtual()"
+      [disabled]="salvando()"
+      class="btn-secondary flex items-center gap-2 text-sm"
     >
-      Pular por agora
+      <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+      <span class="material-icons text-base" *ngIf="!salvando()">save</span>
+      Salvar
     </button>
 
+    <!-- Próximo (passos 0-2) -->
     <button
       *ngIf="passoAtual() < 3"
       (click)="proximo()"
@@ -344,6 +364,7 @@
       <span class="material-icons text-base" *ngIf="!salvando()">arrow_forward</span>
     </button>
 
+    <!-- Concluir Matrícula (passo 3) -->
     <button
       *ngIf="passoAtual() === 3"
       (click)="concluir()"
