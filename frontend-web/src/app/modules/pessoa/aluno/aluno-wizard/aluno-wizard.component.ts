@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlunoService } from '../../services/aluno.service';
@@ -20,21 +20,19 @@ export class AlunoWizardComponent implements OnInit {
   modoEdicao = signal(false);
   carregando = signal(false);
 
-  // Lista de turmas carregadas da API
   turmas = signal<TurmaDTO[]>([]);
   carregandoTurmas = signal(false);
 
-  // Forms por passo
   formPasso1!: FormGroup;
   formPasso2!: FormGroup;
   formPasso3!: FormGroup;
   formPasso4!: FormGroup;
 
   readonly passos = [
-    { titulo: 'Dados Pessoais',  icone: 'person'   },
-    { titulo: 'Saúde',           icone: 'favorite' },
-    { titulo: 'Responsáveis',    icone: 'group'    },
-    { titulo: 'Matrícula',       icone: 'school'   },
+    { titulo: 'Dados Pessoais', icone: 'person'   },
+    { titulo: 'Saúde',          icone: 'favorite' },
+    { titulo: 'Responsáveis',   icone: 'group'    },
+    { titulo: 'Matrícula',      icone: 'school'   },
   ];
 
   constructor(
@@ -58,7 +56,6 @@ export class AlunoWizardComponent implements OnInit {
       this.alunoService.buscarPorId(id).subscribe({
         next: (aluno: any) => {
           this.alunoIdCriado.set(aluno.id);
-
           this.formPasso1.patchValue({
             nomeCompleto:   aluno.nomeCompleto  || aluno.nome || '',
             nomeSocial:     aluno.nomeSocial    || '',
@@ -69,7 +66,6 @@ export class AlunoWizardComponent implements OnInit {
             naturalidade:   aluno.naturalidade  || '',
             nacionalidade:  aluno.nacionalidade || 'Brasileira',
           });
-
           this.formPasso2.patchValue({
             tipoSanguineo:           aluno.tipoSanguineo           || '',
             planoSaude:              aluno.planoSaude              || '',
@@ -78,7 +74,6 @@ export class AlunoWizardComponent implements OnInit {
             necessidadesEspeciais:   aluno.necessidadesEspeciais   || '',
             observacoesMedicas:      aluno.observacoesMedicas      || aluno.observacoes || '',
           });
-
           this.formPasso4.patchValue({
             turmaId:       aluno.turmaAtual?.id   || aluno.turmaId    || '',
             anoLetivo:     aluno.anoIngresso      || new Date().getFullYear(),
@@ -92,7 +87,6 @@ export class AlunoWizardComponent implements OnInit {
             estado:        aluno.enderecoEstado   || '',
             aceiteTermosLgpd: true,
           });
-
           this.carregando.set(false);
         },
         error: () => {
@@ -103,94 +97,63 @@ export class AlunoWizardComponent implements OnInit {
     }
   }
 
-  private carregarTurmas(): void {
-    this.carregandoTurmas.set(true);
-    this.turmaService.listar().subscribe({
-      next: (lista) => {
-        // A API retorna um array simples de TurmaDTO
-        this.turmas.set(lista);
-        this.carregandoTurmas.set(false);
-      },
-      error: () => {
-        this.carregandoTurmas.set(false);
-      },
-    });
-  }
+  // =============================================
+  // NAVEGAÇÃO LIVRE: clique direto na aba
+  // =============================================
 
-  private initForms(): void {
-    this.formPasso1 = this.fb.group({
-      nomeCompleto:  ['', [Validators.required, Validators.minLength(3)]],
-      nomeSocial:    [''],
-      dataNascimento:['', Validators.required],
-      cpf:           [''],
-      nomePai:       [''],
-      nomeMae:       ['', Validators.required],
-      naturalidade:  [''],
-      nacionalidade: ['Brasileira'],
-    });
-
-    this.formPasso2 = this.fb.group({
-      tipoSanguineo:           [''],
-      planoSaude:              [''],
-      alergias:                [''],
-      medicamentosControlados: [''],
-      necessidadesEspeciais:   [''],
-      observacoesMedicas:      [''],
-    });
-
-    this.formPasso3 = this.fb.group({
-      resp1Nome:        ['', Validators.required],
-      resp1Parentesco:  ['MAE', Validators.required],
-      resp1Cpf:         [''],
-      resp1Telefone:    [''],
-      resp1Celular:     ['', Validators.required],
-      resp1Email:       ['', Validators.email],
-      resp1Buscar:      [true],
-      resp1Emergencia:  [true],
-    });
-
-    this.formPasso4 = this.fb.group({
-      turmaId:          ['', Validators.required],
-      anoLetivo:        [new Date().getFullYear(), Validators.required],
-      formaIngresso:    ['NOVO', Validators.required],
-      cep:              [''],
-      logradouro:       [''],
-      numero:           [''],
-      complemento:      [''],
-      bairro:           [''],
-      cidade:           [''],
-      estado:           [''],
-      aceiteTermosLgpd: [false, Validators.requiredTrue],
-    });
-  }
-
-  // === NAVEGAÇÃO ===
-
-  proximo(): void {
-    if (this.formAtual.invalid) {
-      this.formAtual.markAllAsTouched();
-      return;
-    }
-
-    if (this.passoAtual() === 0) {
-      if (this.modoEdicao() && this.alunoIdCriado()) {
-        this.atualizarPasso1();
-      } else {
-        this.salvarPasso1();
-      }
-      return;
-    }
-
-    if (this.passoAtual() === 1 && this.alunoIdCriado()) {
-      this.salvarPasso2();
-      return;
-    }
-
-    this.passoAtual.update(v => v + 1);
+  /** Vai para qualquer aba sem validação */
+  irParaPasso(i: number): void {
+    this.erroSalvar.set(null);
+    this.passoAtual.set(i);
   }
 
   anterior(): void {
     this.passoAtual.update(v => Math.max(0, v - 1));
+  }
+
+  proximo(): void {
+    // No passo 0 em modo novo, precisa salvar para obter o ID do aluno
+    if (this.passoAtual() === 0 && !this.modoEdicao() && !this.alunoIdCriado()) {
+      if (this.formPasso1.invalid) {
+        this.formPasso1.markAllAsTouched();
+        return;
+      }
+      this.salvarPasso1();
+      return;
+    }
+    // No passo 0 em modo edição: atualiza antes de avançar
+    if (this.passoAtual() === 0 && this.modoEdicao()) {
+      if (this.formPasso1.invalid) {
+        this.formPasso1.markAllAsTouched();
+        return;
+      }
+      this.atualizarPasso1();
+      return;
+    }
+    // Demais passos: navega livremente
+    this.passoAtual.update(v => Math.min(this.totalPassos - 1, v + 1));
+  }
+
+  /** Salvar passo atual sem avançar de aba */
+  salvarAtual(): void {
+    const form = this.formAtual;
+    if (form.invalid) {
+      form.markAllAsTouched();
+      return;
+    }
+    const id = this.alunoIdCriado();
+    if (!id) return;
+    this.salvando.set(true);
+    this.alunoService.atualizar(id, form.value).subscribe({
+      next: () => {
+        this.salvando.set(false);
+        this.erroSalvar.set(null);
+      },
+      error: (err: any) => {
+        this.salvando.set(false);
+        this.erroSalvar.set(err.error?.message ?? 'Erro ao salvar.');
+      },
+    });
   }
 
   get formAtual(): FormGroup {
@@ -201,12 +164,20 @@ export class AlunoWizardComponent implements OnInit {
     return ((this.passoAtual() + 1) / this.totalPassos) * 100;
   }
 
-  // === SALVAR ===
+  /** Indica se uma aba tem campos obrigatórios inválidos já tocados */
+  passoComErro(i: number): boolean {
+    const forms = [this.formPasso1, this.formPasso2, this.formPasso3, this.formPasso4];
+    const f = forms[i];
+    return f?.invalid && f?.dirty;
+  }
+
+  // =============================================
+  // SALVAR / API
+  // =============================================
 
   private salvarPasso1(): void {
     this.salvando.set(true);
     this.erroSalvar.set(null);
-
     this.alunoService.criar(this.formPasso1.value).subscribe({
       next: (aluno) => {
         this.alunoIdCriado.set(aluno.id);
@@ -215,7 +186,7 @@ export class AlunoWizardComponent implements OnInit {
       },
       error: (err) => {
         this.salvando.set(false);
-        this.erroSalvar.set(err.error?.message ?? 'Erro ao salvar dados pessoais. Tente novamente.');
+        this.erroSalvar.set(err.error?.message ?? 'Erro ao salvar dados pessoais.');
       },
     });
   }
@@ -225,7 +196,6 @@ export class AlunoWizardComponent implements OnInit {
     if (!id) return;
     this.salvando.set(true);
     this.erroSalvar.set(null);
-
     this.alunoService.atualizar(id, this.formPasso1.value).subscribe({
       next: () => {
         this.salvando.set(false);
@@ -233,24 +203,7 @@ export class AlunoWizardComponent implements OnInit {
       },
       error: (err) => {
         this.salvando.set(false);
-        this.erroSalvar.set(err.error?.message ?? 'Erro ao atualizar dados pessoais. Tente novamente.');
-      },
-    });
-  }
-
-  private salvarPasso2(): void {
-    const id = this.alunoIdCriado();
-    if (!id) return;
-    this.salvando.set(true);
-
-    this.alunoService.atualizar(id, this.formPasso2.value).subscribe({
-      next: () => {
-        this.salvando.set(false);
-        this.passoAtual.set(2);
-      },
-      error: () => {
-        this.salvando.set(false);
-        this.passoAtual.set(2);
+        this.erroSalvar.set(err.error?.message ?? 'Erro ao atualizar dados pessoais.');
       },
     });
   }
@@ -260,13 +213,14 @@ export class AlunoWizardComponent implements OnInit {
       this.formPasso4.markAllAsTouched();
       return;
     }
-
     const id = this.alunoIdCriado();
-    if (!id) return;
-
+    if (!id) {
+      this.erroSalvar.set('Salve os Dados Pessoais antes de concluir a matrícula.');
+      this.passoAtual.set(0);
+      return;
+    }
     this.salvando.set(true);
     const v4 = this.formPasso4.value;
-
     this.alunoService.matricular({
       alunoId:          id,
       turmaId:          +v4.turmaId,
@@ -285,7 +239,17 @@ export class AlunoWizardComponent implements OnInit {
     });
   }
 
-  // === CEP ===
+  // =============================================
+  // TURMAS / CEP
+  // =============================================
+
+  private carregarTurmas(): void {
+    this.carregandoTurmas.set(true);
+    this.turmaService.listar().subscribe({
+      next: (lista) => { this.turmas.set(lista); this.carregandoTurmas.set(false); },
+      error: () => { this.carregandoTurmas.set(false); },
+    });
+  }
 
   onCepChange(cep: string): void {
     if (cep.replace(/\D/g, '').length !== 8) return;
@@ -300,6 +264,50 @@ export class AlunoWizardComponent implements OnInit {
           estado:     end.estado,
         });
       }
+    });
+  }
+
+  private initForms(): void {
+    this.formPasso1 = this.fb.group({
+      nomeCompleto:  ['', [Validators.required, Validators.minLength(3)]],
+      nomeSocial:    [''],
+      dataNascimento:['', Validators.required],
+      cpf:           [''],
+      nomePai:       [''],
+      nomeMae:       ['', Validators.required],
+      naturalidade:  [''],
+      nacionalidade: ['Brasileira'],
+    });
+    this.formPasso2 = this.fb.group({
+      tipoSanguineo:           [''],
+      planoSaude:              [''],
+      alergias:                [''],
+      medicamentosControlados: [''],
+      necessidadesEspeciais:   [''],
+      observacoesMedicas:      [''],
+    });
+    this.formPasso3 = this.fb.group({
+      resp1Nome:       [''],
+      resp1Parentesco: ['MAE'],
+      resp1Cpf:        [''],
+      resp1Telefone:   [''],
+      resp1Celular:    [''],
+      resp1Email:      ['', Validators.email],
+      resp1Buscar:     [true],
+      resp1Emergencia: [true],
+    });
+    this.formPasso4 = this.fb.group({
+      turmaId:         ['', Validators.required],
+      anoLetivo:       [new Date().getFullYear(), Validators.required],
+      formaIngresso:   ['NOVO', Validators.required],
+      cep:             [''],
+      logradouro:      [''],
+      numero:          [''],
+      complemento:     [''],
+      bairro:          [''],
+      cidade:          [''],
+      estado:          [''],
+      aceiteTermosLgpd:[false, Validators.requiredTrue],
     });
   }
 }
