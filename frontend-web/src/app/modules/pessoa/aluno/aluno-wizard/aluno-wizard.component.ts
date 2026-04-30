@@ -17,6 +17,7 @@ export class AlunoWizardComponent implements OnInit {
   alunoIdCriado = signal<number | null>(null);
   buscandoCep = signal(false);
   modoEdicao = signal(false);
+  carregando = signal(false);
 
   // Forms por passo
   formPasso1!: FormGroup; // Dados pessoais
@@ -40,8 +41,62 @@ export class AlunoWizardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.modoEdicao.set(!!this.route.snapshot.paramMap.get('id'));
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.modoEdicao.set(!!idParam);
     this.initForms();
+
+    if (idParam) {
+      const id = +idParam;
+      this.carregando.set(true);
+      this.alunoService.buscarPorId(id).subscribe({
+        next: (aluno: any) => {
+          this.alunoIdCriado.set(aluno.id);
+
+          // Passo 1 — Dados pessoais
+          this.formPasso1.patchValue({
+            nomeCompleto:   aluno.nomeCompleto  || aluno.nome || '',
+            nomeSocial:     aluno.nomeSocial    || '',
+            dataNascimento: aluno.dataNascimento || '',
+            cpf:            aluno.cpf           || '',
+            nomePai:        aluno.nomePai       || '',
+            nomeMae:        aluno.nomeMae       || '',
+            naturalidade:   aluno.naturalidade  || '',
+            nacionalidade:  aluno.nacionalidade || 'Brasileira',
+          });
+
+          // Passo 2 — Saúde
+          this.formPasso2.patchValue({
+            tipoSanguineo:           aluno.tipoSanguineo           || '',
+            planoSaude:              aluno.planoSaude              || '',
+            alergias:                aluno.alergias                || '',
+            medicamentosControlados: aluno.medicamentosControlados || '',
+            necessidadesEspeciais:   aluno.necessidadesEspeciais   || '',
+            observacoesMedicas:      aluno.observacoesMedicas      || aluno.observacoes || '',
+          });
+
+          // Passo 4 — Matrícula + Endereço
+          this.formPasso4.patchValue({
+            turmaId:    aluno.turmaAtual?.id   || aluno.turmaId    || '',
+            anoLetivo:  aluno.anoIngresso      || new Date().getFullYear(),
+            formaIngresso: aluno.formaIngresso || 'NOVO',
+            cep:        aluno.enderecoCep      || '',
+            logradouro: aluno.enderecoRua      || '',
+            numero:     aluno.enderecoNumero   || '',
+            complemento:aluno.enderecoComplemento || '',
+            bairro:     aluno.enderecoBairro   || '',
+            cidade:     aluno.enderecoCidade   || '',
+            estado:     aluno.enderecoEstado   || '',
+            aceiteTermosLgpd: true,
+          });
+
+          this.carregando.set(false);
+        },
+        error: () => {
+          this.carregando.set(false);
+          this.erroSalvar.set('Não foi possível carregar os dados do aluno.');
+        },
+      });
+    }
   }
 
   private initForms(): void {
@@ -100,8 +155,12 @@ export class AlunoWizardComponent implements OnInit {
     }
 
     if (this.passoAtual() === 0) {
-      // Salvar aluno ao avançar do passo 1
-      this.salvarPasso1();
+      if (this.modoEdicao() && this.alunoIdCriado()) {
+        // Em edição, atualiza em vez de criar
+        this.atualizarPasso1();
+      } else {
+        this.salvarPasso1();
+      }
       return;
     }
 
@@ -141,6 +200,26 @@ export class AlunoWizardComponent implements OnInit {
         this.salvando.set(false);
         this.erroSalvar.set(
           err.error?.message ?? 'Erro ao salvar dados pessoais. Tente novamente.'
+        );
+      },
+    });
+  }
+
+  private atualizarPasso1(): void {
+    const id = this.alunoIdCriado();
+    if (!id) return;
+    this.salvando.set(true);
+    this.erroSalvar.set(null);
+
+    this.alunoService.atualizar(id, this.formPasso1.value).subscribe({
+      next: () => {
+        this.salvando.set(false);
+        this.passoAtual.set(1);
+      },
+      error: (err) => {
+        this.salvando.set(false);
+        this.erroSalvar.set(
+          err.error?.message ?? 'Erro ao atualizar dados pessoais. Tente novamente.'
         );
       },
     });
