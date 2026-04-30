@@ -1,8 +1,10 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlunoService } from '../../services/aluno.service';
+import { TurmaService } from '../../services/turma.service';
 import { BuscaCepService } from '../../services/busca-cep.service';
+import { TurmaResumo } from '@models/pessoa.models';
 
 @Component({
   selector: 'wld-aluno-wizard',
@@ -18,6 +20,10 @@ export class AlunoWizardComponent implements OnInit {
   buscandoCep = signal(false);
   modoEdicao = signal(false);
   carregando = signal(false);
+
+  // Lista de turmas carregadas da API
+  turmas = signal<TurmaResumo[]>([]);
+  carregandoTurmas = signal(false);
 
   // Forms por passo
   formPasso1!: FormGroup; // Dados pessoais
@@ -35,6 +41,7 @@ export class AlunoWizardComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private alunoService: AlunoService,
+    private turmaService: TurmaService,
     private cepService: BuscaCepService,
     readonly router: Router,
     private route: ActivatedRoute,
@@ -44,6 +51,7 @@ export class AlunoWizardComponent implements OnInit {
     const idParam = this.route.snapshot.paramMap.get('id');
     this.modoEdicao.set(!!idParam);
     this.initForms();
+    this.carregarTurmas();
 
     if (idParam) {
       const id = +idParam;
@@ -76,16 +84,16 @@ export class AlunoWizardComponent implements OnInit {
 
           // Passo 4 — Matrícula + Endereço
           this.formPasso4.patchValue({
-            turmaId:    aluno.turmaAtual?.id   || aluno.turmaId    || '',
-            anoLetivo:  aluno.anoIngresso      || new Date().getFullYear(),
-            formaIngresso: aluno.formaIngresso || 'NOVO',
-            cep:        aluno.enderecoCep      || '',
-            logradouro: aluno.enderecoRua      || '',
-            numero:     aluno.enderecoNumero   || '',
-            complemento:aluno.enderecoComplemento || '',
-            bairro:     aluno.enderecoBairro   || '',
-            cidade:     aluno.enderecoCidade   || '',
-            estado:     aluno.enderecoEstado   || '',
+            turmaId:       aluno.turmaAtual?.id   || aluno.turmaId    || '',
+            anoLetivo:     aluno.anoIngresso      || new Date().getFullYear(),
+            formaIngresso: aluno.formaIngresso    || 'NOVO',
+            cep:           aluno.enderecoCep      || '',
+            logradouro:    aluno.enderecoRua      || '',
+            numero:        aluno.enderecoNumero   || '',
+            complemento:   aluno.enderecoComplemento || '',
+            bairro:        aluno.enderecoBairro   || '',
+            cidade:        aluno.enderecoCidade   || '',
+            estado:        aluno.enderecoEstado   || '',
             aceiteTermosLgpd: true,
           });
 
@@ -97,6 +105,19 @@ export class AlunoWizardComponent implements OnInit {
         },
       });
     }
+  }
+
+  private carregarTurmas(): void {
+    this.carregandoTurmas.set(true);
+    this.turmaService.listar().subscribe({
+      next: (page) => {
+        this.turmas.set(page.content);
+        this.carregandoTurmas.set(false);
+      },
+      error: () => {
+        this.carregandoTurmas.set(false);
+      },
+    });
   }
 
   private initForms(): void {
@@ -156,7 +177,6 @@ export class AlunoWizardComponent implements OnInit {
 
     if (this.passoAtual() === 0) {
       if (this.modoEdicao() && this.alunoIdCriado()) {
-        // Em edição, atualiza em vez de criar
         this.atualizarPasso1();
       } else {
         this.salvarPasso1();
@@ -198,9 +218,7 @@ export class AlunoWizardComponent implements OnInit {
       },
       error: (err) => {
         this.salvando.set(false);
-        this.erroSalvar.set(
-          err.error?.message ?? 'Erro ao salvar dados pessoais. Tente novamente.'
-        );
+        this.erroSalvar.set(err.error?.message ?? 'Erro ao salvar dados pessoais. Tente novamente.');
       },
     });
   }
@@ -218,9 +236,7 @@ export class AlunoWizardComponent implements OnInit {
       },
       error: (err) => {
         this.salvando.set(false);
-        this.erroSalvar.set(
-          err.error?.message ?? 'Erro ao atualizar dados pessoais. Tente novamente.'
-        );
+        this.erroSalvar.set(err.error?.message ?? 'Erro ao atualizar dados pessoais. Tente novamente.');
       },
     });
   }
@@ -237,7 +253,7 @@ export class AlunoWizardComponent implements OnInit {
       },
       error: () => {
         this.salvando.set(false);
-        this.passoAtual.set(2); // não bloquear por dados opcionais
+        this.passoAtual.set(2);
       },
     });
   }
@@ -255,10 +271,10 @@ export class AlunoWizardComponent implements OnInit {
     const v4 = this.formPasso4.value;
 
     this.alunoService.matricular({
-      alunoId: id,
-      turmaId: +v4.turmaId,
-      anoLetivo: +v4.anoLetivo,
-      formaIngresso: v4.formaIngresso,
+      alunoId:          id,
+      turmaId:          +v4.turmaId,
+      anoLetivo:        +v4.anoLetivo,
+      formaIngresso:    v4.formaIngresso,
       aceiteTermosLgpd: v4.aceiteTermosLgpd,
     }).subscribe({
       next: () => {
