@@ -51,7 +51,7 @@ docker logs waldorf-homolog-backend --tail 50
 
 | ID | Cenário | Passos | Resultado Esperado | Status |
 |----|---------|--------|--------------------|--------|
-| AUTH-01 | Login válido | POST `/api/v1/auth/login` com admin@waldorf.edu.br / admin123 | HTTP 200, `accessToken` e `refreshToken` retornados | ⬜ |
+| AUTH-01 | Login válido | POST `/api/v1/auth/login` com admin@waldorf.edu.br / `<senha_do_seed>` | HTTP 200, `accessToken` e `refreshToken` retornados | ⬜ |
 | AUTH-02 | Login inválido | POST com senha errada | HTTP 401, mensagem de erro | ⬜ |
 | AUTH-03 | Refresh token | POST `/api/v1/auth/refresh` com token válido | HTTP 200, novos tokens | ⬜ |
 | AUTH-04 | Refresh token expirado | POST com token inválido | HTTP 401 | ⬜ |

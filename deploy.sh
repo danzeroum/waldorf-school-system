@@ -3,8 +3,8 @@ set -e
 
 COMPOSE_FILE="docker-compose.homologacao.yml"
 DB_CONTAINER="waldorf-homolog-db"
-DB_ROOT_PASS="homolog_root_pass"
-DB_NAME="waldorf_homolog"
+DB_ROOT_PASS="${MYSQL_ROOT_PASSWORD:?Defina MYSQL_ROOT_PASSWORD}"
+DB_NAME="${DB_NAME:-waldorf_homolog}"
 BACKEND_IMAGE="ghcr.io/danzeroum/waldorf-school-system/backend:main"
 FRONTEND_IMAGE="ghcr.io/danzeroum/waldorf-school-system/frontend:main"
 
@@ -70,6 +70,6 @@ echo "=========================================="
 echo "  Backend:  http://localhost:8081"
 echo "  Frontend: http://localhost:4201"
 echo "  Nginx:    http://localhost:8090"
-echo "  Admin:    admin@waldorf.edu.br / admin123"
+echo "  Admin:    admin@waldorf.edu.br / <senha configurada no seed>"
 echo "  Logs:     docker logs waldorf-homolog-backend -f"
 echo "=========================================="

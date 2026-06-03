@@ -35,10 +35,13 @@ build/
 *.g.dart
 *.freezed.dart
 
-# Environmen variables
+# Environment variables
 .env
 .env.local
 .env.*.local
+
+# Local Spring profiles (may contain real credentials)
+backend/src/main/resources/application-local.yml
 
 # Database
 *.sql.backup

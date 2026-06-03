@@ -88,9 +88,10 @@ cd backend
 
 | Usuário | E-mail | Senha | Perfil |
 |---------|--------|-------|--------|
-| Administrador | admin@waldorf.edu.br | admin123 | ADMIN |
-| Secretaria | secretaria@waldorf.edu.br | waldorf123 | SECRETARIA |
-| Diretor | diretor@waldorf.edu.br | waldorf123 | DIRETOR |
+| Administrador | admin@waldorf.edu.br | *(hash no migration V1)* | ADMIN |
+
+> **Segurança:** Altere a senha do admin imediatamente após o primeiro login.
+> Gere um novo hash bcrypt e atualize o INSERT em `V1__schema_completo.sql` antes de implantar.
 
 ---
 
