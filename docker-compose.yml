@@ -4,10 +4,10 @@ services:
     image: mysql:8.0
     container_name: waldorf-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: waldorf_root_2024
-      MYSQL_DATABASE: waldorf_db
-      MYSQL_USER: waldorf_user
-      MYSQL_PASSWORD: waldorf_pass_2024
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-CHANGE_ME}
+      MYSQL_DATABASE: ${DB_NAME:-waldorf_db}
+      MYSQL_USER: ${DB_USER:-waldorf_user}
+      MYSQL_PASSWORD: ${DB_PASS:-CHANGE_ME}
     ports:
       - "3306:3306"
     volumes:
@@ -45,8 +45,8 @@ services:
     image: rabbitmq:3-management-alpine
     container_name: waldorf-rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: waldorf
-      RABBITMQ_DEFAULT_PASS: waldorf_rabbit_2024
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER:-waldorf}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS:-CHANGE_ME}
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -65,8 +65,8 @@ services:
     image: minio/minio:latest
     container_name: waldorf-minio
     environment:
-      MINIO_ROOT_USER: waldorf_minio
-      MINIO_ROOT_PASSWORD: waldorf_minio_2024
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-waldorf_minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-CHANGE_ME}
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -93,14 +93,14 @@ services:
       DB_PORT: 3306
       DB_NAME: waldorf_db
       DB_USER: waldorf_user
-      DB_PASS: waldorf_pass_2024
+      DB_PASS: ${DB_PASS:-CHANGE_ME}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       RABBIT_HOST: rabbitmq
       RABBIT_PORT: 5672
-      RABBIT_USER: waldorf
-      RABBIT_PASS: waldorf_rabbit_2024
-      JWT_SECRET: waldorf_jwt_secret_512bits_minimo_aqui_2024
+      RABBIT_USER: ${RABBIT_USER:-waldorf}
+      RABBIT_PASS: ${RABBIT_PASS:-CHANGE_ME}
+      JWT_SECRET: ${JWT_SECRET:-CHANGE_ME_USE_256_BITS_MIN}
     ports:
       - "8080:8080"
     depends_on:

@@ -1,13 +1,18 @@
 #!/bin/bash
 set -euo pipefail
-BASE_URL="http://localhost:8090"
+BASE_URL="${BASE_URL:-http://localhost:8090}"
+ADMIN_EMAIL="${ADMIN_EMAIL:-admin@waldorf.edu.br}"
+ADMIN_PASS="${ADMIN_PASS:?Defina ADMIN_PASS}"
+DB_USER="${DB_USER:-waldorf}"
+DB_PASS="${DB_PASS:?Defina DB_PASS}"
+DB_NAME="${DB_NAME:-waldorf_homolog}"
 PASS=0; FAIL=0; ERROS=""
 pass() { ((PASS++)); echo "  ✅ $1"; }
 fail() { ((FAIL++)); ERROS+="\n  ❌ $1"; echo "  ❌ $1"; }
 header() { echo ""; echo "━━━ $1 ━━━"; }
 
 header "1. AUTH — Login"
-LOGIN=$(curl -sf "$BASE_URL/api/v1/auth/login" -H "Content-Type: application/json" -d '{"email":"admin@waldorf.edu.br","password":"admin123"}') || { fail "Login falhou"; exit 1; }
+LOGIN=$(curl -sf "$BASE_URL/api/v1/auth/login" -H "Content-Type: application/json" -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASS\"}") || { fail "Login falhou"; exit 1; }
 TOKEN=$(echo "$LOGIN" | grep -o '"accessToken":"[^"]*"' | cut -d'"' -f4)
 [ -n "$TOKEN" ] && pass "Login OK — token obtido (${#TOKEN} chars)" || { fail "Token vazio"; exit 1; }
 echo "$LOGIN" | grep -q "ADMIN" && pass "Perfil ADMIN confirmado" || fail "Perfil ADMIN não encontrado"
@@ -43,12 +48,12 @@ TURMAS=$(curl -sf "$BASE_URL/api/v1/turmas" -H "Authorization: Bearer $TOKEN")
 echo "$TURMAS" | grep -q "$TURMA_NOME" && pass "Turma na listagem" || fail "Turma não listada"
 
 header "4. BANCO DE DADOS — Verificação Direta"
-DB_PROF=$(docker exec waldorf-homolog-db mysql -u waldorf -pwaldorf_homolog_pass waldorf_homolog -se "SELECT COUNT(*) FROM professores WHERE email='$PROF_EMAIL';" 2>/dev/null)
+DB_PROF=$(docker exec waldorf-homolog-db mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" -se "SELECT COUNT(*) FROM professores WHERE email='$PROF_EMAIL';" 2>/dev/null)
 [ "$DB_PROF" -eq 1 ] 2>/dev/null && pass "Professor '$PROF_EMAIL' no MySQL" || fail "Professor não no banco"
-DB_TURMA=$(docker exec waldorf-homolog-db mysql -u waldorf -pwaldorf_homolog_pass waldorf_homolog -se "SELECT COUNT(*) FROM turmas WHERE nome='$TURMA_NOME';" 2>/dev/null)
+DB_TURMA=$(docker exec waldorf-homolog-db mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" -se "SELECT COUNT(*) FROM turmas WHERE nome='$TURMA_NOME';" 2>/dev/null)
 [ "$DB_TURMA" -eq 1 ] 2>/dev/null && pass "Turma '$TURMA_NOME' no MySQL" || fail "Turma não no banco"
 for TABELA in professores turmas alunos usuarios perfis; do
-  DB_CHECK=$(docker exec waldorf-homolog-db mysql -u waldorf -pwaldorf_homolog_pass waldorf_homolog -se "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='waldorf_homolog' AND table_name='$TABELA';" 2>/dev/null)
+  DB_CHECK=$(docker exec waldorf-homolog-db mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" -se "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='waldorf_homolog' AND table_name='$TABELA';" 2>/dev/null)
   [ "$DB_CHECK" -eq 1 ] 2>/dev/null && pass "Tabela '$TABELA' existe" || fail "Tabela '$TABELA' ausente"
 done
 
@@ -58,7 +63,7 @@ ALUNO_MATRICULA="MAT$(date +%s)A"
 ALUNO=$(curl -sf -X POST "$BASE_URL/api/v1/alunos" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d "{\"nome\":\"$ALUNO_NOME\",\"matricula\":\"$ALUNO_MATRICULA\",\"anoIngresso\":2026}") || { fail "POST /alunos falhou"; }
 ALUNO_ID=$(echo "$ALUNO" | grep -o '"id":[0-9]*' | head -1 | cut -d':' -f2)
 [ -n "$ALUNO_ID" ] && pass "Aluno criado — matrícula: $ALUNO_MATRICULA" || fail "Aluno sem ID"
-DB_ALUNO=$(docker exec waldorf-homolog-db mysql -u waldorf -pwaldorf_homolog_pass waldorf_homolog -se "SELECT COUNT(*) FROM alunos WHERE matricula='$ALUNO_MATRICULA';" 2>/dev/null)
+DB_ALUNO=$(docker exec waldorf-homolog-db mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" -se "SELECT COUNT(*) FROM alunos WHERE matricula='$ALUNO_MATRICULA';" 2>/dev/null)
 [ "$DB_ALUNO" -eq 1 ] 2>/dev/null && pass "Aluno confirmado no banco" || fail "Aluno não no banco"
 
 header "6. RESPONSÁVEIS — Criar e Verificar"
@@ -66,7 +71,7 @@ RESP_NOME="Responsável Teste $TS"
 RESP=$(curl -sf -X POST "$BASE_URL/api/v1/responsaveis" -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -d "{\"nome\":\"$RESP_NOME\",\"email\":\"resp.$TS@teste.com\",\"telefone\":\"11999999999\"}") || { fail "POST /responsaveis falhou"; }
 RESP_ID=$(echo "$RESP" | grep -o '"id":[0-9]*' | head -1 | cut -d':' -f2)
 [ -n "$RESP_ID" ] && pass "Responsável criado — ID: $RESP_ID" || fail "Responsável sem ID"
-DB_RESP=$(docker exec waldorf-homolog-db mysql -u waldorf -pwaldorf_homolog_pass waldorf_homolog -se "SELECT COUNT(*) FROM responsaveis WHERE nome='$RESP_NOME';" 2>/dev/null)
+DB_RESP=$(docker exec waldorf-homolog-db mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" -se "SELECT COUNT(*) FROM responsaveis WHERE nome='$RESP_NOME';" 2>/dev/null)
 [ "$DB_RESP" -eq 1 ] 2>/dev/null && pass "Responsável no banco" || fail "Responsável não no banco"
 
 header "7. FRONTEND — SPA Routing"

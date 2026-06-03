@@ -48,7 +48,9 @@ public class UsuarioService {
         Set<Perfil> perfis = resolverPerfis(dto.perfis());
         if (perfis.isEmpty())
             throw new IllegalArgumentException("Pelo menos um perfil valido deve ser informado");
-        String hash = dto.senha() != null ? passwordEncoder.encode(dto.senha()) : passwordEncoder.encode("waldorf2024");
+        if (dto.senha() == null || dto.senha().isBlank())
+            throw new IllegalArgumentException("Senha obrigatoria");
+        String hash = passwordEncoder.encode(dto.senha());
         Usuario u = Usuario.builder().nome(dto.nome()).email(dto.email()).senha(hash)
                 .ativo(dto.ativo() != null ? dto.ativo() : true).perfis(perfis).build();
         u = usuarioRepository.save(u);

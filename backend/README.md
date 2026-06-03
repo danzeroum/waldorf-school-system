@@ -89,20 +89,15 @@ open target/site/jacoco/index.html
 ./mvnw flyway:repair
 ```
 
-## Credenciais Padrão
-
-**ATENÇÃO**: Trocar em produção!
-
-- **Username**: `admin`
-- **Password**: `Admin@2024`
-
 ## Variáveis de Ambiente
+
+Copie `.env.example` para `.env` e preencha com valores reais.
 
 ```bash
 export DB_HOST=localhost
 export DB_PORT=3306
 export DB_NAME=waldorf_db
-export DB_USER=waldorf_user
-export DB_PASS=waldorf_pass_2024
-export JWT_SECRET=your-secret-key-here
+export DB_USER=CHANGE_ME
+export DB_PASS=CHANGE_ME
+export JWT_SECRET=CHANGE_ME  # string aleatória mínimo 256 bits
 ```

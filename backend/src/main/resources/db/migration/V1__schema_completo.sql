@@ -12,8 +12,7 @@
 --   Mutirao, InscricaoEvento, PreferenciaNotificacao,
 --   LogEnvioNotificacao, ConsentimentoLgpd, SolicitacaoTitular
 --
--- Credenciais iniciais: admin@waldorf.edu.br / admin123
--- TROCAR A SENHA APOS O PRIMEIRO LOGIN!
+-- IMPORTANTE: trocar a senha do admin apos o primeiro login!
 -- =============================================================================
 
 -- =============================================================================
@@ -606,8 +605,7 @@ ORDER BY m.ano_referencia DESC, m.mes_referencia DESC;
 
 -- =============================================================================
 -- DADOS INICIAIS
--- Senha: admin123 (bcrypt $2a$10 - gerado e testado)
--- IMPORTANTE: trocar a senha apos o primeiro login!
+-- IMPORTANTE: trocar a senha do admin apos o primeiro login!
 -- =============================================================================
 
 INSERT INTO perfis (nome) VALUES
