@@ -5,90 +5,96 @@
     <div class="sidebar-brand-icon">
       <span class="material-icons text-white text-lg">park</span>
     </div>
-    <div *ngIf="!collapsed" class="sidebar-brand-text">
-      <span class="font-serif text-waldorf-gray-800 font-semibold text-base leading-tight">
-        Quintal Aroeira
-      </span>
-      <span class="text-[10px] text-waldorf-gray-400 font-sans tracking-widest uppercase">
-        Escola Waldorf
-      </span>
-    </div>
+    @if (!collapsed) {
+      <div class="sidebar-brand-text">
+        <span class="font-serif text-waldorf-gray-800 font-semibold text-base leading-tight">
+          Quintal Aroeira
+        </span>
+        <span class="text-[10px] text-waldorf-gray-400 font-sans tracking-widest uppercase">
+          Escola Waldorf
+        </span>
+      </div>
+    }
   </div>
 
   <!-- Navegação agrupada -->
   <nav class="flex-1 overflow-y-auto overflow-x-hidden px-2 py-2 sidebar-nav">
 
-    <ng-container *ngFor="let section of secoesFiltradas(); let sIdx = index">
-
+    @for (section of secoesFiltradas(); track section; let sIdx = $index) {
       <!-- Label da seção -->
       <div class="sidebar-section-label" [class.hidden]="collapsed">
         {{ section.label }}
       </div>
-      <div *ngIf="collapsed && sIdx > 0" class="sidebar-section-divider"></div>
-
-      <ng-container *ngFor="let item of section.items">
-
+      @if (collapsed && sIdx > 0) {
+        <div class="sidebar-section-divider"></div>
+      }
+      @for (item of section.items; track item) {
         <!-- Item SEM filhos (link direto) -->
-        <ng-container *ngIf="!item.children || item.children.length === 0">
+        @if (!item.children || item.children.length === 0) {
           <a
             class="sidebar-link"
             [class.sidebar-link-active]="isActive(item.route)"
             [class.justify-center]="collapsed"
             [routerLink]="item.route"
             [title]="collapsed ? item.label : ''"
-          >
-            <span class="material-icons sidebar-link-icon">{{ item.icon }}</span>
-            <span *ngIf="!collapsed" class="sidebar-link-text">{{ item.label }}</span>
-            <span
-              *ngIf="item.badge && item.badge > 0"
-              class="sidebar-badge"
-              [class.sidebar-badge-collapsed]="collapsed"
             >
-              {{ item.badge }}
-            </span>
+            <span class="material-icons sidebar-link-icon">{{ item.icon }}</span>
+            @if (!collapsed) {
+              <span class="sidebar-link-text">{{ item.label }}</span>
+            }
+            @if (item.badge && item.badge > 0) {
+              <span
+                class="sidebar-badge"
+                [class.sidebar-badge-collapsed]="collapsed"
+                >
+                {{ item.badge }}
+              </span>
+            }
           </a>
-        </ng-container>
-
+        }
         <!-- Item COM filhos (grupo expansível) -->
-        <ng-container *ngIf="item.children && item.children.length > 0">
+        @if (item.children && item.children.length > 0) {
           <a
             class="sidebar-link"
             [class.sidebar-link-active]="isGroupActive(item)"
             [class.justify-center]="collapsed"
             [title]="collapsed ? item.label : ''"
             (click)="toggleGroup(item)"
-          >
+            >
             <span class="material-icons sidebar-link-icon">{{ item.icon }}</span>
-            <span *ngIf="!collapsed" class="sidebar-link-text">{{ item.label }}</span>
-            <span
-              *ngIf="!collapsed"
-              class="material-icons sidebar-expand-arrow"
-              [class.sidebar-expand-arrow-open]="isGroupOpen(item.label)"
-            >
-              expand_more
-            </span>
+            @if (!collapsed) {
+              <span class="sidebar-link-text">{{ item.label }}</span>
+            }
+            @if (!collapsed) {
+              <span
+                class="material-icons sidebar-expand-arrow"
+                [class.sidebar-expand-arrow-open]="isGroupOpen(item.label)"
+                >
+                expand_more
+              </span>
+            }
           </a>
-
           <!-- Filhos (expansível) -->
-          <div
-            *ngIf="!collapsed"
-            class="sidebar-children"
-            [class.sidebar-children-open]="isGroupOpen(item.label) || isGroupActive(item)"
-          >
-            <a
-              *ngFor="let child of item.children"
-              class="sidebar-child"
-              [class.sidebar-child-active]="isActive(child.route)"
-              [routerLink]="child.route"
-            >
-              <span class="sidebar-child-dot"></span>
-              <span>{{ child.label }}</span>
-            </a>
-          </div>
-        </ng-container>
-
-      </ng-container>
-    </ng-container>
+          @if (!collapsed) {
+            <div
+              class="sidebar-children"
+              [class.sidebar-children-open]="isGroupOpen(item.label) || isGroupActive(item)"
+              >
+              @for (child of item.children; track child) {
+                <a
+                  class="sidebar-child"
+                  [class.sidebar-child-active]="isActive(child.route)"
+                  [routerLink]="child.route"
+                  >
+                  <span class="sidebar-child-dot"></span>
+                  <span>{{ child.label }}</span>
+                </a>
+              }
+            </div>
+          }
+        }
+      }
+    }
   </nav>
 
   <!-- Rodapé: Usuário logado -->
@@ -97,22 +103,25 @@
       <div class="sidebar-user-avatar">
         <span class="material-icons text-waldorf-terra-500 text-lg">person</span>
       </div>
-      <div *ngIf="!collapsed" class="sidebar-user-info">
-        <p class="sidebar-user-name">
-          {{ authService.usuario()?.nomeCompleto || 'Usuário' }}
-        </p>
-        <p class="sidebar-user-role">
-          {{ authService.perfisUsuario()[0] || '' }}
-        </p>
-      </div>
-      <button
-        *ngIf="!collapsed"
-        class="sidebar-logout-btn"
-        title="Sair"
-        (click)="authService.logout()"
-      >
-        <span class="material-icons text-base">logout</span>
-      </button>
+      @if (!collapsed) {
+        <div class="sidebar-user-info">
+          <p class="sidebar-user-name">
+            {{ authService.usuario()?.nomeCompleto || 'Usuário' }}
+          </p>
+          <p class="sidebar-user-role">
+            {{ authService.perfisUsuario()[0] || '' }}
+          </p>
+        </div>
+      }
+      @if (!collapsed) {
+        <button
+          class="sidebar-logout-btn"
+          title="Sair"
+          (click)="authService.logout()"
+          >
+          <span class="material-icons text-base">logout</span>
+        </button>
+      }
     </div>
   </div>
 </div>

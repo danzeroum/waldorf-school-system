@@ -15,50 +15,62 @@
   </div>
 
   <div class="flex flex-wrap gap-2">
-    <button *ngFor="let s of statusOpcoes"
-            (click)="filtrar(s)"
-            [class]="'btn-chip ' + (filtroStatus() === s ? 'btn-chip-active' : '')">
-      {{ s || 'Todos' }}
-    </button>
+    @for (s of statusOpcoes; track s) {
+      <button
+        (click)="filtrar(s)"
+        [class]="'btn-chip ' + (filtroStatus() === s ? 'btn-chip-active' : '')">
+        {{ s || 'Todos' }}
+      </button>
+    }
   </div>
 
-  <div *ngIf="carregando()" class="space-y-2">
-    <div *ngFor="let i of [1,2,3]" class="card flex gap-3 animate-pulse">
-      <div class="skeleton h-4 w-1/4"></div>
-      <div class="skeleton h-4 w-1/4"></div>
-      <div class="skeleton h-4 w-1/6"></div>
+  @if (carregando()) {
+    <div class="space-y-2">
+      @for (i of [1,2,3]; track i) {
+        <div class="card flex gap-3 animate-pulse">
+          <div class="skeleton h-4 w-1/4"></div>
+          <div class="skeleton h-4 w-1/4"></div>
+          <div class="skeleton h-4 w-1/6"></div>
+        </div>
+      }
     </div>
-  </div>
+  }
 
-  <div *ngIf="!carregando()" class="card overflow-x-auto p-0">
-    <table class="w-full text-sm">
-      <thead class="bg-waldorf-cream-50 text-waldorf-gray-600 text-xs uppercase">
-        <tr>
-          <th class="px-4 py-3 text-left">Aluno</th>
-          <th class="px-4 py-3 text-left">Responsável</th>
-          <th class="px-4 py-3 text-left">Tipo</th>
-          <th class="px-4 py-3 text-left">Status</th>
-          <th class="px-4 py-3 text-left">Data aceite</th>
-          <th class="px-4 py-3 text-left">Versão</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-waldorf-cream-100">
-        <tr *ngFor="let c of consentimentos()" class="hover:bg-waldorf-cream-50 transition-colors">
-          <td class="px-4 py-3 font-medium text-waldorf-gray-900">{{ c.alunoNome }}</td>
-          <td class="px-4 py-3 text-waldorf-gray-600">{{ c.responsavelNome }}</td>
-          <td class="px-4 py-3 text-waldorf-gray-600">{{ c.tipo | titlecase }}</td>
-          <td class="px-4 py-3">
-            <span [class]="'badge ' + (c.status === 'ACEITO' ? 'badge-success' : c.status === 'PENDENTE' ? 'badge-warning' : c.status === 'REVOGADO' ? 'badge-danger' : 'badge-default')">
-              {{ c.status }}
-            </span>
-          </td>
-          <td class="px-4 py-3 text-waldorf-gray-500">{{ c.dataAceite ? (c.dataAceite | date:'dd/MM/yyyy') : '—' }}</td>
-          <td class="px-4 py-3 text-waldorf-gray-400">{{ c.versaoTermos }}</td>
-        </tr>
-        <tr *ngIf="consentimentos().length === 0">
-          <td colspan="6" class="px-4 py-12 text-center text-waldorf-gray-400">Nenhum consentimento encontrado</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  @if (!carregando()) {
+    <div class="card overflow-x-auto p-0">
+      <table class="w-full text-sm">
+        <thead class="bg-waldorf-cream-50 text-waldorf-gray-600 text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3 text-left">Aluno</th>
+            <th class="px-4 py-3 text-left">Responsável</th>
+            <th class="px-4 py-3 text-left">Tipo</th>
+            <th class="px-4 py-3 text-left">Status</th>
+            <th class="px-4 py-3 text-left">Data aceite</th>
+            <th class="px-4 py-3 text-left">Versão</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-waldorf-cream-100">
+          @for (c of consentimentos(); track c) {
+            <tr class="hover:bg-waldorf-cream-50 transition-colors">
+              <td class="px-4 py-3 font-medium text-waldorf-gray-900">{{ c.alunoNome }}</td>
+              <td class="px-4 py-3 text-waldorf-gray-600">{{ c.responsavelNome }}</td>
+              <td class="px-4 py-3 text-waldorf-gray-600">{{ c.tipo | titlecase }}</td>
+              <td class="px-4 py-3">
+                <span [class]="'badge ' + (c.status === 'ACEITO' ? 'badge-success' : c.status === 'PENDENTE' ? 'badge-warning' : c.status === 'REVOGADO' ? 'badge-danger' : 'badge-default')">
+                  {{ c.status }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-waldorf-gray-500">{{ c.dataAceite ? (c.dataAceite | date:'dd/MM/yyyy') : '—' }}</td>
+              <td class="px-4 py-3 text-waldorf-gray-400">{{ c.versaoTermos }}</td>
+            </tr>
+          }
+          @if (consentimentos().length === 0) {
+            <tr>
+              <td colspan="6" class="px-4 py-12 text-center text-waldorf-gray-400">Nenhum consentimento encontrado</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 </div>

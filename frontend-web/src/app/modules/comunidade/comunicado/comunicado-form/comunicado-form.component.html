@@ -22,17 +22,25 @@
     <div>
       <label class="label">Assunto <span class="text-red-500">*</span></label>
       <input formControlName="assunto" type="text" class="input w-full" placeholder="Ex: Reunião de pais — Classe 3" />
-      <p *ngIf="form.get('assunto')?.touched && form.get('assunto')?.invalid" class="text-xs text-red-500 mt-1">Assunto obrigatório (mín. 5 caracteres)</p>
+      @if (form.get('assunto')?.touched && form.get('assunto')?.invalid) {
+        <p class="text-xs text-red-500 mt-1">Assunto obrigatório (mín. 5 caracteres)</p>
+      }
     </div>
     <div>
       <label class="label">Mensagem <span class="text-red-500">*</span></label>
       <textarea formControlName="corpo" rows="5" class="input w-full resize-none" placeholder="Escreva o conteúdo do comunicado..."></textarea>
-      <p *ngIf="form.get('corpo')?.touched && form.get('corpo')?.invalid" class="text-xs text-red-500 mt-1">Mensagem obrigatória (mín. 10 caracteres)</p>
+      @if (form.get('corpo')?.touched && form.get('corpo')?.invalid) {
+        <p class="text-xs text-red-500 mt-1">Mensagem obrigatória (mín. 10 caracteres)</p>
+      }
     </div>
-    <p *ngIf="erro" class="text-sm text-red-600">{{ erro }}</p>
+    @if (erro) {
+      <p class="text-sm text-red-600">{{ erro }}</p>
+    }
     <div class="flex gap-3 pt-2">
       <button type="submit" [disabled]="salvando" class="btn-primary flex items-center gap-2">
-        <span *ngIf="salvando" class="material-icons animate-spin text-base">refresh</span>
+        @if (salvando) {
+          <span class="material-icons animate-spin text-base">refresh</span>
+        }
         Publicar comunicado
       </button>
       <a routerLink="/comunidade/comunicados" class="btn-ghost">Cancelar</a>

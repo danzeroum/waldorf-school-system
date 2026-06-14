@@ -1,151 +1,174 @@
 <!-- ══════════════════════════════════════════════
-     Turma Detalhe — alinhado com TurmaResponseDTO
-     ══════════════════════════════════════════════ -->
+Turma Detalhe — alinhado com TurmaResponseDTO
+══════════════════════════════════════════════ -->
 
-<div class="space-y-5 animate-fade-in-up" *ngIf="!carregando() && turma()">
-
-  <!-- Header -->
-  <div class="card flex flex-wrap items-center gap-4">
-    <button (click)="router.navigate(['/pedagogia/turmas'])" class="btn-icon">
-      <span class="material-icons">arrow_back</span>
-    </button>
-    <div class="w-12 h-12 bg-waldorf-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-      <span class="material-icons text-waldorf-green-600 text-2xl">school</span>
+@if (!carregando() && turma()) {
+  <div class="space-y-5 animate-fade-in-up">
+    <!-- Header -->
+    <div class="card flex flex-wrap items-center gap-4">
+      <button (click)="router.navigate(['/pedagogia/turmas'])" class="btn-icon">
+        <span class="material-icons">arrow_back</span>
+      </button>
+      <div class="w-12 h-12 bg-waldorf-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+        <span class="material-icons text-waldorf-green-600 text-2xl">school</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <h1 class="text-xl font-serif text-waldorf-gray-900">{{ turma()!.nome }}</h1>
+        <p class="text-sm text-waldorf-gray-500 flex flex-wrap gap-x-2">
+          <span>{{ turma()!.totalAlunos }} alunos</span>
+          <span>&bull; Ano Letivo {{ turma()!.anoLetivo }}</span>
+          @if (turma()!.capacidadeMaxima) {
+            <span>&bull; Cap. {{ turma()!.capacidadeMaxima }}</span>
+          }
+          @if (turma()!.anoEscolar) {
+            <span>&bull; {{ turma()!.anoEscolar }}º ano</span>
+          }
+        </p>
+        @if (turma()!.professorRegenteNome) {
+          <p class="text-sm text-waldorf-gray-500 mt-0.5">
+            <span class="material-icons text-xs align-middle mr-1">person</span>
+            Regente: {{ turma()!.professorRegenteNome }}
+          </p>
+        }
+      </div>
+      <span [ngClass]="turma()!.ativa ? 'badge badge-success' : 'badge badge-neutral'">
+        {{ turma()!.ativa ? 'Ativa' : 'Inativa' }}
+      </span>
+      <button (click)="novaEpoca()" class="btn-primary flex items-center gap-2 text-sm">
+        <span class="material-icons text-base">add</span> Nova Época
+      </button>
     </div>
-    <div class="flex-1 min-w-0">
-      <h1 class="text-xl font-serif text-waldorf-gray-900">{{ turma()!.nome }}</h1>
-      <p class="text-sm text-waldorf-gray-500 flex flex-wrap gap-x-2">
-        <span>{{ turma()!.totalAlunos }} alunos</span>
-        <span>&bull; Ano Letivo {{ turma()!.anoLetivo }}</span>
-        <span *ngIf="turma()!.capacidadeMaxima">&bull; Cap. {{ turma()!.capacidadeMaxima }}</span>
-        <span *ngIf="turma()!.anoEscolar">&bull; {{ turma()!.anoEscolar }}º ano</span>
-      </p>
-      <p class="text-sm text-waldorf-gray-500 mt-0.5" *ngIf="turma()!.professorRegenteNome">
-        <span class="material-icons text-xs align-middle mr-1">person</span>
-        Regente: {{ turma()!.professorRegenteNome }}
-      </p>
-    </div>
-    <span [ngClass]="turma()!.ativa ? 'badge badge-success' : 'badge badge-neutral'">
-      {{ turma()!.ativa ? 'Ativa' : 'Inativa' }}
-    </span>
-    <button (click)="novaEpoca()" class="btn-primary flex items-center gap-2 text-sm">
-      <span class="material-icons text-base">add</span> Nova Época
-    </button>
-  </div>
-
-  <!-- Tabs -->
-  <div class="border-b border-waldorf-cream-200">
-    <nav class="flex gap-1">
-      <button
-        *ngFor="let tab of tabs"
-        (click)="tabAtiva.set(tab.id)"
+    <!-- Tabs -->
+    <div class="border-b border-waldorf-cream-200">
+      <nav class="flex gap-1">
+        @for (tab of tabs; track tab) {
+          <button
+            (click)="tabAtiva.set(tab.id)"
         [ngClass]="tabAtiva() === tab.id
           ? 'flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-waldorf-green-600 border-b-2 border-waldorf-green-500'
           : 'flex items-center gap-1.5 px-4 py-2.5 text-sm text-waldorf-gray-500 hover:text-waldorf-gray-700'"
-      >
-        <span class="material-icons text-base">{{ tab.icone }}</span>
-        {{ tab.label }}
-      </button>
-    </nav>
-  </div>
-
-  <!-- Tab Alunos -->
-  <div *ngIf="tabAtiva() === 'alunos'" class="card p-0 overflow-hidden">
-    <table class="w-full">
-      <thead>
-        <tr>
-          <th class="table-header text-left">Aluno</th>
-          <th class="table-header text-left hidden sm:table-cell">Matrícula</th>
-          <th class="table-header text-left hidden md:table-cell">Nascimento</th>
-          <th class="table-header text-left">Situação</th>
-          <th class="table-header text-right">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let aluno of alunos()" class="table-row-hover">
-          <td class="table-cell">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-full bg-waldorf-green-100 flex items-center justify-center">
-                <span class="material-icons text-waldorf-green-600 text-sm">child_care</span>
-              </div>
-              <span class="font-medium text-waldorf-gray-800">{{ aluno.nome }}</span>
-            </div>
-          </td>
-          <td class="table-cell hidden sm:table-cell text-waldorf-gray-500 text-sm">
-            {{ aluno.matricula || '—' }}
-          </td>
-          <td class="table-cell hidden md:table-cell text-waldorf-gray-500 text-sm">
-            {{ aluno.dataNascimento ? (aluno.dataNascimento | date:'dd/MM/yyyy') : '—' }}
-          </td>
-          <td class="table-cell">
-            <span [ngClass]="aluno.ativo ? 'badge badge-success' : 'badge badge-neutral'">
-              {{ aluno.ativo ? 'Ativo' : 'Inativo' }}
-            </span>
-          </td>
-          <td class="table-cell text-right">
-            <button (click)="verObservacoes(aluno.id)" class="btn-ghost text-xs flex items-center gap-1 ml-auto">
-              <span class="material-icons text-base">visibility</span>
-              Observações
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="alunos().length === 0">
-          <td colspan="5" class="py-10 text-center text-waldorf-gray-400">
-            Nenhum aluno nesta turma
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Tab Épocas -->
-  <div *ngIf="tabAtiva() === 'epocas'" class="space-y-3">
-    <div *ngIf="epocas().length === 0" class="card text-center py-10">
-      <span class="material-icons text-3xl text-waldorf-gray-300">timeline</span>
-      <p class="text-waldorf-gray-500 mt-2 text-sm">Nenhuma época cadastrada</p>
-      <button (click)="novaEpoca()" class="btn-primary mt-3 text-sm">Criar primeira época</button>
+            >
+            <span class="material-icons text-base">{{ tab.icone }}</span>
+            {{ tab.label }}
+          </button>
+        }
+      </nav>
     </div>
-    <div *ngFor="let epoca of epocas()" class="card flex items-start gap-4">
-      <div [ngClass]="['w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0', (epoca.aspecto | aspecto:'css')]">
-        <span class="material-icons text-white text-base">{{ epoca.aspecto | aspecto:'icone' }}</span>
+    <!-- Tab Alunos -->
+    @if (tabAtiva() === 'alunos') {
+      <div class="card p-0 overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th class="table-header text-left">Aluno</th>
+              <th class="table-header text-left hidden sm:table-cell">Matrícula</th>
+              <th class="table-header text-left hidden md:table-cell">Nascimento</th>
+              <th class="table-header text-left">Situação</th>
+              <th class="table-header text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (aluno of alunos(); track aluno) {
+              <tr class="table-row-hover">
+                <td class="table-cell">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-waldorf-green-100 flex items-center justify-center">
+                      <span class="material-icons text-waldorf-green-600 text-sm">child_care</span>
+                    </div>
+                    <span class="font-medium text-waldorf-gray-800">{{ aluno.nome }}</span>
+                  </div>
+                </td>
+                <td class="table-cell hidden sm:table-cell text-waldorf-gray-500 text-sm">
+                  {{ aluno.matricula || '—' }}
+                </td>
+                <td class="table-cell hidden md:table-cell text-waldorf-gray-500 text-sm">
+                  {{ aluno.dataNascimento ? (aluno.dataNascimento | date:'dd/MM/yyyy') : '—' }}
+                </td>
+                <td class="table-cell">
+                  <span [ngClass]="aluno.ativo ? 'badge badge-success' : 'badge badge-neutral'">
+                    {{ aluno.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td class="table-cell text-right">
+                  <button (click)="verObservacoes(aluno.id)" class="btn-ghost text-xs flex items-center gap-1 ml-auto">
+                    <span class="material-icons text-base">visibility</span>
+                    Observações
+                  </button>
+                </td>
+              </tr>
+            }
+            @if (alunos().length === 0) {
+              <tr>
+                <td colspan="5" class="py-10 text-center text-waldorf-gray-400">
+                  Nenhum aluno nesta turma
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-2 flex-wrap">
-          <h3 class="font-semibold text-waldorf-gray-800">{{ epoca.titulo }}</h3>
-          <span class="badge badge-info text-xs">{{ epoca.materia }}</span>
-        </div>
-        <p class="text-xs text-waldorf-gray-500 mt-1">
-          {{ epoca.dataInicio | date:'dd/MM' }} → {{ epoca.dataFim | date:'dd/MM/yyyy' }}
-          &bull; {{ epoca.dataInicio | duracaoEpoca: epoca.dataFim }}
-        </p>
-        <p *ngIf="epoca.descricao" class="text-sm text-waldorf-gray-600 mt-1 line-clamp-2">
-          {{ epoca.descricao }}
-        </p>
-      </div>
+    }
+    <!-- Tab Épocas -->
+    @if (tabAtiva() === 'epocas') {
+      <div class="space-y-3">
+        @if (epocas().length === 0) {
+          <div class="card text-center py-10">
+            <span class="material-icons text-3xl text-waldorf-gray-300">timeline</span>
+            <p class="text-waldorf-gray-500 mt-2 text-sm">Nenhuma época cadastrada</p>
+            <button (click)="novaEpoca()" class="btn-primary mt-3 text-sm">Criar primeira época</button>
+          </div>
+        }
+        @for (epoca of epocas(); track epoca) {
+          <div class="card flex items-start gap-4">
+            <div [ngClass]="['w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0', (epoca.aspecto | aspecto:'css')]">
+              <span class="material-icons text-white text-base">{{ epoca.aspecto | aspecto:'icone' }}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-semibold text-waldorf-gray-800">{{ epoca.titulo }}</h3>
+                <span class="badge badge-info text-xs">{{ epoca.materia }}</span>
+              </div>
+              <p class="text-xs text-waldorf-gray-500 mt-1">
+                {{ epoca.dataInicio | date:'dd/MM' }} → {{ epoca.dataFim | date:'dd/MM/yyyy' }}
+                &bull; {{ epoca.dataInicio | duracaoEpoca: epoca.dataFim }}
+              </p>
+              @if (epoca.descricao) {
+                <p class="text-sm text-waldorf-gray-600 mt-1 line-clamp-2">
+                  {{ epoca.descricao }}
+                </p>
+              }
+            </div>
       <span [ngClass]="epoca.status === 'EM_ANDAMENTO' ? 'badge badge-success' :
                        epoca.status === 'PLANEJADA'    ? 'badge badge-warning' : 'badge badge-neutral'">
-        {{ epoca.status === 'EM_ANDAMENTO' ? 'Em andamento' :
-           epoca.status === 'PLANEJADA'    ? 'Planejada'    : 'Concluída' }}
-      </span>
-    </div>
+              {{ epoca.status === 'EM_ANDAMENTO' ? 'Em andamento' :
+              epoca.status === 'PLANEJADA'    ? 'Planejada'    : 'Concluída' }}
+            </span>
+          </div>
+        }
+      </div>
+    }
+    <!-- Tab Horários -->
+    @if (tabAtiva() === 'horarios') {
+      <div class="card text-center py-16">
+        <span class="material-icons text-4xl text-waldorf-gray-300">schedule</span>
+        <p class="text-waldorf-gray-500 mt-2">Grade de horários — próxima iteração</p>
+      </div>
+    }
   </div>
-
-  <!-- Tab Horários -->
-  <div *ngIf="tabAtiva() === 'horarios'" class="card text-center py-16">
-    <span class="material-icons text-4xl text-waldorf-gray-300">schedule</span>
-    <p class="text-waldorf-gray-500 mt-2">Grade de horários — próxima iteração</p>
-  </div>
-
-</div>
+}
 
 <!-- Loading -->
-<div *ngIf="carregando()" class="card text-center py-16">
-  <span class="material-icons text-4xl text-waldorf-gray-300 animate-spin">refresh</span>
-</div>
+@if (carregando()) {
+  <div class="card text-center py-16">
+    <span class="material-icons text-4xl text-waldorf-gray-300 animate-spin">refresh</span>
+  </div>
+}
 
 <!-- Erro / turma não encontrada -->
-<div *ngIf="!carregando() && !turma()" class="card text-center py-16">
-  <span class="material-icons text-4xl text-waldorf-gray-300">error_outline</span>
-  <p class="text-waldorf-gray-500 mt-2">Turma não encontrada</p>
-  <button (click)="router.navigate(['/pedagogia/turmas'])" class="btn-ghost mt-3">Voltar</button>
-</div>
+@if (!carregando() && !turma()) {
+  <div class="card text-center py-16">
+    <span class="material-icons text-4xl text-waldorf-gray-300">error_outline</span>
+    <p class="text-waldorf-gray-500 mt-2">Turma não encontrada</p>
+    <button (click)="router.navigate(['/pedagogia/turmas'])" class="btn-ghost mt-3">Voltar</button>
+  </div>
+}
