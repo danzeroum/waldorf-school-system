@@ -24,7 +24,7 @@ dependencies:
   sqflite: ^2.3.3
   path: ^1.9.0
   shared_preferences: ^2.2.3
-  flutter_secure_storage: ^9.0.0
+  flutter_secure_storage: ">=9.0.0 <11.0.0"
 
   # Auth JWT
   jwt_decoder: ^2.0.1
