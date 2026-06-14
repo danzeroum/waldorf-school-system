@@ -1,6 +1,7 @@
 package com.waldorf.domain.entity;
 
 import com.waldorf.domain.enums.Genero;
+import com.waldorf.infrastructure.security.crypto.CryptoStringConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,7 +30,11 @@ public class Responsavel {
     private String email;
 
     private String telefone;
+
+    @Convert(converter = CryptoStringConverter.class)
+    @Column(length = 255)
     private String cpf;
+
     private String parentesco;
     private String profissao;
     private String empresa;
