@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'tipoCanal' })
+@Pipe({
+    name: 'tipoCanal',
+    standalone: false
+})
 export class TipoCanalPipe implements PipeTransform {
   private readonly MAP: Record<string, { label: string; icone: string; css: string }> = {
     AVISO:      { label: 'Aviso',      icone: 'campaign',    css: 'text-yellow-600' },
