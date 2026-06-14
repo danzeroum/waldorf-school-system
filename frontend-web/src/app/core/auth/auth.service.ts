@@ -52,28 +52,26 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   // ── Login ──────────────────────────────────────────────────────────────────
+  // Os tokens trafegam em cookies HttpOnly (definidos pelo backend); o JS nunca os
+  // persiste. Guardamos apenas o perfil e o instante de expiração (não sensível) para
+  // os guards de rota. `withCredentials` é obrigatório para receber/enviar os cookies.
   login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/login`, credentials).pipe(
+    return this.http.post<LoginResponse>(`${this.base}/login`, credentials, { withCredentials: true }).pipe(
       tap(res => {
         const normalized = this.normalizeUsuario(res.usuario);
-        localStorage.setItem('access_token',  res.accessToken);
-        localStorage.setItem('refresh_token', res.refreshToken);
-        localStorage.setItem('usuario',       JSON.stringify(normalized));
+        this.persistSession(res.accessToken, normalized);
         this._usuario$.next(normalized);
       })
     );
   }
 
   // ── Refresh Token ──────────────────────────────────────────────────────────
+  // O refresh token vai no cookie HttpOnly; corpo vazio.
   refreshToken(): Observable<LoginResponse> {
-    const token = localStorage.getItem('refresh_token') ?? '';
-    const body: RefreshTokenRequest = { refreshToken: token };
-    return this.http.post<LoginResponse>(`${this.base}/refresh`, body).pipe(
+    return this.http.post<LoginResponse>(`${this.base}/refresh`, {}, { withCredentials: true }).pipe(
       tap(res => {
         const normalized = this.normalizeUsuario(res.usuario);
-        localStorage.setItem('access_token',  res.accessToken);
-        localStorage.setItem('refresh_token', res.refreshToken);
-        localStorage.setItem('usuario',       JSON.stringify(normalized));
+        this.persistSession(res.accessToken, normalized);
         this._usuario$.next(normalized);
       })
     );
@@ -81,39 +79,43 @@ export class AuthService {
 
   // ── GET /me ────────────────────────────────────────────────────────────────
   getMe(): Observable<MeResponse> {
-    return this.http.get<MeResponse>(`${this.base}/me`);
+    return this.http.get<MeResponse>(`${this.base}/me`, { withCredentials: true });
   }
 
   // ── Logout ─────────────────────────────────────────────────────────────────
   logout(): void {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      this.http.post(`${this.base}/logout`, {}).subscribe({ error: () => {} });
-    }
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    this.http.post(`${this.base}/logout`, {}, { withCredentials: true }).subscribe({ error: () => {} });
+    localStorage.removeItem('token_exp');
     localStorage.removeItem('usuario');
     this._usuario$.next(null);
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
   isAuthenticated(): boolean {
-    const token = localStorage.getItem('access_token');
-    if (!token) return false;
+    const exp = localStorage.getItem('token_exp');
+    if (!exp) return false;
+    return Number(exp) > Date.now();
+  }
+
+  /** Persiste o perfil e a expiração; o token em si fica no cookie HttpOnly. */
+  private persistSession(accessToken: string, usuario: UsuarioResumo): void {
     try {
-      const decoded: any = jwtDecode(token);
-      return decoded.exp * 1000 > Date.now();
+      const decoded: any = jwtDecode(accessToken);
+      localStorage.setItem('token_exp', String((decoded?.exp ?? 0) * 1000));
     } catch {
-      return false;
+      localStorage.removeItem('token_exp');
     }
+    localStorage.setItem('usuario', JSON.stringify(usuario));
   }
 
+  /** @deprecated Tokens agora ficam em cookies HttpOnly e não são acessíveis via JS. */
   getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+    return null;
   }
 
+  /** @deprecated O refresh token fica em cookie HttpOnly. */
   getRefreshTokenValue(): string | null {
-    return localStorage.getItem('refresh_token');
+    return null;
   }
 
   getUsuario(): UsuarioResumo | null {

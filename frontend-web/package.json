@@ -2,6 +2,10 @@
   "name": "waldorf-school-web",
   "version": "1.0.0",
   "description": "Sistema Escolar Waldorf - Portal Web",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

@@ -6,6 +6,7 @@ import com.waldorf.application.dto.auth.UsuarioResponseDTO;
 import com.waldorf.domain.entity.Usuario;
 import com.waldorf.infrastructure.repository.UsuarioRepository;
 import com.waldorf.infrastructure.security.JwtService;
+import com.waldorf.infrastructure.security.TokenBlacklistService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ public class AuthService {
     private final AuthenticationManager authManager;
     private final UsuarioRepository     usuarioRepository;
     private final JwtService            jwtService;
+    private final TokenBlacklistService tokenBlacklist;
 
     public LoginResponseDTO login(LoginRequestDTO dto) {
         authManager.authenticate(
@@ -44,12 +46,19 @@ public class AuthService {
     }
 
     /**
-     * Logout stateless: o servidor retorna 204 e o cliente descarta o token.
-     * Para blacklist futura, adicionar invalidarToken() no JwtService.
+     * Revoga o token informado (blacklist por jti, com TTL = validade restante), de modo que
+     * não possa ser reutilizado mesmo antes de expirar. Tolerante a token nulo/ inválido.
      */
     public void logout(String token, String email) {
         log.info("Logout solicitado para: {}", email);
-        // Stateless — nenhuma ação server-side necessária.
+        if (token == null || token.isBlank()) {
+            return;
+        }
+        try {
+            tokenBlacklist.revoke(jwtService.extractJti(token), jwtService.remainingMillis(token));
+        } catch (Exception e) {
+            log.debug("Não foi possível revogar token no logout: {}", e.getMessage());
+        }
     }
 
     private LoginResponseDTO buildResponse(Usuario usuario) {
