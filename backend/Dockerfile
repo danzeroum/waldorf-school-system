@@ -1,10 +1,10 @@
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 RUN ./mvnw -B package -DskipTests --no-transfer-progress 2>/dev/null || \
     (apk add --no-cache maven && mvn -B package -DskipTests --no-transfer-progress)
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 RUN addgroup -S waldorf && adduser -S waldorf -G waldorf
 USER waldorf
