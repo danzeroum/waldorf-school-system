@@ -3,33 +3,181 @@
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <div>
-      <h1 class="text-2xl font-serif text-waldorf-gray-900">Observações Pedagógicas</h1>
-      <p class="text-sm text-waldorf-gray-500 mt-0.5">{{ observacoesFiltradas.length }} registro(s)</p>
+      <h1 class="text-2xl font-serif text-waldorf-gray-900">Observações</h1>
+      <p class="text-sm text-waldorf-gray-500 mt-0.5">
+        {{ observacoesFiltradas().length }} observação(ões)
+        <ng-container *ngIf="alunoSel()"> · filtrado por aluno</ng-container>
+      </p>
     </div>
-    <button (click)="exibirForm.set(!exibirForm())" class="btn-primary flex items-center gap-2">
-      <span class="material-icons text-base">{{ exibirForm() ? 'close' : 'add' }}</span>
-      {{ exibirForm() ? 'Cancelar' : 'Nova Observação' }}
+    <button (click)="exibirForm.set(true)" class="btn-primary flex items-center gap-2">
+      <span class="material-icons text-base">add</span>
+      Nova Observação
     </button>
   </div>
 
-  <!-- Formulário inline -->
-  <div *ngIf="exibirForm()" class="card border-2 border-waldorf-green-200 space-y-4" [formGroup]="form">
+  <!-- Seletores de contexto -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <select class="form-input text-sm"
+            (change)="turmaSel.set(+$any($event.target).value || null)">
+      <option value="">Todas as turmas</option>
+      <option *ngFor="let t of turmasMock" [value]="t.id">{{ t.nome }}</option>
+    </select>
+    <select class="form-input text-sm"
+            (change)="alunoSel.set(+$any($event.target).value || null)">
+      <option value="">Todos os alunos</option>
+      <option *ngFor="let a of alunosMock" [value]="a.id">{{ a.nome }}</option>
+    </select>
+    <select class="form-input text-sm"
+            (change)="epocaSel.set(+$any($event.target).value || null)">
+      <option value="">Todas as épocas</option>
+      <option *ngFor="let e of epocasMock" [value]="e.id">{{ e.titulo }}</option>
+    </select>
+  </div>
 
-    <!-- Barra de status local (3 etapas) -->
+  <!-- Chips de aspecto com contagens -->
+  <div class="flex gap-2 flex-wrap">
+    <button
+      (click)="filtroAspecto.set('')"
+      [class]="!filtroAspecto() ? 'btn-primary text-sm' : 'btn-ghost text-sm'"
+    >
+      Todos · {{ observacoes().length }}
+    </button>
+    <button
+      *ngFor="let a of aspectos"
+      (click)="filtroAspecto.set(a.value)"
+      class="px-3 py-1.5 rounded-xl text-sm font-medium border transition-all duration-150"
+      [ngClass]="filtroAspecto() === a.value
+        ? a.chipCss
+        : 'text-waldorf-gray-600 border-waldorf-cream-200 hover:bg-waldorf-cream-50'"
+    >
+      {{ a.label }} · {{ contagemPorAspecto()[a.value] ?? 0 }}
+    </button>
+  </div>
+
+  <!-- Skeleton -->
+  <div *ngIf="carregando()" class="space-y-3">
+    <div *ngFor="let i of [1,2,3]" class="card border-l-4 border-waldorf-cream-300 space-y-3">
+      <div class="flex items-center gap-3">
+        <div class="skeleton w-14 h-5 rounded-full"></div>
+        <div class="skeleton w-6 h-6 rounded-full"></div>
+        <div class="skeleton h-4 w-28"></div>
+      </div>
+      <div class="skeleton h-14 w-full rounded-lg"></div>
+      <div class="skeleton h-3 w-1/3"></div>
+    </div>
+  </div>
+
+  <!-- Lista de observações -->
+  <div *ngIf="!carregando()" class="space-y-3">
+
+    <div
+      *ngFor="let obs of observacoesFiltradas()"
+      class="card border-l-4 space-y-3 group transition-shadow hover:shadow-waldorf"
+      [ngClass]="'aspect-border-' + obs.aspecto.toLowerCase()"
+    >
+
+      <!-- Cabeçalho do card -->
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span [class]="'badge aspect-' + obs.aspecto.toLowerCase()">
+            {{ obs.aspecto | aspecto }}
+          </span>
+          <div class="flex items-center gap-1.5">
+            <div class="w-6 h-6 rounded-full bg-waldorf-green-100 flex items-center justify-center flex-shrink-0">
+              <span class="text-[10px] font-bold text-waldorf-green-700">{{ iniciais(obs.alunoNome) }}</span>
+            </div>
+            <span class="text-sm font-medium text-waldorf-gray-700">{{ obs.alunoNome ?? '—' }}</span>
+          </div>
+          <span *ngIf="obs.privada" class="badge badge-neutral text-xs flex items-center gap-1">
+            <span class="material-icons text-xs">lock</span> Privada
+          </span>
+        </div>
+        <span class="text-xs text-waldorf-gray-400 flex-shrink-0 font-mono">{{ obs.data | date:'dd/MM/yyyy' }}</span>
+      </div>
+
+      <!-- Conteúdo -->
+      <p class="text-sm text-waldorf-gray-700 leading-relaxed whitespace-pre-line">{{ obs.conteudo }}</p>
+
+      <!-- Footer: época + professor + ações hover-reveal -->
+      <div class="flex items-center justify-between pt-2 border-t border-waldorf-cream-100">
+        <div class="flex items-center gap-3 text-xs text-waldorf-gray-400">
+          <span *ngIf="obs.epocaTitulo" class="flex items-center gap-1">
+            <span class="material-icons text-xs">timeline</span>{{ obs.epocaTitulo }}
+          </span>
+          <span *ngIf="obs.professorNome" class="flex items-center gap-1">
+            <span class="material-icons text-xs">person</span>{{ obs.professorNome }}
+          </span>
+        </div>
+        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <button class="btn-ghost text-xs flex items-center gap-1 py-1 px-2" (click)="editar(obs)">
+            <span class="material-icons text-sm">edit</span> Editar
+          </button>
+          <button
+            class="btn-ghost text-xs flex items-center gap-1 py-1 px-2 text-red-500 hover:bg-red-50"
+            (click)="excluir(obs)"
+          >
+            <span class="material-icons text-sm">delete</span> Excluir
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="observacoesFiltradas().length === 0" class="card text-center py-12">
+      <span class="material-icons text-4xl text-waldorf-gray-300">visibility_off</span>
+      <p class="text-waldorf-gray-500 mt-2">Nenhuma observação registrada</p>
+      <p class="text-xs text-waldorf-gray-400 mt-1">
+        {{ filtroAspecto() ? 'Tente remover o filtro de aspecto' : 'Clique em "Nova Observação" para começar' }}
+      </p>
+      <button *ngIf="!filtroAspecto()" (click)="exibirForm.set(true)" class="btn-primary mt-4 text-sm">
+        Registrar primeira observação
+      </button>
+      <button *ngIf="filtroAspecto()" (click)="filtroAspecto.set('')" class="btn-secondary mt-4 text-sm">
+        Ver todas
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Backdrop do slide panel -->
+<div
+  *ngIf="exibirForm()"
+  class="fixed inset-0 bg-black/20 z-40 animate-fade-in"
+  (click)="fecharFormulario()"
+></div>
+
+<!-- Slide Panel — Nova / Editar Observação -->
+<div
+  *ngIf="exibirForm()"
+  class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl z-50 flex flex-col"
+>
+
+  <!-- Header do painel -->
+  <div class="flex items-center justify-between px-6 py-4 border-b border-waldorf-cream-100">
+    <h2 class="text-lg font-semibold text-waldorf-gray-900">
+      {{ editandoId() ? 'Editar Observação' : 'Nova Observação' }}
+    </h2>
+    <button class="btn-icon" (click)="fecharFormulario()">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+
+  <!-- Formulário -->
+  <form [formGroup]="form" class="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+
+    <!-- Stepper de status local -->
     <div class="flex items-center justify-between">
-      <h2 class="text-sm font-semibold text-waldorf-gray-700">
-        {{ editandoId() ? 'Editar Observação' : 'Registrar Observação' }}
-      </h2>
-      <div class="flex items-center gap-2">
-        <span [class]="statusLabels[statusLocal()].css">
-          {{ statusLabels[statusLocal()].label }}
-        </span>
-        <button *ngIf="statusLocal() !== 'RASCUNHO'" class="btn-ghost p-1" (click)="voltarStatus()"
-                matTooltip="Voltar etapa">
+      <span [class]="statusLabels[statusLocal()].css">
+        {{ statusLabels[statusLocal()].label }}
+      </span>
+      <div class="flex items-center gap-1">
+        <button *ngIf="statusLocal() !== 'RASCUNHO'" type="button" class="btn-ghost p-1" (click)="voltarStatus()">
           <span class="material-icons text-base">arrow_back</span>
         </button>
-        <button *ngIf="statusLocal() !== 'APROVADO'" class="btn-ghost p-1" (click)="avancarStatus()"
-                matTooltip="Avançar etapa">
+        <button *ngIf="statusLocal() !== 'APROVADO'" type="button" class="btn-ghost p-1" (click)="avancarStatus()">
           <span class="material-icons text-base">arrow_forward</span>
         </button>
       </div>
@@ -43,24 +191,25 @@
         <span class="text-xs text-waldorf-gray-600">Preencher</span>
       </div>
       <div class="flex-1 h-0.5 mx-2"
-           [class]="['RASCUNHO','REVISADO','APROVADO'].indexOf(statusLocal()) >= 1 ? 'bg-waldorf-green-400' : 'bg-gray-200'"></div>
+           [class]="['RASCUNHO','REVISADO','APROVADO'].indexOf(statusLocal()) >= 1 ? 'bg-waldorf-green-400' : 'bg-waldorf-cream-200'"></div>
       <div class="flex items-center gap-1">
         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium"
-             [class]="statusLocal() === 'REVISADO' ? 'bg-waldorf-green-500 text-white' : ['RASCUNHO','REVISADO','APROVADO'].indexOf(statusLocal()) >= 1 ? 'bg-waldorf-green-100 text-waldorf-green-700' : 'bg-gray-100 text-gray-400'">2</div>
+             [class]="statusLocal() === 'REVISADO' ? 'bg-waldorf-green-500 text-white' : ['RASCUNHO','REVISADO','APROVADO'].indexOf(statusLocal()) >= 1 ? 'bg-waldorf-green-100 text-waldorf-green-700' : 'bg-waldorf-cream-200 text-waldorf-gray-400'">2</div>
         <span class="text-xs"
-              [class]="['RASCUNHO','REVISADO','APROVADO'].indexOf(statusLocal()) >= 1 ? 'text-waldorf-gray-600' : 'text-gray-400'">Revisar</span>
+              [class]="['RASCUNHO','REVISADO','APROVADO'].indexOf(statusLocal()) >= 1 ? 'text-waldorf-gray-600' : 'text-waldorf-gray-400'">Revisar</span>
       </div>
       <div class="flex-1 h-0.5 mx-2"
-           [class]="statusLocal() === 'APROVADO' ? 'bg-waldorf-green-400' : 'bg-gray-200'"></div>
+           [class]="statusLocal() === 'APROVADO' ? 'bg-waldorf-green-400' : 'bg-waldorf-cream-200'"></div>
       <div class="flex items-center gap-1">
         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium"
-             [class]="statusLocal() === 'APROVADO' ? 'bg-waldorf-green-500 text-white' : 'bg-gray-100 text-gray-400'">3</div>
-        <span [class]="statusLocal() === 'APROVADO' ? 'text-waldorf-gray-600' : 'text-gray-400'">Aprovar</span>
+             [class]="statusLocal() === 'APROVADO' ? 'bg-waldorf-green-500 text-white' : 'bg-waldorf-cream-200 text-waldorf-gray-400'">3</div>
+        <span class="text-xs"
+              [class]="statusLocal() === 'APROVADO' ? 'text-waldorf-gray-600' : 'text-waldorf-gray-400'">Aprovar</span>
       </div>
     </div>
 
     <!-- Campos do formulário -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="grid grid-cols-2 gap-3">
       <div>
         <label class="form-label">Data *</label>
         <input type="date" formControlName="data" class="form-input">
@@ -71,115 +220,40 @@
           <option *ngFor="let a of aspectos" [value]="a.value">{{ a.label }}</option>
         </select>
       </div>
-      <div class="flex items-end">
-        <label class="flex items-center gap-2 cursor-pointer pb-2">
-          <input type="checkbox" formControlName="privada" class="w-4 h-4 rounded text-waldorf-green-500">
-          <span class="text-sm text-waldorf-gray-700">Observação privada</span>
-        </label>
-      </div>
     </div>
+
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" formControlName="privada" class="w-4 h-4 rounded">
+      <span class="text-sm text-waldorf-gray-700">Observação privada</span>
+    </label>
 
     <div>
       <label class="form-label">Observação *</label>
-      <textarea formControlName="conteudo" rows="5"
-        placeholder="Descreva as observações pedagógicas do aluno nesta época... Aspectos físicos, anímicos e espirituais do desenvolvimento..."
-        [class]="form.get('conteudo')?.invalid && form.get('conteudo')?.touched ? 'form-input-error' : 'form-input'"></textarea>
+      <textarea
+        formControlName="conteudo"
+        rows="7"
+        placeholder="Descreva as observações pedagógicas do aluno nesta época..."
+        [class]="form.get('conteudo')?.invalid && form.get('conteudo')?.touched ? 'form-input-error' : 'form-input'"
+      ></textarea>
       <p class="form-error" *ngIf="form.get('conteudo')?.hasError('minlength') && form.get('conteudo')?.touched">
         Mínimo de 10 caracteres
       </p>
     </div>
 
-    <div class="flex justify-end gap-3">
-      <button type="button" (click)="fecharFormulario()" class="btn-secondary">Cancelar</button>
-      <button type="button" (click)="salvar()" [disabled]="form.invalid || salvando()"
-              class="btn-primary flex items-center gap-2">
-        <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
-        {{ editandoId() ? 'Salvar Alterações' : 'Salvar Observação' }}
-      </button>
-    </div>
-  </div>
+  </form>
 
-  <!-- Filtros por aspecto -->
-  <div class="flex gap-2 flex-wrap">
-    <button (click)="filtroAspecto.set('')"
-            [class]="!filtroAspecto() ? 'btn-primary text-sm' : 'btn-ghost text-sm'">Todos</button>
-    <button *ngFor="let a of aspectos" (click)="filtroAspecto.set(a.value)"
-            [class]="filtroAspecto() === a.value ? 'btn-primary text-sm' : 'btn-ghost text-sm'">
-      {{ a.label }}
+  <!-- Footer do painel -->
+  <div class="px-6 py-4 border-t border-waldorf-cream-100 flex items-center justify-end gap-3">
+    <button type="button" class="btn-ghost" (click)="fecharFormulario()">Cancelar</button>
+    <button
+      type="button"
+      (click)="salvar()"
+      [disabled]="form.invalid || salvando()"
+      class="btn-primary flex items-center gap-2"
+    >
+      <span *ngIf="salvando()" class="material-icons animate-spin text-base">refresh</span>
+      {{ editandoId() ? 'Salvar Alterações' : 'Salvar Observação' }}
     </button>
   </div>
 
-  <!-- Lista de observações -->
-  <div class="space-y-3">
-
-    <!-- Skeleton -->
-    <div *ngIf="carregando()">
-      <div *ngFor="let i of [1,2,3]" class="card space-y-2">
-        <div class="skeleton h-4 w-1/4"></div>
-        <div class="skeleton h-16 w-full"></div>
-      </div>
-    </div>
-
-    <ng-container *ngIf="!carregando()">
-
-      <div *ngFor="let obs of observacoesFiltradas"
-           class="card space-y-2 group relative transition-shadow hover:shadow-waldorf">
-
-        <!-- Cabeçalho do card -->
-        <div class="flex items-center justify-between flex-wrap gap-2">
-          <div class="flex items-center gap-2">
-            <span [class]="'badge ' + 'aspect-' + obs.aspecto.toLowerCase()">
-              {{ obs.aspecto | aspecto }}
-            </span>
-            <span *ngIf="obs.privada" class="badge badge-warning text-xs flex items-center gap-1">
-              <span class="material-icons text-xs">lock</span> Privada
-            </span>
-          </div>
-          <div class="flex items-center gap-2 text-xs text-waldorf-gray-400">
-            <span>{{ obs.data | date:'dd/MM/yyyy' }}</span>
-            <span *ngIf="obs.professorNome">&bull; {{ obs.professorNome }}</span>
-          </div>
-        </div>
-
-        <!-- Conteúdo -->
-        <p class="text-sm text-waldorf-gray-700 leading-relaxed whitespace-pre-line">{{ obs.conteudo }}</p>
-
-        <!-- Época vinculada (quando backend retornar) -->
-        <p *ngIf="obs.epocaTitulo" class="text-xs text-waldorf-gray-400 flex items-center gap-1">
-          <span class="material-icons text-xs">timeline</span>{{ obs.epocaTitulo }}
-        </p>
-
-        <!-- Ações: hover-reveal -->
-        <div class="flex items-center gap-2 pt-2 border-t border-waldorf-cream-100
-                    opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <button class="btn-ghost text-xs flex items-center gap-1" (click)="editar(obs)">
-            <span class="material-icons text-base">edit</span> Editar
-          </button>
-          <button class="btn-ghost text-xs flex items-center gap-1 text-red-500 hover:text-red-700"
-                  (click)="excluir(obs)">
-            <span class="material-icons text-base">delete</span> Excluir
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Empty state -->
-      <div *ngIf="observacoesFiltradas.length === 0" class="card text-center py-12">
-        <span class="material-icons text-4xl text-waldorf-gray-300">visibility_off</span>
-        <p class="text-waldorf-gray-500 mt-2">Nenhuma observação registrada</p>
-        <p class="text-xs text-waldorf-gray-400 mt-1">
-          {{ filtroAspecto() ? 'Tente remover o filtro de aspecto' : 'Clique em “Nova Observação” para começar' }}
-        </p>
-        <button *ngIf="!filtroAspecto()" (click)="exibirForm.set(true)"
-                class="btn-primary mt-4 text-sm">
-          Registrar primeira observação
-        </button>
-        <button *ngIf="filtroAspecto()" (click)="filtroAspecto.set('')"
-                class="btn-secondary mt-4 text-sm">
-          Ver todas
-        </button>
-      </div>
-
-    </ng-container>
-  </div>
 </div>
