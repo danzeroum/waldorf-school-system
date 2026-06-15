@@ -17,10 +17,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() sidebarAberta = true;
   @Output() toggleSidebar = new EventEmitter<void>();
 
-  menuUsuarioAberto = signal(false);
-  breadcrumbs = signal<Breadcrumb[]>([]);
-  buscaAberta = signal(false);
-  termoBusca = signal('');
+  menuUsuarioAberto  = signal(false);
+  breadcrumbs        = signal<Breadcrumb[]>([]);
+  buscaAberta        = signal(false);
+  termoBusca         = signal('');
+  // TODO: integrar com NotificacoesService
+  notificacoesNaoLidas = signal<number>(3);
 
   private routerSub?: Subscription;
 
