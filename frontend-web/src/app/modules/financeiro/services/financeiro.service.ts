@@ -13,6 +13,7 @@ export interface Contrato {
   valorMensalidade: number;
   valorMatricula: number;
   totalParcelas: number;
+  parcelasPagas?: number;
   diaVencimento: number;
   status: 'ATIVO' | 'ENCERRADO' | 'SUSPENSO' | 'INADIMPLENTE';
   dataInicio: string;
