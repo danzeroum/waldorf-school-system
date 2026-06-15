@@ -1,53 +1,176 @@
-<div class="space-y-5 animate-fade-in-up">
+<div class="space-y-4 animate-fade-in-up">
 
+  <!-- Header: título + busca + exportar -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <h1 class="text-2xl font-serif text-waldorf-gray-900">Parcelas</h1>
-    <div class="flex gap-2 flex-wrap">
-      <button *ngFor="let s of ['', 'PENDENTE', 'VENCIDA', 'PAGA']"
-              (click)="filtroStatus.set(s); carregar()"
-              [class]="filtroStatus() === s ? 'btn-primary text-sm' : 'btn-ghost text-sm'">
-        {{ s || 'Todas' }}
+    <div class="flex items-center gap-2">
+      <div class="relative">
+        <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-waldorf-gray-400 text-base pointer-events-none">search</span>
+        <input
+          type="text"
+          placeholder="Buscar aluno..."
+          [value]="termoBusca()"
+          (input)="termoBusca.set($any($event.target).value)"
+          class="form-input pl-9 py-2 text-sm w-52"
+        >
+      </div>
+      <button class="btn-secondary text-sm flex items-center gap-1.5">
+        <span class="material-icons text-base">download</span>
+        Exportar
       </button>
     </div>
   </div>
 
+  <!-- Barra de totais -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="card py-3 px-4">
+      <p class="text-xs text-waldorf-gray-500 mb-0.5">Total</p>
+      <p class="text-lg font-bold font-mono text-waldorf-gray-800">{{ formatarMoeda(resumoLocal().totalReceita) }}</p>
+    </div>
+    <div class="card py-3 px-4 border-t-2 border-t-waldorf-green-400">
+      <p class="text-xs text-waldorf-green-600 font-medium mb-0.5">Recebido</p>
+      <p class="text-lg font-bold font-mono text-waldorf-green-700">{{ formatarMoeda(resumoLocal().totalRecebido) }}</p>
+    </div>
+    <div class="card py-3 px-4 border-t-2 border-t-waldorf-amber-400">
+      <p class="text-xs text-waldorf-amber-600 font-medium mb-0.5">Pendente</p>
+      <p class="text-lg font-bold font-mono text-waldorf-amber-700">{{ formatarMoeda(resumoLocal().totalPendente) }}</p>
+    </div>
+    <div class="card py-3 px-4 border-t-2 border-t-red-400">
+      <p class="text-xs text-red-600 font-medium mb-0.5">Vencido</p>
+      <p class="text-lg font-bold font-mono text-red-700">{{ formatarMoeda(resumoLocal().totalVencido) }}</p>
+    </div>
+  </div>
+
+  <!-- Chips de status com contagens -->
+  <div class="flex gap-2 flex-wrap">
+    <ng-container *ngFor="let chip of [
+      {status: '',         label: 'Todas'},
+      {status: 'PENDENTE', label: 'Pendente'},
+      {status: 'VENCIDA',  label: 'Vencida'},
+      {status: 'PAGA',     label: 'Paga'}
+    ]">
+      <button
+        (click)="filtroStatus.set(chip.status); limparSelecao()"
+        [class]="filtroStatus() === chip.status ? 'btn-primary text-sm' : 'btn-ghost text-sm'"
+      >
+        {{ chip.label }} · {{ chip.status ? contagemPorStatus()[chip.status] : contagemPorStatus().total }}
+      </button>
+    </ng-container>
+  </div>
+
+  <!-- Bulk action bar -->
+  <div
+    *ngIf="selecionadas().size > 0"
+    class="rounded-xl px-4 py-3 flex items-center gap-4 animate-fade-in"
+    style="background-color: #252321"
+  >
+    <span class="text-white text-sm font-semibold">{{ selecionadas().size }} selecionada(s)</span>
+    <div class="flex-1"></div>
+    <button (click)="enviarCobranca()" class="text-sm font-medium text-waldorf-amber-300 hover:text-waldorf-amber-200 transition-colors">
+      Enviar cobrança
+    </button>
+    <button (click)="baixarLote()" class="text-sm font-medium text-waldorf-green-300 hover:text-waldorf-green-200 transition-colors">
+      Baixar selecionadas
+    </button>
+    <button (click)="limparSelecao()" class="text-sm text-waldorf-gray-400 hover:text-white transition-colors">
+      Limpar
+    </button>
+  </div>
+
+  <!-- Tabela -->
   <div class="card p-0 overflow-hidden">
     <table class="w-full">
       <thead>
         <tr>
+          <th class="table-header w-12">
+            <input
+              type="checkbox"
+              [checked]="selecionadas().size > 0 && selecionadas().size === parcelasFiltradas().length"
+              [indeterminate]="selecionadas().size > 0 && selecionadas().size < parcelasFiltradas().length"
+              (change)="toggleTodos()"
+              class="w-4 h-4 rounded"
+            >
+          </th>
           <th class="table-header text-left">Aluno</th>
-          <th class="table-header text-left hidden sm:table-cell">Descrição</th>
-          <th class="table-header text-right">Valor</th>
           <th class="table-header text-left hidden md:table-cell">Vencimento</th>
           <th class="table-header text-left">Status</th>
+          <th class="table-header text-right">Valor</th>
           <th class="table-header text-right">Ação</th>
         </tr>
       </thead>
       <tbody>
+
+        <!-- Skeleton -->
         <ng-container *ngIf="carregando()">
           <tr *ngFor="let i of [1,2,3,4,5]" class="table-row-hover">
-            <td class="table-cell"><div class="skeleton h-4 w-36"></div></td>
-            <td class="table-cell hidden sm:table-cell"><div class="skeleton h-4 w-32"></div></td>
-            <td class="table-cell"><div class="skeleton h-4 w-20 ml-auto"></div></td>
-            <td class="table-cell hidden md:table-cell"><div class="skeleton h-4 w-24"></div></td>
+            <td class="table-cell w-12"><div class="skeleton h-4 w-4 rounded mx-auto"></div></td>
+            <td class="table-cell">
+              <div class="flex items-center gap-3">
+                <div class="skeleton w-8 h-8 rounded-full flex-shrink-0"></div>
+                <div class="skeleton h-4 w-32"></div>
+              </div>
+            </td>
+            <td class="table-cell hidden md:table-cell"><div class="skeleton h-5 w-20 rounded-full"></div></td>
             <td class="table-cell"><div class="skeleton h-5 w-16 rounded-full"></div></td>
-            <td class="table-cell"><div class="skeleton h-8 w-16 ml-auto rounded"></div></td>
+            <td class="table-cell text-right"><div class="skeleton h-4 w-20 ml-auto"></div></td>
+            <td class="table-cell text-right"><div class="skeleton h-8 w-16 ml-auto rounded"></div></td>
           </tr>
         </ng-container>
 
+        <!-- Dados -->
         <ng-container *ngIf="!carregando()">
-          <tr *ngFor="let p of parcelas()" class="table-row-hover">
-            <td class="table-cell font-medium text-waldorf-gray-800">{{ p.alunoNome ?? '—' }}</td>
-            <td class="table-cell text-sm text-waldorf-gray-500 hidden sm:table-cell">{{ p.descricao }}</td>
-            <td class="table-cell text-right font-semibold text-waldorf-gray-800">{{ formatarMoeda(p.valor) }}</td>
-            <td class="table-cell hidden md:table-cell text-sm"
-                [class.text-red-500]="p.status === 'VENCIDA'"
-                [class.text-waldorf-gray-500]="p.status !== 'VENCIDA'">
-              {{ p.dataVencimento | date:'dd/MM/yyyy' }}
+          <tr
+            *ngFor="let p of parcelasFiltradas()"
+            class="table-row-hover"
+            [style.background-color]="p.status === 'VENCIDA' ? '#FDF6F4' : null"
+          >
+            <!-- Checkbox -->
+            <td
+              class="table-cell w-12"
+              [class.border-l-4]="p.status === 'VENCIDA'"
+              [class.border-l-red-500]="p.status === 'VENCIDA'"
+            >
+              <input
+                type="checkbox"
+                [checked]="selecionadas().has(p.id)"
+                (change)="toggleSelecao(p.id)"
+                class="w-4 h-4 rounded"
+              >
             </td>
+
+            <!-- Aluno: avatar (iniciais) + nome -->
+            <td class="table-cell">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-waldorf-green-100 flex items-center justify-center flex-shrink-0">
+                  <span class="text-xs font-bold text-waldorf-green-700">{{ p.alunoNome | iniciais }}</span>
+                </div>
+                <span class="text-sm font-medium text-waldorf-gray-800">{{ p.alunoNome ?? '—' }}</span>
+              </div>
+            </td>
+
+            <!-- Vencimento relativo -->
+            <td class="table-cell hidden md:table-cell">
+              <span
+                class="badge text-xs"
+                [ngClass]="{
+                  'badge-danger':  p.status === 'VENCIDA',
+                  'badge-warning': p.status === 'PENDENTE',
+                  'badge-neutral': p.status === 'PAGA'
+                }"
+              >{{ p.dataVencimento | vencimentoRelativo }}</span>
+            </td>
+
+            <!-- Status -->
             <td class="table-cell">
               <span [class]="'badge ' + (p.status | statusParcela:'css')">{{ p.status | statusParcela }}</span>
             </td>
+
+            <!-- Valor (mono) -->
+            <td class="table-cell text-right font-mono text-sm font-semibold text-waldorf-gray-800">
+              {{ formatarMoeda(p.valor) }}
+            </td>
+
+            <!-- Ação -->
             <td class="table-cell text-right">
               <button
                 *ngIf="p.status === 'PENDENTE' || p.status === 'VENCIDA'"
@@ -57,22 +180,46 @@
                 <span class="material-icons text-sm">payments</span>
                 Baixar
               </button>
-              <span *ngIf="p.status === 'PAGA'" class="text-xs text-waldorf-gray-400 flex items-center gap-1 ml-auto justify-end">
-                <span class="material-icons text-sm text-green-500">check_circle</span>
+              <span
+                *ngIf="p.status === 'PAGA'"
+                class="text-xs text-waldorf-gray-400 flex items-center gap-1 ml-auto justify-end"
+              >
+                <span class="material-icons text-sm text-waldorf-green-500">check_circle</span>
                 {{ p.dataPagamento | date:'dd/MM' }}
               </span>
             </td>
           </tr>
-          <tr *ngIf="parcelas().length === 0">
+
+          <!-- Empty state -->
+          <tr *ngIf="parcelasFiltradas().length === 0">
             <td colspan="6" class="py-12 text-center text-waldorf-gray-400">Nenhuma parcela encontrada</td>
           </tr>
         </ng-container>
+
       </tbody>
     </table>
   </div>
+
+  <!-- Paginação -->
+  <div *ngIf="parcelasFiltradas().length > 0"
+       class="flex items-center justify-between text-sm text-waldorf-gray-500">
+    <span>Exibindo {{ parcelasFiltradas().length }} parcela(s)</span>
+    <div class="flex items-center gap-1">
+      <button class="btn-icon" [disabled]="pagina() === 1" (click)="pagina.update(p => p - 1)">
+        <span class="material-icons text-base">chevron_left</span>
+      </button>
+      <span class="px-2 py-1 text-xs font-semibold text-waldorf-gray-700 bg-white rounded-lg border border-waldorf-cream-200">
+        {{ pagina() }}
+      </span>
+      <button class="btn-icon" (click)="pagina.update(p => p + 1)">
+        <span class="material-icons text-base">chevron_right</span>
+      </button>
+    </div>
+  </div>
+
 </div>
 
-<!-- Modal de baixa de pagamento -->
+<!-- Modal de baixa de pagamento (reutilizado) -->
 <div *ngIf="baixaAberta() !== null"
      class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
      (click)="fecharBaixa()">
