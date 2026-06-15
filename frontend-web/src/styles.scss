@@ -188,6 +188,15 @@ a {
   .aspect-artistico   { @apply bg-purple-100 text-purple-700; }
   .aspect-manual      { @apply bg-amber-100  text-amber-700;  }
 
+  // --- Aspect border-left colors (para cards de observação) ---
+  .aspect-border-fisico     { @apply border-l-green-500;  }
+  .aspect-border-animico    { @apply border-l-blue-500;   }
+  .aspect-border-espiritual { @apply border-l-indigo-500; }
+  .aspect-border-cognitivo  { @apply border-l-orange-500; }
+  .aspect-border-social     { @apply border-l-red-500;    }
+  .aspect-border-artistico  { @apply border-l-purple-500; }
+  .aspect-border-manual     { @apply border-l-amber-500;  }
+
   // --- Loading skeleton ---
   .skeleton {
     @apply bg-waldorf-cream-200 animate-pulse rounded;

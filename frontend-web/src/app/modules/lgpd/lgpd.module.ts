@@ -7,6 +7,7 @@ import { ConsentimentoListComponent } from './consentimento/consentimento-list/c
 import { SolicitacaoListComponent } from './solicitacao/solicitacao-list/solicitacao-list.component';
 import { RelatorioLgpdComponent } from './relatorio/relatorio-lgpd.component';
 import { StatusSolicitacaoPipe } from './pipes/status-solicitacao.pipe';
+import { StatusConsentimentoPipe } from './pipes/status-consentimento.pipe';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { StatusSolicitacaoPipe } from './pipes/status-solicitacao.pipe';
     SolicitacaoListComponent,
     RelatorioLgpdComponent,
     StatusSolicitacaoPipe,
+    StatusConsentimentoPipe,
   ],
   imports: [
     CommonModule,

@@ -43,7 +43,10 @@
     <!-- Notificações -->
     <button class="header-icon-btn relative" routerLink="/notificacoes">
       <span class="material-icons">notifications_none</span>
-      <span class="header-notification-badge"></span>
+      <span
+        *ngIf="notificacoesNaoLidas() > 0"
+        class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 bg-waldorf-terra-400 text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-white leading-none"
+      >{{ notificacoesNaoLidas() > 9 ? '9+' : notificacoesNaoLidas() }}</span>
     </button>
 
     <!-- Avatar + menu do usuário -->

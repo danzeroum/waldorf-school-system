@@ -1,4 +1,6 @@
 <div class="space-y-5 animate-fade-in-up">
+
+  <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <div>
       <h1 class="text-2xl font-serif text-waldorf-gray-900">Consentimentos LGPD</h1>
@@ -14,51 +16,100 @@
     </div>
   </div>
 
+  <!-- Resumo: 4 mini-cards -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="card p-4 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-waldorf-cream-100 flex items-center justify-center flex-shrink-0">
+        <span class="material-icons text-waldorf-gray-500 text-base">policy</span>
+      </div>
+      <div>
+        <p class="text-xl font-semibold text-waldorf-gray-900 font-mono">{{ resumoConsentimentos().total }}</p>
+        <p class="text-xs text-waldorf-gray-500">Total</p>
+      </div>
+    </div>
+    <div class="card p-4 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-waldorf-green-100 flex items-center justify-center flex-shrink-0">
+        <span class="material-icons text-waldorf-green-600 text-base">check_circle</span>
+      </div>
+      <div>
+        <p class="text-xl font-semibold text-waldorf-green-700 font-mono">{{ resumoConsentimentos().aceitos }}</p>
+        <p class="text-xs text-waldorf-gray-500">Aceitos</p>
+      </div>
+    </div>
+    <div class="card p-4 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-waldorf-amber-100 flex items-center justify-center flex-shrink-0">
+        <span class="material-icons text-waldorf-amber-600 text-base">pending</span>
+      </div>
+      <div>
+        <p class="text-xl font-semibold text-waldorf-amber-700 font-mono">{{ resumoConsentimentos().pendentes }}</p>
+        <p class="text-xs text-waldorf-gray-500">Pendentes</p>
+      </div>
+    </div>
+    <div class="card p-4 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+        <span class="material-icons text-red-500 text-base">cancel</span>
+      </div>
+      <div>
+        <p class="text-xl font-semibold text-red-600 font-mono">{{ resumoConsentimentos().revogados }}</p>
+        <p class="text-xs text-waldorf-gray-500">Revogados</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chips de status -->
   <div class="flex flex-wrap gap-2">
     <button *ngFor="let s of statusOpcoes"
             (click)="filtrar(s)"
-            [class]="'btn-chip ' + (filtroStatus() === s ? 'btn-chip-active' : '')">
+            [class]="filtroStatus() === s ? 'btn-primary text-sm' : 'btn-ghost text-sm'">
       {{ s || 'Todos' }}
     </button>
   </div>
 
+  <!-- Skeleton -->
   <div *ngIf="carregando()" class="space-y-2">
-    <div *ngFor="let i of [1,2,3]" class="card flex gap-3 animate-pulse">
-      <div class="skeleton h-4 w-1/4"></div>
-      <div class="skeleton h-4 w-1/4"></div>
-      <div class="skeleton h-4 w-1/6"></div>
+    <div *ngFor="let i of [1,2,3]" class="card">
+      <div class="flex gap-4">
+        <div class="skeleton h-4 w-1/4"></div>
+        <div class="skeleton h-4 w-1/4"></div>
+        <div class="skeleton h-4 w-1/6"></div>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="!carregando()" class="card overflow-x-auto p-0">
-    <table class="w-full text-sm">
-      <thead class="bg-waldorf-cream-50 text-waldorf-gray-600 text-xs uppercase">
+  <!-- Tabela -->
+  <div *ngIf="!carregando()" class="card p-0 overflow-x-auto">
+    <table class="w-full">
+      <thead>
         <tr>
-          <th class="px-4 py-3 text-left">Aluno</th>
-          <th class="px-4 py-3 text-left">Responsável</th>
-          <th class="px-4 py-3 text-left">Tipo</th>
-          <th class="px-4 py-3 text-left">Status</th>
-          <th class="px-4 py-3 text-left">Data aceite</th>
-          <th class="px-4 py-3 text-left">Versão</th>
+          <th class="table-header">Aluno</th>
+          <th class="table-header hidden sm:table-cell">Responsável</th>
+          <th class="table-header hidden md:table-cell">Tipo</th>
+          <th class="table-header">Status</th>
+          <th class="table-header hidden sm:table-cell">Data aceite</th>
+          <th class="table-header hidden md:table-cell">Versão</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-waldorf-cream-100">
-        <tr *ngFor="let c of consentimentos()" class="hover:bg-waldorf-cream-50 transition-colors">
-          <td class="px-4 py-3 font-medium text-waldorf-gray-900">{{ c.alunoNome }}</td>
-          <td class="px-4 py-3 text-waldorf-gray-600">{{ c.responsavelNome }}</td>
-          <td class="px-4 py-3 text-waldorf-gray-600">{{ c.tipo | titlecase }}</td>
-          <td class="px-4 py-3">
-            <span [class]="'badge ' + (c.status === 'ACEITO' ? 'badge-success' : c.status === 'PENDENTE' ? 'badge-warning' : c.status === 'REVOGADO' ? 'badge-danger' : 'badge-default')">
-              {{ c.status }}
+      <tbody>
+        <tr *ngFor="let c of consentimentos()" class="table-row-hover">
+          <td class="table-cell font-medium text-waldorf-gray-800">{{ c.alunoNome }}</td>
+          <td class="table-cell hidden sm:table-cell">{{ c.responsavelNome }}</td>
+          <td class="table-cell hidden md:table-cell">{{ c.tipo | titlecase }}</td>
+          <td class="table-cell">
+            <span [class]="'badge ' + (c.status | statusConsentimento:'css')">
+              {{ c.status | statusConsentimento }}
             </span>
           </td>
-          <td class="px-4 py-3 text-waldorf-gray-500">{{ c.dataAceite ? (c.dataAceite | date:'dd/MM/yyyy') : '—' }}</td>
-          <td class="px-4 py-3 text-waldorf-gray-400">{{ c.versaoTermos }}</td>
+          <td class="table-cell hidden sm:table-cell">{{ c.dataAceite ? (c.dataAceite | date:'dd/MM/yyyy') : '—' }}</td>
+          <td class="table-cell hidden md:table-cell text-waldorf-gray-400">{{ c.versaoTermos }}</td>
         </tr>
         <tr *ngIf="consentimentos().length === 0">
-          <td colspan="6" class="px-4 py-12 text-center text-waldorf-gray-400">Nenhum consentimento encontrado</td>
+          <td colspan="6" class="py-12 text-center">
+            <span class="material-icons text-4xl text-waldorf-gray-300 block mb-2">policy</span>
+            <p class="text-waldorf-gray-400">Nenhum consentimento encontrado</p>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
+
 </div>

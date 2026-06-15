@@ -22,6 +22,8 @@ import { ContratoFormComponent } from './contrato/contrato-form/contrato-form.co
 import { ParcelaListComponent } from './parcela/parcela-list/parcela-list.component';
 import { StatusParcelaPipe } from './pipes/status-parcela.pipe';
 import { StatusContratoPipe } from './pipes/status-contrato.pipe';
+import { IniciaisPipe } from './pipes/iniciais.pipe';
+import { VencimentoRelativoPipe } from './pipes/vencimento-relativo.pipe';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { StatusContratoPipe } from './pipes/status-contrato.pipe';
     ParcelaListComponent,
     StatusParcelaPipe,
     StatusContratoPipe,
+    IniciaisPipe,
+    VencimentoRelativoPipe,
   ],
   imports: [
     CommonModule,
