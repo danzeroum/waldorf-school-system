@@ -77,6 +77,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: waldorf-backend
+    env_file:
+      - .env
     environment:
       SPRING_PROFILES_ACTIVE: docker
       DB_HOST: mysql
@@ -91,6 +93,9 @@ services:
       RABBIT_USER: ${RABBIT_USER:-waldorf}
       RABBIT_PASS: ${RABBIT_PASS:-CHANGE_ME}
       JWT_SECRET: ${JWT_SECRET:-CHANGE_ME_USE_256_BITS_MIN}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:-dev-key-change-in-production}
+      SPRING_JPA_OPEN_IN_VIEW: "false"
     # Sem host-port: federado ao ingress central (waldorf-backend:8080 -> gateway TLS)
     expose:
       - "8080"
@@ -105,7 +110,7 @@ services:
       - waldorf-internal
       - btv-prod-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
