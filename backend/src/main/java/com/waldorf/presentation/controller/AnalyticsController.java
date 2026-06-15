@@ -12,9 +12,10 @@ import com.waldorf.infrastructure.repository.NotificacaoRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/api/v1/analytics")
 @RequiredArgsConstructor
-@Tag(name = "Analytics", description = "Métricas agregadas para o dashboard")
+@Tag(name = "Analytics", description = "M\u00e9tricas agregadas para o dashboard")
 public class AnalyticsController {
 
     private final AlunoRepository alunoRepository;
@@ -35,9 +36,9 @@ public class AnalyticsController {
 
     @GetMapping("/dashboard/secretaria")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Retorna métricas do dashboard para a secretaria")
-    public DashboardSecretariaDTO getDashboardSecretaria(HttpServletRequest req) {
-        Long usuarioId = extrairUsuarioId(req);
+    @Operation(summary = "Retorna m\u00e9tricas do dashboard para a secretaria")
+    public DashboardSecretariaDTO getDashboardSecretaria() {
+        Long usuarioId = extrairUsuarioId();
         int anoAtual = LocalDate.now().getYear();
         int diaAtual = LocalDate.now().getDayOfMonth();
 
@@ -68,13 +69,14 @@ public class AnalyticsController {
             .build();
     }
 
-    private Long extrairUsuarioId(HttpServletRequest req) {
-        String header = req.getHeader("Authorization");
-        String token = header != null && header.startsWith("Bearer ")
-            ? header.substring(7) : "";
-        String email = jwtService.extractUsername(token);
+    private Long extrairUsuarioId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new EntityNotFoundException("Usu\u00e1rio n\u00e3o autenticado");
+        }
+        String email = auth.getName();
         return usuarioRepository.findByEmail(email)
-            .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado: " + email))
+            .orElseThrow(() -> new EntityNotFoundException("Usu\u00e1rio n\u00e3o encontrado: " + email))
             .getId();
     }
 }
