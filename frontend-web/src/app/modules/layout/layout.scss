@@ -12,8 +12,8 @@
 .sidebar-nav:hover { scrollbar-color: rgba(91,127,94,0.2) transparent; }
 .sidebar-link { @apply flex items-center gap-2.5 text-waldorf-gray-600 cursor-pointer; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 500; white-space: nowrap; text-decoration: none; transition: all 0.15s ease; margin-bottom: 1px; }
 .sidebar-link:hover { @apply bg-waldorf-cream-50 text-waldorf-gray-800; }
-.sidebar-link-active { @apply flex items-center gap-2.5 cursor-pointer; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 600; white-space: nowrap; text-decoration: none; margin-bottom: 1px; background: linear-gradient(135deg,rgba(91,127,94,0.08),rgba(91,127,94,0.04)); color: #49664B; }
-.sidebar-link-active .sidebar-link-icon { color: #5B7F5E; }
+.sidebar-link-active { @apply flex items-center gap-2.5 cursor-pointer; padding: 8px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 700; white-space: nowrap; text-decoration: none; margin-bottom: 1px; background: #dce5dc; color: #384E3A; }
+.sidebar-link-active .sidebar-link-icon { color: #49664B; }
 .sidebar-link-icon { @apply flex-shrink-0; font-size: 20px; width: 20px; text-align: center; transition: color 0.15s ease; }
 .sidebar-link-text { @apply overflow-hidden truncate; }
 .sidebar-badge { @apply text-white font-bold; margin-left: auto; background: #D4956A; font-size: 10px; padding: 1px 8px; border-radius: 10px; line-height: 1.6; }
