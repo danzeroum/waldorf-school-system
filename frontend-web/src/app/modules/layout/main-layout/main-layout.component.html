@@ -6,16 +6,17 @@
            shadow-waldorf-sm overflow-y-auto overflow-x-hidden"
     [class.sidebar-expanded]="sidebarAberta()"
     [class.sidebar-collapsed]="!sidebarAberta()"
-  >
+    >
     <wld-sidebar [collapsed]="!sidebarAberta()"></wld-sidebar>
   </aside>
 
   <!-- Overlay mobile (fecha sidebar ao clicar fora) -->
-  <div
-    *ngIf="sidebarAberta()"
-    class="sidebar-overlay lg:hidden"
-    (click)="toggleSidebar()"
-  ></div>
+  @if (sidebarAberta()) {
+    <div
+      class="sidebar-overlay lg:hidden"
+      (click)="toggleSidebar()"
+    ></div>
+  }
 
   <!-- Área principal -->
   <div class="flex flex-col flex-1 overflow-hidden min-w-0">

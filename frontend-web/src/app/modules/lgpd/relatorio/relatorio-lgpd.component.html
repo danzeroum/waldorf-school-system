@@ -14,27 +14,34 @@
     </div>
   </div>
 
-  <div *ngIf="carregando()" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <div *ngFor="let i of [1,2,3,4]" class="card animate-pulse">
-      <div class="skeleton h-8 w-1/2 mb-2"></div>
-      <div class="skeleton h-4 w-3/4"></div>
+  @if (carregando()) {
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="card animate-pulse">
+          <div class="skeleton h-8 w-1/2 mb-2"></div>
+          <div class="skeleton h-4 w-3/4"></div>
+        </div>
+      }
     </div>
-  </div>
+  }
 
-  <ng-container *ngIf="resumo() as r">
+  @if (resumo(); as r) {
     <div class="card flex items-center gap-6">
       <div class="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold"
-           [class]="r.percentualConformidade >= 90 ? 'bg-green-100 text-green-700' : r.percentualConformidade >= 70 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'">
+        [class]="r.percentualConformidade >= 90 ? 'bg-green-100 text-green-700' : r.percentualConformidade >= 70 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'">
         {{ r.percentualConformidade }}%
       </div>
       <div>
         <p class="text-lg font-semibold text-waldorf-gray-900">Índice de Conformidade</p>
         <p class="text-sm text-waldorf-gray-500">Baseado em consentimentos ativos e solicitações atendidas no prazo</p>
-        <p *ngIf="r.percentualConformidade >= 90" class="text-sm text-green-600 mt-1 font-medium">✅ Dentro do padrão LGPD</p>
-        <p *ngIf="r.percentualConformidade < 90" class="text-sm text-yellow-600 mt-1 font-medium">⚠️ Atenção: revisar consentimentos pendentes</p>
+        @if (r.percentualConformidade >= 90) {
+          <p class="text-sm text-green-600 mt-1 font-medium">✅ Dentro do padrão LGPD</p>
+        }
+        @if (r.percentualConformidade < 90) {
+          <p class="text-sm text-yellow-600 mt-1 font-medium">⚠️ Atenção: revisar consentimentos pendentes</p>
+        }
       </div>
     </div>
-
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
       <div class="card text-center">
         <p class="text-3xl font-bold text-waldorf-gray-900">{{ r.consentimentosAtivos }}</p>
@@ -51,7 +58,9 @@
       <div class="card text-center">
         <p class="text-3xl font-bold" [class]="r.solicitacoesPendentes > 0 ? 'text-orange-600' : 'text-waldorf-gray-900'">{{ r.solicitacoesPendentes }}</p>
         <p class="text-sm text-waldorf-gray-500 mt-1">Solicitações pendentes</p>
-        <p *ngIf="r.solicitacoesPendentes > 0" class="text-xs text-orange-500 mt-0.5">Prazo: 15 dias úteis (LGPD)</p>
+        @if (r.solicitacoesPendentes > 0) {
+          <p class="text-xs text-orange-500 mt-0.5">Prazo: 15 dias úteis (LGPD)</p>
+        }
       </div>
       <div class="card text-center">
         <p class="text-3xl font-bold text-blue-600">{{ r.solicitacoesEmAnalise }}</p>
@@ -62,5 +71,5 @@
         <p class="text-sm text-waldorf-gray-500 mt-1">Total de consentimentos</p>
       </div>
     </div>
-  </ng-container>
+  }
 </div>

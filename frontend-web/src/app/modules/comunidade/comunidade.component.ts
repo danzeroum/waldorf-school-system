@@ -1,3 +1,6 @@
 import { Component } from '@angular/core';
-@Component({ selector: 'app-comunidade', template: '<h1 class="text-2xl font-bold">Comunidade</h1>' })
+@Component({
+    selector: 'app-comunidade', template: '<h1 class="text-2xl font-bold">Comunidade</h1>',
+    standalone: false
+})
 export class ComunidadeComponent {}

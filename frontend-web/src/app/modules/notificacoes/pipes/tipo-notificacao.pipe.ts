@@ -11,7 +11,10 @@ const CONFIG: Record<TipoNotificacao, { icone: string; css: string }> = {
   SISTEMA:              { icone: 'info',       css: 'text-gray-500'   },
 };
 
-@Pipe({ name: 'tipoNotificacao' })
+@Pipe({
+    name: 'tipoNotificacao',
+    standalone: false
+})
 export class TipoNotificacaoPipe implements PipeTransform {
   transform(tipo: TipoNotificacao, campo: 'icone' | 'css'): string {
     return CONFIG[tipo]?.[campo] ?? (campo === 'icone' ? 'notifications' : 'text-gray-400');

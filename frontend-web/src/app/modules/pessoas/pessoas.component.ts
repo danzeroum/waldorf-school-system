@@ -5,8 +5,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AlunoService, Aluno, AlunoRequest, Genero } from './services/aluno.service';
 
 @Component({
-  selector: 'app-pessoas',
-  templateUrl: './pessoas.component.html',
+    selector: 'app-pessoas',
+    templateUrl: './pessoas.component.html',
+    standalone: false
 })
 export class PessoasComponent implements OnInit {
 

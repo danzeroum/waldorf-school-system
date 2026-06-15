@@ -16,7 +16,10 @@ const CSS: Record<StatusSolicitacao, string> = {
   NEGADA:     'badge-danger',
 };
 
-@Pipe({ name: 'statusSolicitacao' })
+@Pipe({
+    name: 'statusSolicitacao',
+    standalone: false
+})
 export class StatusSolicitacaoPipe implements PipeTransform {
   transform(status: StatusSolicitacao, campo: 'label' | 'css' = 'label'): string {
     return campo === 'css' ? (CSS[status] ?? 'badge-default') : (LABEL[status] ?? status);

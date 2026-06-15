@@ -8,20 +8,20 @@
 
     <nav class="hidden sm:flex items-center gap-1 text-sm">
       <span class="font-serif text-waldorf-green-600 font-medium cursor-pointer"
-            routerLink="/dashboard">
+        routerLink="/dashboard">
         Quintal Aroeira
       </span>
-      <ng-container *ngFor="let crumb of breadcrumbs(); let last = last">
+      @for (crumb of breadcrumbs(); track crumb; let last = $last) {
         <span class="material-icons text-waldorf-gray-300 text-base">chevron_right</span>
         <span
           [class]="last
             ? 'text-waldorf-gray-700 font-semibold'
             : 'text-waldorf-gray-400 hover:text-waldorf-gray-600 cursor-pointer transition-colors'"
           [routerLink]="!last ? crumb.route : null"
-        >
+          >
           {{ crumb.label }}
         </span>
-      </ng-container>
+      }
     </nav>
   </div>
 
@@ -36,7 +36,7 @@
         placeholder="Buscar aluno, turma..."
         class="header-search-input"
         (input)="onBusca($any($event.target).value)"
-      />
+        />
       <kbd class="header-search-shortcut">⌘K</kbd>
     </div>
 
@@ -51,7 +51,7 @@
       <button
         (click)="toggleMenuUsuario()"
         class="header-user-btn"
-      >
+        >
         <div class="header-user-avatar">
           <span class="material-icons text-waldorf-green-600 text-base">person</span>
         </div>
@@ -62,43 +62,41 @@
       </button>
 
       <!-- Dropdown -->
-      <div
-        *ngIf="menuUsuarioAberto()"
-        class="header-dropdown animate-fade-in"
-      >
-        <div class="px-4 py-3 border-b border-waldorf-cream-100">
-          <p class="text-sm font-semibold text-waldorf-gray-800">
-            {{ authService.usuario()?.nomeCompleto }}
-          </p>
-          <p class="text-xs text-waldorf-gray-500 mt-0.5">
-            {{ authService.usuario()?.email }}
-          </p>
-        </div>
-
-        <a routerLink="/perfil"
-           (click)="fecharMenu()"
-           class="header-dropdown-item">
-          <span class="material-icons text-base">manage_accounts</span>
-          Meu Perfil
-        </a>
-
-        <a routerLink="/notificacoes/preferencias"
-           (click)="fecharMenu()"
-           class="header-dropdown-item">
-          <span class="material-icons text-base">tune</span>
-          Preferências
-        </a>
-
-        <div class="border-t border-waldorf-cream-100 mt-1 pt-1">
-          <button
-            (click)="logout()"
-            class="header-dropdown-item text-red-600 hover:bg-red-50 hover:text-red-700 w-full"
+      @if (menuUsuarioAberto()) {
+        <div
+          class="header-dropdown animate-fade-in"
           >
-            <span class="material-icons text-base">logout</span>
-            Sair
-          </button>
+          <div class="px-4 py-3 border-b border-waldorf-cream-100">
+            <p class="text-sm font-semibold text-waldorf-gray-800">
+              {{ authService.usuario()?.nomeCompleto }}
+            </p>
+            <p class="text-xs text-waldorf-gray-500 mt-0.5">
+              {{ authService.usuario()?.email }}
+            </p>
+          </div>
+          <a routerLink="/perfil"
+            (click)="fecharMenu()"
+            class="header-dropdown-item">
+            <span class="material-icons text-base">manage_accounts</span>
+            Meu Perfil
+          </a>
+          <a routerLink="/notificacoes/preferencias"
+            (click)="fecharMenu()"
+            class="header-dropdown-item">
+            <span class="material-icons text-base">tune</span>
+            Preferências
+          </a>
+          <div class="border-t border-waldorf-cream-100 mt-1 pt-1">
+            <button
+              (click)="logout()"
+              class="header-dropdown-item text-red-600 hover:bg-red-50 hover:text-red-700 w-full"
+              >
+              <span class="material-icons text-base">logout</span>
+              Sair
+            </button>
+          </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </div>
