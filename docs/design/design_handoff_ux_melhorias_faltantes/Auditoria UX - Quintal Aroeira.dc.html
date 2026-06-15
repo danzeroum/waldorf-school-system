@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .ms { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; display: inline-block; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
+  @keyframes auRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</helmet>
+
+<div style="font-family:'Nunito',system-ui,sans-serif; background:#EAE3D6; color:#3a3835; min-height:100vh; padding:0 0 100px;">
+
+  <!-- ============ HERO ============ -->
+  <header style="max-width:1460px; margin:0 auto; padding:64px 40px 40px;">
+    <div style="display:inline-flex; align-items:center; gap:8px; background:#DCE7DD; color:#384E3A; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding:7px 14px; border-radius:999px;">
+      <span class="ms" style="font-size:15px;">design_services</span> Auditoria de UX · Layout
+    </div>
+    <h1 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:52px; line-height:1.1; margin:22px 0 0; letter-spacing:-.01em; max-width:900px;">Quintal&nbsp;Aroeira — melhorias de experiência</h1>
+    <p style="font-size:19px; line-height:1.6; color:#6e6a63; max-width:760px; margin:18px 0 0;">Revisão profunda do sistema de gestão escolar Waldorf. Para cada área crítica há um <strong style="color:#3a3835;">antes → depois</strong> lado a lado, mantendo 100% da paleta e tipografia atuais — o foco é hierarquia, escaneabilidade e consistência.</p>
+
+    <!-- palette + type recap -->
+    <div style="display:flex; flex-wrap:wrap; gap:32px; margin-top:38px; align-items:flex-end;">
+      <div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#9b958c; margin-bottom:10px;">Paleta mantida</div>
+        <div style="display:flex; gap:10px;">
+          <div style="text-align:center;"><div style="width:52px; height:52px; border-radius:14px; background:#5B7F5E; box-shadow:0 2px 6px rgba(91,127,94,.3);"></div><div style="font-size:10px; color:#9b958c; margin-top:6px; font-family:'JetBrains Mono',monospace;">#5B7F5E</div></div>
+          <div style="text-align:center;"><div style="width:52px; height:52px; border-radius:14px; background:#C4A265; box-shadow:0 2px 6px rgba(196,162,101,.3);"></div><div style="font-size:10px; color:#9b958c; margin-top:6px; font-family:'JetBrains Mono',monospace;">#C4A265</div></div>
+          <div style="text-align:center;"><div style="width:52px; height:52px; border-radius:14px; background:#D4956A; box-shadow:0 2px 6px rgba(212,149,106,.3);"></div><div style="font-size:10px; color:#9b958c; margin-top:6px; font-family:'JetBrains Mono',monospace;">#D4956A</div></div>
+          <div style="text-align:center;"><div style="width:52px; height:52px; border-radius:14px; background:#F5F0E8; border:1px solid #E0D5C2;"></div><div style="font-size:10px; color:#9b958c; margin-top:6px; font-family:'JetBrains Mono',monospace;">#F5F0E8</div></div>
+          <div style="text-align:center;"><div style="width:52px; height:52px; border-radius:14px; background:#252321;"></div><div style="font-size:10px; color:#9b958c; margin-top:6px; font-family:'JetBrains Mono',monospace;">#252321</div></div>
+        </div>
+      </div>
+      <div style="border-left:1px solid #D4C5AC; padding-left:32px;">
+        <div style="font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#9b958c; margin-bottom:8px;">Tipografia mantida</div>
+        <div style="font-family:'Lora',serif; font-size:26px; color:#252321; font-weight:600; line-height:1.2;">Lora — títulos</div>
+        <div style="font-family:'Nunito',sans-serif; font-size:15px; color:#6e6a63; margin-top:2px;">Nunito — corpo e interface</div>
+      </div>
+    </div>
+
+    <!-- legend -->
+    <div style="display:flex; gap:22px; margin-top:36px; padding-top:26px; border-top:1px solid #D4C5AC;">
+      <div style="display:flex; align-items:center; gap:9px; font-size:13px; font-weight:600; color:#6e6a63;"><span style="width:13px; height:13px; border-radius:4px; background:#C0564B; opacity:.8;"></span> Antes — como está hoje</div>
+      <div style="display:flex; align-items:center; gap:9px; font-size:13px; font-weight:600; color:#384E3A;"><span style="width:13px; height:13px; border-radius:4px; background:#5B7F5E;"></span> Depois — proposta</div>
+    </div>
+  </header>
+
+  <!-- ============ RESUMO / CROSS-CUTTING ============ -->
+  <section style="max-width:1460px; margin:24px auto 0; padding:0 40px;">
+    <h2 style="font-family:'Lora',serif; font-weight:600; color:#252321; font-size:15px; letter-spacing:.12em; text-transform:uppercase; margin:0 0 18px;">Achados gerais</h2>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px;">
+      <div style="background:#fff; border:1px solid #E0D5C2; border-radius:18px; padding:22px;">
+        <div style="width:42px; height:42px; border-radius:12px; background:#F3E8CF; display:flex; align-items:center; justify-content:center; margin-bottom:14px;"><span class="ms" style="font-size:22px; color:#8a6d3b;">style</span></div>
+        <h3 style="font-family:'Nunito',sans-serif; font-weight:700; font-size:15px; color:#252321; margin:0 0 6px;">Inconsistência de componentes</h3>
+        <p style="font-size:13px; line-height:1.55; color:#6e6a63; margin:0;">O Painel Geral usa <code style="font-family:'JetBrains Mono',monospace; font-size:11px; background:#F5F0E8; padding:1px 5px; border-radius:5px;">mat-card</code> cinza enquanto o resto usa o design system. Padronizar tudo em <code style="font-family:'JetBrains Mono',monospace; font-size:11px; background:#F5F0E8; padding:1px 5px; border-radius:5px;">.card</code>.</p>
+      </div>
+      <div style="background:#fff; border:1px solid #E0D5C2; border-radius:18px; padding:22px;">
+        <div style="width:42px; height:42px; border-radius:12px; background:#DCE7DD; display:flex; align-items:center; justify-content:center; margin-bottom:14px;"><span class="ms" style="font-size:22px; color:#4A6B4D;">layers</span></div>
+        <h3 style="font-family:'Nunito',sans-serif; font-weight:700; font-size:15px; color:#252321; margin:0 0 6px;">Falta de hierarquia</h3>
+        <p style="font-size:13px; line-height:1.55; color:#6e6a63; margin:0;">Métricas críticas (inadimplência, vencimentos) têm o mesmo peso visual de métricas neutras. Nada guia o olhar para o que exige ação.</p>
+      </div>
+      <div style="background:#fff; border:1px solid #E0D5C2; border-radius:18px; padding:22px;">
+        <div style="width:42px; height:42px; border-radius:12px; background:#F6E0DC; display:flex; align-items:center; justify-content:center; margin-bottom:14px;"><span class="ms" style="font-size:22px; color:#C0564B;">search</span></div>
+        <h3 style="font-family:'Nunito',sans-serif; font-weight:700; font-size:15px; color:#252321; margin:0 0 6px;">Listas difíceis de escanear</h3>
+        <p style="font-size:13px; line-height:1.55; color:#6e6a63; margin:0;">Tabelas e listas sem busca, sem totais do filtro, sem contexto do aluno e sem ações em lote. Operação fica lenta no dia a dia.</p>
+      </div>
+      <div style="background:#fff; border:1px solid #E0D5C2; border-radius:18px; padding:22px;">
+        <div style="width:42px; height:42px; border-radius:12px; background:#EADFF0; display:flex; align-items:center; justify-content:center; margin-bottom:14px;"><span class="ms" style="font-size:22px; color:#7C5AA0;">dashboard_customize</span></div>
+        <h3 style="font-family:'Nunito',sans-serif; font-weight:700; font-size:15px; color:#252321; margin:0 0 6px;">Padrões repetidos divergem</h3>
+        <p style="font-size:13px; line-height:1.55; color:#6e6a63; margin:0;">Formulários ora aparecem inline empurrando a página, ora em slide-panel. Unificar no slide-panel (já usado em Turmas) traz previsibilidade.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 01 · DASHBOARD ============ -->
+  <section style="max-width:1460px; margin:64px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:6px;">
+      <span style="font-family:'Lora',serif; font-size:40px; font-weight:700; color:#C4A265; line-height:1;">01</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:30px; margin:0;">Dashboard da Secretaria</h2>
+    </div>
+    <p style="font-size:15px; color:#6e6a63; max-width:820px; margin:0 0 28px;">Hoje são seis cartões idênticos seguidos de uma lista plana. O depois cria uma faixa “precisa de atenção”, destaca 3 KPIs principais e adiciona leitura de tendência.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+
+      <!-- ===== ANTES ===== -->
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#C0564B; opacity:.8;"></span><span style="font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#C0564B;">Antes</span></div>
+        <div style="background:#F5F0E8; border:1px solid #E0D5C2; border-radius:20px; overflow:hidden;">
+          <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:9px 16px; display:flex; align-items:center; gap:7px;"><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="font-size:11px; color:#9b958c; margin-left:8px;">/dashboard</span></div>
+          <div style="padding:20px;">
+            <div style="font-family:'Lora',serif; font-size:20px; color:#252321; font-weight:600;">Bom dia! 👋</div>
+            <div style="font-size:12px; color:#9b958c; margin-top:2px;">quinta-feira, 12 de junho de 2025</div>
+            <!-- 6 uniform cards -->
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; margin-top:18px;">
+              <!-- repeated -->
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:13px;"><div style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9b958c;">Alunos Ativos</div><div style="font-family:'Nunito'; font-weight:800; font-size:26px; color:#252321; margin-top:4px;">142</div></div>
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:13px;"><div style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9b958c;">Matríc. Pend.</div><div style="font-family:'Nunito'; font-weight:800; font-size:26px; color:#C4A265; margin-top:4px;">7</div></div>
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:13px;"><div style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9b958c;">A Receber</div><div style="font-family:'Nunito'; font-weight:800; font-size:19px; color:#5B7F5E; margin-top:8px;">R$ 84,2k</div></div>
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:13px;"><div style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9b958c;">Contr. Vencendo</div><div style="font-family:'Nunito'; font-weight:800; font-size:26px; color:#C0564B; margin-top:4px;">3</div></div>
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:13px;"><div style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9b958c;">Inadimplentes</div><div style="font-family:'Nunito'; font-weight:800; font-size:26px; color:#C0564B; margin-top:4px;">5</div></div>
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:13px;"><div style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9b958c;">LGPD Pend.</div><div style="font-family:'Nunito'; font-weight:800; font-size:26px; color:#C4A265; margin-top:4px;">2</div></div>
+            </div>
+            <!-- flat activity -->
+            <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px; margin-top:11px;">
+              <div style="font-weight:700; font-size:13px; color:#3a3835; margin-bottom:10px;">Atividade Recente</div>
+              <div style="display:flex; flex-direction:column; gap:9px;">
+                <div style="display:flex; align-items:center; gap:9px;"><span style="width:24px;height:24px;border-radius:7px;background:#DCE7DD; display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:13px;color:#4A6B4D;">person_add</span></span><span style="font-size:12px; color:#6e6a63; flex:1;">Nova matrícula registrada</span><span style="font-size:10px; color:#bcb5a8;">há 2h</span></div>
+                <div style="display:flex; align-items:center; gap:9px;"><span style="width:24px;height:24px;border-radius:7px;background:#DCE7DD; display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:13px;color:#4A6B4D;">payments</span></span><span style="font-size:12px; color:#6e6a63; flex:1;">Pagamento confirmado</span><span style="font-size:10px; color:#bcb5a8;">há 4h</span></div>
+                <div style="display:flex; align-items:center; gap:9px;"><span style="width:24px;height:24px;border-radius:7px;background:#DCE7DD; display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:13px;color:#4A6B4D;">edit_note</span></span><span style="font-size:12px; color:#6e6a63; flex:1;">Observação pedagógica criada</span><span style="font-size:10px; color:#bcb5a8;">ontem</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DEPOIS ===== -->
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#5B7F5E;"></span><span style="font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#384E3A;">Depois</span></div>
+        <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 18px 40px -22px rgba(56,78,58,.5);">
+          <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:9px 16px; display:flex; align-items:center; gap:7px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-size:11px; color:#9b958c; margin-left:8px;">/dashboard</span></div>
+          <div style="padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div style="font-family:'Lora',serif; font-size:20px; color:#252321; font-weight:600;">Bom dia, Helena</div>
+                <div style="font-size:12px; color:#9b958c; margin-top:2px;">quinta-feira, 12 de junho · Ano letivo 2025</div>
+              </div>
+              <div style="background:#5B7F5E; color:#fff; font-size:11px; font-weight:700; padding:8px 13px; border-radius:10px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:14px;">person_add</span> Novo aluno</div>
+            </div>
+
+            <!-- attention strip -->
+            <div style="background:linear-gradient(100deg,#FBEEEB,#FCF4E6); border:1px solid #E6C9C0; border-radius:14px; padding:13px 15px; margin-top:16px; display:flex; align-items:center; gap:12px;">
+              <span style="width:30px;height:30px;border-radius:9px;background:#C0564B; display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="ms" style="font-size:18px;color:#fff;">priority_high</span></span>
+              <div style="flex:1;">
+                <div style="font-size:12px; font-weight:800; color:#9a4339;">Precisa da sua atenção</div>
+                <div style="font-size:11px; color:#7a6f5f; margin-top:1px;">5 inadimplentes · 3 contratos vencendo · 2 termos LGPD pendentes</div>
+              </div>
+              <span class="ms" style="font-size:18px;color:#C0564B;">chevron_right</span>
+            </div>
+
+            <!-- 3 hero KPIs -->
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; margin-top:14px;">
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px; border-top:3px solid #5B7F5E;">
+                <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9b958c;">Alunos ativos</span><span class="ms" style="font-size:15px; color:#8fae91;">school</span></div>
+                <div style="font-family:'Nunito'; font-weight:800; font-size:28px; color:#252321; margin-top:4px;">142</div>
+                <div style="font-size:10px; color:#4A6B4D; font-weight:700; margin-top:2px;">▲ 6 este mês</div>
+              </div>
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px; border-top:3px solid #C4A265;">
+                <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#9b958c;">A receber</span><span class="ms" style="font-size:15px; color:#C4A265;">savings</span></div>
+                <div style="font-family:'Nunito'; font-weight:800; font-size:22px; color:#252321; margin-top:7px;">R$ 84,2k</div>
+                <div style="height:5px; background:#F3E8CF; border-radius:3px; margin-top:7px; overflow:hidden;"><div style="width:68%; height:100%; background:#C4A265;"></div></div>
+                <div style="font-size:10px; color:#9b958c; margin-top:3px;">68% recebido</div>
+              </div>
+              <div style="background:#fff; border:1px solid #E6C9C0; border-radius:14px; padding:14px; border-top:3px solid #C0564B;">
+                <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#C0564B;">Inadimplência</span><span class="ms" style="font-size:15px; color:#C0564B;">trending_up</span></div>
+                <div style="font-family:'Nunito'; font-weight:800; font-size:28px; color:#C0564B; margin-top:4px;">3,5%</div>
+                <div style="font-size:10px; color:#9a4339; font-weight:700; margin-top:2px;">5 alunos · R$ 4,1k</div>
+              </div>
+            </div>
+
+            <!-- secondary chips + activity -->
+            <div style="display:grid; grid-template-columns:1.1fr 1fr; gap:11px; margin-top:11px;">
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px;">
+                <div style="font-weight:700; font-size:12px; color:#3a3835; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:15px; color:#8fae91;">history</span> Atividade recente</div>
+                <div style="display:flex; flex-direction:column; gap:0;">
+                  <div style="display:flex; gap:9px; padding:7px 0; border-bottom:1px solid #F0EADF;"><span style="width:6px;height:6px;border-radius:50%;background:#5B7F5E;margin-top:5px;flex-shrink:0;"></span><div style="flex:1;"><div style="font-size:11px; color:#3a3835; font-weight:600;">Nova matrícula · João P.</div><div style="font-size:10px; color:#bcb5a8;">há 2h · Secretaria</div></div></div>
+                  <div style="display:flex; gap:9px; padding:7px 0; border-bottom:1px solid #F0EADF;"><span style="width:6px;height:6px;border-radius:50%;background:#C4A265;margin-top:5px;flex-shrink:0;"></span><div style="flex:1;"><div style="font-size:11px; color:#3a3835; font-weight:600;">Pagamento R$ 1.200 confirmado</div><div style="font-size:10px; color:#bcb5a8;">há 4h · Financeiro</div></div></div>
+                  <div style="display:flex; gap:9px; padding:7px 0;"><span style="width:6px;height:6px;border-radius:50%;background:#7C5AA0;margin-top:5px;flex-shrink:0;"></span><div style="flex:1;"><div style="font-size:11px; color:#3a3835; font-weight:600;">Observação · Classe 3</div><div style="font-size:10px; color:#bcb5a8;">ontem · Pedagogia</div></div></div>
+                </div>
+              </div>
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px;">
+                <div style="font-weight:700; font-size:12px; color:#3a3835; margin-bottom:12px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:15px; color:#8fae91;">bar_chart</span> Recebimento · 6 meses</div>
+                <div style="display:flex; align-items:flex-end; gap:7px; height:74px;">
+                  <div style="flex:1; background:#DCE7DD; border-radius:4px 4px 0 0; height:48%;"></div>
+                  <div style="flex:1; background:#DCE7DD; border-radius:4px 4px 0 0; height:62%;"></div>
+                  <div style="flex:1; background:#DCE7DD; border-radius:4px 4px 0 0; height:55%;"></div>
+                  <div style="flex:1; background:#8fae91; border-radius:4px 4px 0 0; height:78%;"></div>
+                  <div style="flex:1; background:#8fae91; border-radius:4px 4px 0 0; height:70%;"></div>
+                  <div style="flex:1; background:#5B7F5E; border-radius:4px 4px 0 0; height:88%;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:9px; color:#bcb5a8; margin-top:6px;"><span>Jan</span><span>Jun</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- changes -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:24px;">
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">01</span><div><div style="font-weight:700; font-size:13px; color:#252321;">Faixa “precisa de atenção”</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">Concentra o que é urgente no topo, com 1 clique para resolver. Some quando não há pendências.</div></div></div>
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">02</span><div><div style="font-weight:700; font-size:13px; color:#252321;">3 KPIs com peso, resto secundário</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">Cor usada semanticamente: verde = saudável, dourado = atenção, terracota = risco. Tendência e progresso embutidos.</div></div></div>
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">03</span><div><div style="font-weight:700; font-size:13px; color:#252321;">Atividade + mini-gráfico</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">Timeline com origem do evento e um gráfico de recebimento para leitura de tendência imediata.</div></div></div>
+    </div>
+  </section>
+
+  <!-- ============ 02 · FINANCEIRO ============ -->
+  <section style="max-width:1460px; margin:72px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:6px;">
+      <span style="font-family:'Lora',serif; font-size:40px; font-weight:700; color:#C4A265; line-height:1;">02</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:30px; margin:0;">Financeiro · Parcelas</h2>
+    </div>
+    <p style="font-size:15px; color:#6e6a63; max-width:820px; margin:0 0 28px;">A tabela atual não dá totais do filtro, contexto do aluno nem ações em lote. O depois adiciona busca, barra de totais, vencimento relativo e seleção múltipla.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+
+      <!-- ANTES -->
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#C0564B; opacity:.8;"></span><span style="font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#C0564B;">Antes</span></div>
+        <div style="background:#F5F0E8; border:1px solid #E0D5C2; border-radius:20px; overflow:hidden;">
+          <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:9px 16px; display:flex; align-items:center; gap:7px;"><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="font-size:11px; color:#9b958c; margin-left:8px;">/financeiro/parcelas</span></div>
+          <div style="padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="font-family:'Lora',serif; font-size:20px; color:#252321; font-weight:600;">Parcelas</div>
+              <div style="display:flex; gap:6px;">
+                <span style="font-size:11px; font-weight:700; background:#5B7F5E; color:#fff; padding:6px 12px; border-radius:9px;">Todas</span>
+                <span style="font-size:11px; font-weight:600; color:#6e6a63; padding:6px 12px;">Pendente</span>
+                <span style="font-size:11px; font-weight:600; color:#6e6a63; padding:6px 12px;">Vencida</span>
+                <span style="font-size:11px; font-weight:600; color:#6e6a63; padding:6px 12px;">Paga</span>
+              </div>
+            </div>
+            <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; margin-top:14px; overflow:hidden;">
+              <div style="display:grid; grid-template-columns:1.3fr 1fr .8fr .6fr; background:#F5F0E8; border-bottom:1px solid #E0D5C2; padding:9px 14px; font-size:9px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#9b958c;"><span>Aluno</span><span>Descrição</span><span style="text-align:right;">Valor</span><span style="text-align:right;">Ação</span></div>
+              <div style="display:grid; grid-template-columns:1.3fr 1fr .8fr .6fr; padding:11px 14px; border-bottom:1px solid #F0EADF; align-items:center;"><span style="font-size:12px; font-weight:600; color:#3a3835;">Maria Silva</span><span style="font-size:11px; color:#9b958c;">Mensalidade Mai</span><span style="font-size:12px; font-weight:700; color:#3a3835; text-align:right;">R$ 1.200</span><span style="text-align:right;"><span style="font-size:10px; color:#5B7F5E;">Baixar</span></span></div>
+              <div style="display:grid; grid-template-columns:1.3fr 1fr .8fr .6fr; padding:11px 14px; border-bottom:1px solid #F0EADF; align-items:center;"><span style="font-size:12px; font-weight:600; color:#3a3835;">João Pereira</span><span style="font-size:11px; color:#9b958c;">Mensalidade Mai</span><span style="font-size:12px; font-weight:700; color:#3a3835; text-align:right;">R$ 1.200</span><span style="text-align:right;"><span style="font-size:10px; color:#5B7F5E;">Baixar</span></span></div>
+              <div style="display:grid; grid-template-columns:1.3fr 1fr .8fr .6fr; padding:11px 14px; border-bottom:1px solid #F0EADF; align-items:center;"><span style="font-size:12px; font-weight:600; color:#3a3835;">Ana Costa</span><span style="font-size:11px; color:#9b958c;">Material didático</span><span style="font-size:12px; font-weight:700; color:#3a3835; text-align:right;">R$ 380</span><span style="text-align:right;"><span style="font-size:10px; color:#5B7F5E;">Baixar</span></span></div>
+              <div style="display:grid; grid-template-columns:1.3fr 1fr .8fr .6fr; padding:11px 14px; border-bottom:1px solid #F0EADF; align-items:center;"><span style="font-size:12px; font-weight:600; color:#3a3835;">Pedro Lima</span><span style="font-size:11px; color:#9b958c;">Mensalidade Abr</span><span style="font-size:12px; font-weight:700; color:#3a3835; text-align:right;">R$ 1.200</span><span style="text-align:right;"><span style="font-size:10px; color:#5B7F5E;">Baixar</span></span></div>
+              <div style="display:grid; grid-template-columns:1.3fr 1fr .8fr .6fr; padding:11px 14px; align-items:center;"><span style="font-size:12px; font-weight:600; color:#3a3835;">Lucas Reis</span><span style="font-size:11px; color:#9b958c;">Mensalidade Mai</span><span style="font-size:12px; font-weight:700; color:#3a3835; text-align:right;">R$ 1.200</span><span style="text-align:right;"><span style="font-size:10px; color:#5B7F5E;">Baixar</span></span></div>
+            </div>
+            <div style="font-size:11px; color:#bcb5a8; margin-top:12px; font-style:italic;">Sem totais, sem busca, sem ações em lote.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPOIS -->
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#5B7F5E;"></span><span style="font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#384E3A;">Depois</span></div>
+        <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 18px 40px -22px rgba(56,78,58,.5);">
+          <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:9px 16px; display:flex; align-items:center; gap:7px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-size:11px; color:#9b958c; margin-left:8px;">/financeiro/parcelas</span></div>
+          <div style="padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+              <div style="font-family:'Lora',serif; font-size:20px; color:#252321; font-weight:600;">Parcelas</div>
+              <div style="display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #E0D5C2; border-radius:10px; padding:6px 11px; min-width:150px;"><span class="ms" style="font-size:15px; color:#9b958c;">search</span><span style="font-size:11px; color:#bcb5a8;">Buscar aluno…</span></div>
+            </div>
+
+            <!-- totals bar -->
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-top:14px;">
+              <div style="background:#fff; border:1px solid #E0D5C2; border-radius:11px; padding:10px 12px;"><div style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#9b958c;">Total</div><div style="font-size:14px; font-weight:800; color:#252321; margin-top:2px;">R$ 84,2k</div></div>
+              <div style="background:#EEF3EE; border:1px solid #C8DCC9; border-radius:11px; padding:10px 12px;"><div style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#4A6B4D;">Recebido</div><div style="font-size:14px; font-weight:800; color:#4A6B4D; margin-top:2px;">R$ 57k</div></div>
+              <div style="background:#FCF4E6; border:1px solid #EAD6AE; border-radius:11px; padding:10px 12px;"><div style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#8a6d3b;">Pendente</div><div style="font-size:14px; font-weight:800; color:#8a6d3b; margin-top:2px;">R$ 23k</div></div>
+              <div style="background:#FBEEEB; border:1px solid #E6C9C0; border-radius:11px; padding:10px 12px;"><div style="font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#C0564B;">Vencido</div><div style="font-size:14px; font-weight:800; color:#C0564B; margin-top:2px;">R$ 4,1k</div></div>
+            </div>
+
+            <!-- filter chips with counts -->
+            <div style="display:flex; gap:6px; margin-top:12px;">
+              <span style="font-size:10px; font-weight:700; background:#5B7F5E; color:#fff; padding:5px 11px; border-radius:999px;">Todas · 68</span>
+              <span style="font-size:10px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:5px 11px; border-radius:999px;">Pendente · 19</span>
+              <span style="font-size:10px; font-weight:600; background:#fff; border:1px solid #E6C9C0; color:#C0564B; padding:5px 11px; border-radius:999px;">Vencida · 5</span>
+              <span style="font-size:10px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:5px 11px; border-radius:999px;">Paga · 44</span>
+            </div>
+
+            <!-- bulk bar -->
+            <div style="display:flex; align-items:center; gap:10px; background:#252321; border-radius:11px; padding:8px 13px; margin-top:12px;">
+              <span style="font-size:11px; font-weight:700; color:#fff;">2 selecionadas</span>
+              <span style="font-size:11px; font-weight:600; color:#C4A265; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:14px;">send</span> Enviar cobrança</span>
+              <span style="font-size:11px; font-weight:600; color:#8fae91; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:14px;">payments</span> Baixar</span>
+            </div>
+
+            <!-- table -->
+            <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; margin-top:11px; overflow:hidden;">
+              <div style="display:grid; grid-template-columns:18px 1.5fr .9fr .8fr 70px; background:#F5F0E8; border-bottom:1px solid #E0D5C2; padding:9px 13px; font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#9b958c; align-items:center; gap:8px;"><span></span><span>Aluno</span><span>Vencimento</span><span style="text-align:right;">Valor</span><span style="text-align:right;">Ação</span></div>
+              <!-- overdue row -->
+              <div style="display:grid; grid-template-columns:18px 1.5fr .9fr .8fr 70px; padding:10px 13px; border-bottom:1px solid #F0EADF; align-items:center; gap:8px; border-left:3px solid #C0564B; background:#FDF6F4;">
+                <span style="width:14px;height:14px;border:1.5px solid #C0564B;border-radius:4px;background:#C0564B; display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:11px;color:#fff;">check</span></span>
+                <div style="display:flex; align-items:center; gap:8px;"><span style="width:24px;height:24px;border-radius:50%;background:#F3E0DC; display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#C0564B;">PL</span><div><div style="font-size:11px;font-weight:700;color:#3a3835;">Pedro Lima</div><div style="font-size:9px;color:#9b958c;">Mensalidade Abr</div></div></div>
+                <div><span style="font-size:9px; font-weight:700; background:#F6E0DC; color:#C0564B; padding:2px 7px; border-radius:999px;">há 42 dias</span></div>
+                <span style="font-size:12px; font-weight:800; color:#C0564B; text-align:right; font-family:'JetBrains Mono',monospace;">1.200</span>
+                <span style="text-align:right;"><span style="font-size:9px; font-weight:700; background:#5B7F5E; color:#fff; padding:4px 9px; border-radius:7px;">Baixar</span></span>
+              </div>
+              <div style="display:grid; grid-template-columns:18px 1.5fr .9fr .8fr 70px; padding:10px 13px; border-bottom:1px solid #F0EADF; align-items:center; gap:8px;">
+                <span style="width:14px;height:14px;border:1.5px solid #C0564B;border-radius:4px;background:#C0564B; display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:11px;color:#fff;">check</span></span>
+                <div style="display:flex; align-items:center; gap:8px;"><span style="width:24px;height:24px;border-radius:50%;background:#DCE7DD; display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#4A6B4D;">MS</span><div><div style="font-size:11px;font-weight:700;color:#3a3835;">Maria Silva</div><div style="font-size:9px;color:#9b958c;">Mensalidade Mai</div></div></div>
+                <div><span style="font-size:9px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:2px 7px; border-radius:999px;">vence em 3d</span></div>
+                <span style="font-size:12px; font-weight:800; color:#3a3835; text-align:right; font-family:'JetBrains Mono',monospace;">1.200</span>
+                <span style="text-align:right;"><span style="font-size:9px; font-weight:700; background:#5B7F5E; color:#fff; padding:4px 9px; border-radius:7px;">Baixar</span></span>
+              </div>
+              <div style="display:grid; grid-template-columns:18px 1.5fr .9fr .8fr 70px; padding:10px 13px; border-bottom:1px solid #F0EADF; align-items:center; gap:8px;">
+                <span style="width:14px;height:14px;border:1.5px solid #D4C5AC;border-radius:4px;"></span>
+                <div style="display:flex; align-items:center; gap:8px;"><span style="width:24px;height:24px;border-radius:50%;background:#DCE7DD; display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#4A6B4D;">AC</span><div><div style="font-size:11px;font-weight:700;color:#3a3835;">Ana Costa</div><div style="font-size:9px;color:#9b958c;">Material didático</div></div></div>
+                <div><span style="font-size:9px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:2px 7px; border-radius:999px;">vence em 9d</span></div>
+                <span style="font-size:12px; font-weight:800; color:#3a3835; text-align:right; font-family:'JetBrains Mono',monospace;">380</span>
+                <span style="text-align:right;"><span style="font-size:9px; font-weight:700; background:#5B7F5E; color:#fff; padding:4px 9px; border-radius:7px;">Baixar</span></span>
+              </div>
+              <div style="display:grid; grid-template-columns:18px 1.5fr .9fr .8fr 70px; padding:10px 13px; align-items:center; gap:8px;">
+                <span style="width:14px;height:14px;border:1.5px solid #D4C5AC;border-radius:4px;"></span>
+                <div style="display:flex; align-items:center; gap:8px;"><span style="width:24px;height:24px;border-radius:50%;background:#DCE7DD; display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#4A6B4D;">LR</span><div><div style="font-size:11px;font-weight:700;color:#3a3835;">Lucas Reis</div><div style="font-size:9px;color:#9b958c;">Mensalidade Mai</div></div></div>
+                <div><span style="font-size:9px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:2px 7px; border-radius:999px;">paga · 02/05</span></div>
+                <span style="font-size:12px; font-weight:800; color:#9b958c; text-align:right; font-family:'JetBrains Mono',monospace;">1.200</span>
+                <span style="text-align:right;"><span class="ms" style="font-size:15px; color:#8fae91;">check_circle</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:24px;">
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">01</span><div><div style="font-weight:700; font-size:13px; color:#252321;">Busca + totais do filtro</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">Barra de totais e chips com contagem dão o panorama antes de rolar a lista.</div></div></div>
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">02</span><div><div style="font-weight:700; font-size:13px; color:#252321;">Vencimento relativo + acento</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">“há 42 dias” / “vence em 3d” + faixa lateral terracota em atrasados aceleram a leitura de risco.</div></div></div>
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">03</span><div><div style="font-weight:700; font-size:13px; color:#252321;">Seleção e ações em lote</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">Baixar várias ou enviar cobrança de uma vez — operação de fim de mês em segundos.</div></div></div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · PEDAGOGIA ============ -->
+  <section style="max-width:1460px; margin:72px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:6px;">
+      <span style="font-family:'Lora',serif; font-size:40px; font-weight:700; color:#C4A265; line-height:1;">03</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:30px; margin:0;">Pedagogia · Observações</h2>
+    </div>
+    <p style="font-size:15px; color:#6e6a63; max-width:820px; margin:0 0 28px;">Hoje os filtros por aspecto são muitos botões que quebram linha, e cada card é um bloco de texto sem contexto do aluno. O depois usa cor por aspecto, contexto e formulário em slide-panel.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+
+      <!-- ANTES -->
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#C0564B; opacity:.8;"></span><span style="font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#C0564B;">Antes</span></div>
+        <div style="background:#F5F0E8; border:1px solid #E0D5C2; border-radius:20px; overflow:hidden;">
+          <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:9px 16px; display:flex; align-items:center; gap:7px;"><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="width:9px;height:9px;border-radius:50%;background:#E0D5C2;"></span><span style="font-size:11px; color:#9b958c; margin-left:8px;">/pedagogia/observacoes</span></div>
+          <div style="padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div><div style="font-family:'Lora',serif; font-size:18px; color:#252321; font-weight:600;">Observações Pedagógicas</div><div style="font-size:11px; color:#9b958c;">12 registro(s)</div></div>
+              <span style="font-size:11px; font-weight:700; background:#5B7F5E; color:#fff; padding:7px 12px; border-radius:9px;">+ Nova</span>
+            </div>
+            <!-- many wrapping filter buttons -->
+            <div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:14px;">
+              <span style="font-size:10px; font-weight:700; background:#5B7F5E; color:#fff; padding:5px 10px; border-radius:9px;">Todos</span>
+              <span style="font-size:10px; color:#6e6a63; padding:5px 10px;">Físico</span>
+              <span style="font-size:10px; color:#6e6a63; padding:5px 10px;">Anímico</span>
+              <span style="font-size:10px; color:#6e6a63; padding:5px 10px;">Espiritual</span>
+              <span style="font-size:10px; color:#6e6a63; padding:5px 10px;">Cognitivo</span>
+              <span style="font-size:10px; color:#6e6a63; padding:5px 10px;">Social</span>
+              <span style="font-size:10px; color:#6e6a63; padding:5px 10px;">Artístico</span>
+              <span style="font-size:10px; color:#6e6a63; padding:5px 10px;">Manual</span>
+            </div>
+            <!-- uniform text cards -->
+            <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px; margin-top:12px;">
+              <div style="display:flex; justify-content:space-between;"><span style="font-size:9px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:2px 8px; border-radius:999px;">Físico</span><span style="font-size:10px; color:#bcb5a8;">12/06/2025</span></div>
+              <p style="font-size:11px; color:#6e6a63; line-height:1.55; margin:9px 0 0;">Aluno demonstrou boa coordenação motora nas atividades de ritmo. Participou ativamente da roda e manteve atenção durante toda a aula principal.</p>
+            </div>
+            <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px; margin-top:9px;">
+              <div style="display:flex; justify-content:space-between;"><span style="font-size:9px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:2px 8px; border-radius:999px;">Anímico</span><span style="font-size:10px; color:#bcb5a8;">10/06/2025</span></div>
+              <p style="font-size:11px; color:#6e6a63; line-height:1.55; margin:9px 0 0;">Apresentou maior abertura emocional nas atividades em grupo. Demonstrou empatia ao ajudar um colega com dificuldade na tarefa.</p>
+            </div>
+            <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px; margin-top:9px;">
+              <div style="display:flex; justify-content:space-between;"><span style="font-size:9px; font-weight:700; background:#F0E6CE; color:#8a6d3b; padding:2px 8px; border-radius:999px;">Cognitivo</span><span style="font-size:10px; color:#bcb5a8;">08/06/2025</span></div>
+              <p style="font-size:11px; color:#6e6a63; line-height:1.55; margin:9px 0 0;">Avançou na compreensão das operações. Ainda requer apoio na fixação da tabuada do 7.</p>
+            </div>
+            <div style="font-size:11px; color:#bcb5a8; margin-top:11px; font-style:italic;">De qual aluno? De qual época? Não dá pra saber.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPOIS -->
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;"><span style="width:11px; height:11px; border-radius:3px; background:#5B7F5E;"></span><span style="font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#384E3A;">Depois</span></div>
+        <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 18px 40px -22px rgba(56,78,58,.5);">
+          <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:9px 16px; display:flex; align-items:center; gap:7px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-size:11px; color:#9b958c; margin-left:8px;">/pedagogia/observacoes</span></div>
+          <div style="padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div><div style="font-family:'Lora',serif; font-size:18px; color:#252321; font-weight:600;">Observações</div><div style="font-size:11px; color:#9b958c;">Classe 3 · Época de Matemática</div></div>
+              <span style="font-size:11px; font-weight:700; background:#5B7F5E; color:#fff; padding:7px 12px; border-radius:9px; display:flex; align-items:center; gap:5px;"><span class="ms" style="font-size:14px;">add</span> Nova</span>
+            </div>
+
+            <!-- context selectors -->
+            <div style="display:flex; gap:7px; margin-top:13px;">
+              <div style="flex:1; background:#fff; border:1px solid #E0D5C2; border-radius:10px; padding:8px 11px; display:flex; align-items:center; justify-content:space-between;"><span style="font-size:11px; color:#3a3835; font-weight:600; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:14px; color:#8fae91;">person</span> Maria Silva</span><span class="ms" style="font-size:14px; color:#bcb5a8;">expand_more</span></div>
+              <div style="flex:1; background:#fff; border:1px solid #E0D5C2; border-radius:10px; padding:8px 11px; display:flex; align-items:center; justify-content:space-between;"><span style="font-size:11px; color:#3a3835; font-weight:600; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:14px; color:#C4A265;">event_note</span> Época atual</span><span class="ms" style="font-size:14px; color:#bcb5a8;">expand_more</span></div>
+            </div>
+
+            <!-- aspect color chips -->
+            <div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:11px;">
+              <span style="font-size:10px; font-weight:700; background:#5B7F5E; color:#fff; padding:4px 10px; border-radius:999px;">Todos · 12</span>
+              <span style="font-size:10px; font-weight:600; background:#fff; border:1px solid #C8DCC9; color:#4A6B4D; padding:4px 10px; border-radius:999px; display:flex; align-items:center; gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:#5B7F5E;"></span>Físico · 4</span>
+              <span style="font-size:10px; font-weight:600; background:#fff; border:1px solid #C7DCE8; color:#2c6a8f; padding:4px 10px; border-radius:999px; display:flex; align-items:center; gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:#3f8fbf;"></span>Anímico · 3</span>
+              <span style="font-size:10px; font-weight:600; background:#fff; border:1px solid #E6DAF0; color:#7C5AA0; padding:4px 10px; border-radius:999px; display:flex; align-items:center; gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:#9b6fc4;"></span>Cognitivo · 5</span>
+            </div>
+
+            <!-- observation cards w/ accent + context -->
+            <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px; margin-top:12px; border-left:4px solid #5B7F5E;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:7px;"><span style="font-size:9px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:2px 8px; border-radius:999px;">Físico</span><span style="font-size:10px; color:#9b958c; display:flex; align-items:center; gap:3px;"><span class="ms" style="font-size:12px;">person</span> Maria Silva</span></div>
+                <span style="font-size:10px; color:#bcb5a8;">12 jun</span>
+              </div>
+              <p style="font-size:11px; color:#4a4742; line-height:1.55; margin:9px 0 0;">Boa coordenação motora no ritmo. Participou ativamente da roda e manteve atenção na aula principal.</p>
+              <div style="display:flex; align-items:center; gap:5px; margin-top:9px; padding-top:9px; border-top:1px solid #F0EADF;"><span class="ms" style="font-size:12px; color:#C4A265;">timeline</span><span style="font-size:10px; color:#9b958c;">Época de Matemática · Prof. Helena</span></div>
+            </div>
+            <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:14px; margin-top:9px; border-left:4px solid #3f8fbf;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:7px;"><span style="font-size:9px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:2px 8px; border-radius:999px;">Anímico</span><span style="font-size:10px; color:#9b958c; display:flex; align-items:center; gap:3px;"><span class="ms" style="font-size:12px;">person</span> Maria Silva</span><span style="font-size:9px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:2px 7px; border-radius:999px; display:flex; align-items:center; gap:3px;"><span class="ms" style="font-size:11px;">lock</span>Privada</span></div>
+                <span style="font-size:10px; color:#bcb5a8;">10 jun</span>
+              </div>
+              <p style="font-size:11px; color:#4a4742; line-height:1.55; margin:9px 0 0;">Maior abertura emocional em grupo. Demonstrou empatia ao ajudar um colega na tarefa.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:24px;">
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">01</span><div><div style="font-weight:700; font-size:13px; color:#252321;">Contexto de aluno e época</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">Cada observação mostra quem, qual época e qual professor — essencial para o boletim Waldorf.</div></div></div>
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">02</span><div><div style="font-weight:700; font-size:13px; color:#252321;">Cor + contagem por aspecto</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">Aproveita o sistema de cores de aspectos já existente; faixa lateral colorida identifica o tipo num relance.</div></div></div>
+      <div style="display:flex; gap:11px; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px;"><span style="font-family:'Lora',serif; font-weight:700; color:#5B7F5E; font-size:16px;">03</span><div><div style="font-weight:700; font-size:13px; color:#252321;">Formulário em slide-panel</div><div style="font-size:12px; color:#6e6a63; line-height:1.5; margin-top:2px;">Mesmo padrão de Turmas, em vez de empurrar a lista para baixo — consistência entre módulos.</div></div></div>
+    </div>
+  </section>
+
+  <!-- ============ PRÓXIMOS PASSOS ============ -->
+  <section style="max-width:1460px; margin:80px auto 0; padding:0 40px;">
+    <div style="background:#252321; border-radius:24px; padding:44px 48px; color:#F5F0E8;">
+      <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(196,162,101,.18); color:#D9BC86; font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:6px 13px; border-radius:999px;">Próximos passos</div>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#fff; font-size:30px; margin:18px 0 0;">Ordem sugerida de implementação</h2>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:30px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:9px; color:#8fae91; font-weight:700; font-size:13px;"><span style="width:26px;height:26px;border-radius:8px;background:rgba(143,174,145,.2); display:flex;align-items:center;justify-content:center;font-size:13px;">1</span> Fundação</div>
+          <ul style="margin:13px 0 0; padding-left:18px; color:#cdc6b9; font-size:13px; line-height:1.7;">
+            <li>Migrar o Painel Geral de <code style="font-family:'JetBrains Mono',monospace; font-size:11px;">mat-card</code> para <code style="font-family:'JetBrains Mono',monospace; font-size:11px;">.card</code></li>
+            <li>Padronizar formulários em slide-panel</li>
+            <li>Consolidar cores semânticas (verde/dourado/terracota)</li>
+          </ul>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:9px; color:#D9BC86; font-weight:700; font-size:13px;"><span style="width:26px;height:26px;border-radius:8px;background:rgba(196,162,101,.2); display:flex;align-items:center;justify-content:center;font-size:13px;">2</span> Alto impacto</div>
+          <ul style="margin:13px 0 0; padding-left:18px; color:#cdc6b9; font-size:13px; line-height:1.7;">
+            <li>Faixa “precisa de atenção” no dashboard</li>
+            <li>Barra de totais + busca em Parcelas</li>
+            <li>Vencimento relativo e acento de risco</li>
+          </ul>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:9px; color:#D4956A; font-weight:700; font-size:13px;"><span style="width:26px;height:26px;border-radius:8px;background:rgba(212,149,106,.2); display:flex;align-items:center;justify-content:center;font-size:13px;">3</span> Refinamento</div>
+          <ul style="margin:13px 0 0; padding-left:18px; color:#cdc6b9; font-size:13px; line-height:1.7;">
+            <li>Ações em lote (cobrança, baixa)</li>
+            <li>Contexto de aluno/época nas observações</li>
+            <li>Mini-gráficos de tendência</li>
+          </ul>
+        </div>
+      </div>
+      <p style="font-size:13px; color:#9b958c; margin:30px 0 0; padding-top:22px; border-top:1px solid rgba(245,240,232,.12);">Todas as propostas reutilizam a paleta, a tipografia (Lora + Nunito) e os componentes do design system Quintal Aroeira — nada exige nova fundação visual.</p>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>

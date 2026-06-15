@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .ms { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; line-height: 1; white-space: nowrap; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
+  code { font-family: 'JetBrains Mono', monospace; }
+</style>
+</helmet>
+
+<div style="font-family:'Nunito',system-ui,sans-serif; background:#EAE3D6; color:#3a3835; min-height:100vh; padding:0 0 110px;">
+
+  <!-- ============ HERO ============ -->
+  <header style="max-width:1500px; margin:0 auto; padding:56px 40px 32px;">
+    <div style="display:inline-flex; align-items:center; gap:8px; background:#252321; color:#D9BC86; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding:7px 14px; border-radius:999px;">
+      <span class="ms" style="font-size:15px;">admin_panel_settings</span> Handoff · Parte 2 — Telas faltantes
+    </div>
+    <h1 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:46px; line-height:1.12; margin:20px 0 0; letter-spacing:-.01em; max-width:920px;">Telas administrativas que faltavam</h1>
+    <p style="font-size:18px; line-height:1.6; color:#6e6a63; max-width:800px; margin:16px 0 0;">Auditei <strong style="color:#3a3835;">todos os módulos</strong> do repositório. A Parte 1 cobriu Dashboard, Parcelas e Observações. Aqui estão as <strong style="color:#3a3835;">telas administrativas</strong> restantes, redesenhadas em tamanho real, cada uma com ficha técnica de implementação. Mesma paleta e design system.</p>
+  </header>
+
+  <!-- ============ GAP ANALYSIS ============ -->
+  <section style="max-width:1500px; margin:8px auto 0; padding:0 40px;">
+    <h2 style="font-family:'Lora',serif; font-weight:600; color:#252321; font-size:15px; letter-spacing:.12em; text-transform:uppercase; margin:0 0 16px;">Inventário completo de telas</h2>
+    <div style="background:#fff; border:1px solid #E0D5C2; border-radius:18px; overflow:hidden;">
+      <!-- table head -->
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; background:#F5F0E8; border-bottom:1px solid #E0D5C2; padding:12px 22px; font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:#9b958c;"><span>Módulo</span><span>Tela</span><span>Tipo</span><span>Status</span></div>
+      <!-- rows -->
+      <!-- Parte 1 (entregue) -->
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Dashboard</span><span style="color:#6e6a63;">Secretaria — visão geral</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#DCE7DD; color:#4A6B4D; padding:3px 9px; border-radius:999px;">PARTE 1</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Financeiro</span><span style="color:#6e6a63;">Parcelas — lista</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#DCE7DD; color:#4A6B4D; padding:3px 9px; border-radius:999px;">PARTE 1</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Pedagogia</span><span style="color:#6e6a63;">Observações pedagógicas</span><span style="color:#9b958c; font-size:12px;">Professor</span><span><span style="font-size:10px; font-weight:800; background:#DCE7DD; color:#4A6B4D; padding:3px 9px; border-radius:999px;">PARTE 1</span></span></div>
+      <!-- Parte 2 (este doc) -->
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px; background:#FCFAF5;"><span style="font-weight:700; color:#3a3835;">Pessoas</span><span style="color:#252321; font-weight:600;">Alunos — lista &amp; busca</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px;">↓ NESTE DOC</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px; background:#FCFAF5;"><span style="font-weight:700; color:#3a3835;">Pessoas</span><span style="color:#252321; font-weight:600;">Matrícula — wizard de cadastro</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px;">↓ NESTE DOC</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px; background:#FCFAF5;"><span style="font-weight:700; color:#3a3835;">Pessoas</span><span style="color:#252321; font-weight:600;">Aluno — ficha / perfil</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px;">↓ NESTE DOC</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px; background:#FCFAF5;"><span style="font-weight:700; color:#3a3835;">Usuários</span><span style="color:#252321; font-weight:600;">Usuários &amp; permissões</span><span style="color:#C0564B; font-size:12px; font-weight:700;">Admin ⚠</span><span><span style="font-size:10px; font-weight:800; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px;">↓ NESTE DOC</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px; background:#FCFAF5;"><span style="font-weight:700; color:#3a3835;">Financeiro</span><span style="color:#252321; font-weight:600;">Contratos — lista</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px;">↓ NESTE DOC</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px; background:#FCFAF5;"><span style="font-weight:700; color:#3a3835;">Financeiro</span><span style="color:#252321; font-weight:600;">Dashboard financeiro</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px;">↓ NESTE DOC</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px; background:#FCFAF5;"><span style="font-weight:700; color:#3a3835;">LGPD</span><span style="color:#252321; font-weight:600;">Consentimentos &amp; solicitações</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px;">↓ NESTE DOC</span></span></div>
+      <!-- Pendente leve -->
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Pessoas</span><span style="color:#6e6a63;">Professores — lista</span><span style="color:#9b958c; font-size:12px;">Admin</span><span><span style="font-size:10px; font-weight:800; background:#EFE8DB; color:#9b8a6a; padding:3px 9px; border-radius:999px;">PADRÃO ↓</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Pedagogia</span><span style="color:#6e6a63;">Turmas (lista/detalhe), Épocas</span><span style="color:#9b958c; font-size:12px;">Professor</span><span><span style="font-size:10px; font-weight:800; background:#EFE8DB; color:#9b8a6a; padding:3px 9px; border-radius:999px;">PADRÃO ↓</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Comunidade</span><span style="color:#6e6a63;">Mural, Comunicados, Portal Pais</span><span style="color:#9b958c; font-size:12px;">Misto</span><span><span style="font-size:10px; font-weight:800; background:#EFE8DB; color:#9b8a6a; padding:3px 9px; border-radius:999px;">PADRÃO ↓</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Notificações</span><span style="color:#6e6a63;">Painel &amp; preferências</span><span style="color:#9b958c; font-size:12px;">Misto</span><span><span style="font-size:10px; font-weight:800; background:#EFE8DB; color:#9b8a6a; padding:3px 9px; border-radius:999px;">PADRÃO ↓</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; border-bottom:1px solid #F0EADF; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Dashboard</span><span style="color:#6e6a63;">Professor &amp; Pais (perfis)</span><span style="color:#9b958c; font-size:12px;">Misto</span><span><span style="font-size:10px; font-weight:800; background:#EFE8DB; color:#9b8a6a; padding:3px 9px; border-radius:999px;">PADRÃO ↓</span></span></div>
+      <div style="display:grid; grid-template-columns:1.4fr 2fr 1fr 1.1fr; padding:11px 22px; align-items:center; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Auth</span><span style="color:#6e6a63;">Login</span><span style="color:#9b958c; font-size:12px;">Público</span><span><span style="font-size:10px; font-weight:800; background:#EFE8DB; color:#9b8a6a; padding:3px 9px; border-radius:999px;">OK / leve</span></span></div>
+    </div>
+    <p style="font-size:13px; color:#9b958c; margin:14px 0 0;"><strong style="color:#6e6a63;">PADRÃO ↓</strong> = não precisa de redesenho próprio: aplicar os mesmos padrões já especificados (tabela com busca+totais, card com faixa de cor, slide-panel) descritos na seção final.</p>
+  </section>
+
+  <!-- ============ 04 ALUNOS LISTA ============ -->
+  <section style="max-width:1500px; margin:64px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">04</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Pessoas · Alunos (lista)</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">A base já é boa (avatar, situação, paginação). Melhorias: filtros por situação em chips com contagem, coluna de responsável, e ações sempre visíveis em vez de menu escondido.</p>
+
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/pessoas/alunos</span></div>
+      <div style="padding:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+          <div><h1 style="font-family:'Lora',serif; font-size:24px; color:#252321; font-weight:600; margin:0;">Alunos</h1><p style="font-size:13px; color:#9b958c; margin:4px 0 0;">142 alunos encontrados</p></div>
+          <div style="display:flex; gap:10px;">
+            <div style="display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #E0D5C2; border-radius:11px; padding:9px 14px; width:280px;"><span class="ms" style="font-size:18px; color:#9b958c;">search</span><span style="font-size:13px; color:#bcb5a8;">Buscar por nome, matrícula ou CPF…</span></div>
+            <button style="cursor:pointer; background:#5B7F5E; color:#fff; border:none; font-family:inherit; font-size:13px; font-weight:700; padding:9px 16px; border-radius:11px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px;">person_add</span> Novo aluno</button>
+          </div>
+        </div>
+
+        <!-- situation chips with counts -->
+        <div style="display:flex; gap:8px; margin-top:18px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:700; background:#5B7F5E; color:#fff; padding:7px 14px; border-radius:999px;">Todas · 142</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #C8DCC9; color:#4A6B4D; padding:7px 14px; border-radius:999px;">Ativo · 128</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #EAD6AE; color:#8a6d3b; padding:7px 14px; border-radius:999px;">Pendente · 7</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:7px 14px; border-radius:999px;">Transferido · 4</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:7px 14px; border-radius:999px;">Desligado · 3</span>
+        </div>
+
+        <!-- table -->
+        <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; margin-top:14px; overflow:hidden;">
+          <div style="display:grid; grid-template-columns:2fr 1fr 1.1fr 1fr 120px; background:#F5F0E8; border-bottom:1px solid #E0D5C2; padding:12px 18px; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#9b958c; gap:14px; align-items:center;"><span>Aluno</span><span>Matrícula</span><span>Turma</span><span>Situação</span><span style="text-align:right;">Ações</span></div>
+          <!-- rows -->
+          <div style="display:grid; grid-template-columns:2fr 1fr 1.1fr 1fr 120px; padding:12px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:14px;">
+            <div style="display:flex; align-items:center; gap:11px;"><span style="width:34px;height:34px;border-radius:50%;background:#DCE7DD;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px; color:#4A6B4D;">child_care</span></span><div><div style="font-size:13px;font-weight:700;color:#3a3835;">Maria Silva Santos</div><div style="font-size:11px;color:#9b958c;">Resp.: Ana Santos</div></div></div>
+            <span style="font-size:12px; color:#6e6a63; font-family:'JetBrains Mono',monospace;">2025-0042</span>
+            <span><span style="font-size:11px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:3px 10px; border-radius:999px;">Classe 3</span></span>
+            <span><span style="font-size:11px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 10px; border-radius:999px;">Ativo</span></span>
+            <span style="display:flex; justify-content:flex-end; gap:4px;"><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#6e6a63;">visibility</span></span><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#6e6a63;">edit</span></span><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#9b958c;">more_vert</span></span></span>
+          </div>
+          <div style="display:grid; grid-template-columns:2fr 1fr 1.1fr 1fr 120px; padding:12px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:14px;">
+            <div style="display:flex; align-items:center; gap:11px;"><span style="width:34px;height:34px;border-radius:50%;background:#DCE7DD;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px; color:#4A6B4D;">child_care</span></span><div><div style="font-size:13px;font-weight:700;color:#3a3835;">João Pereira Lima</div><div style="font-size:11px;color:#9b958c;">Resp.: Carlos Lima</div></div></div>
+            <span style="font-size:12px; color:#6e6a63; font-family:'JetBrains Mono',monospace;">2025-0043</span>
+            <span><span style="font-size:11px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:3px 10px; border-radius:999px;">Sem turma</span></span>
+            <span><span style="font-size:11px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:3px 10px; border-radius:999px;">Pendente</span></span>
+            <span style="display:flex; justify-content:flex-end; gap:4px;"><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#6e6a63;">visibility</span></span><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#6e6a63;">edit</span></span><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#9b958c;">more_vert</span></span></span>
+          </div>
+          <div style="display:grid; grid-template-columns:2fr 1fr 1.1fr 1fr 120px; padding:12px 18px; align-items:center; gap:14px;">
+            <div style="display:flex; align-items:center; gap:11px;"><span style="width:34px;height:34px;border-radius:50%;background:#DCE7DD;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px; color:#4A6B4D;">child_care</span></span><div><div style="font-size:13px;font-weight:700;color:#3a3835;">Ana Costa Reis</div><div style="font-size:11px;color:#9b958c;">Resp.: Paula Costa</div></div></div>
+            <span style="font-size:12px; color:#6e6a63; font-family:'JetBrains Mono',monospace;">2025-0041</span>
+            <span><span style="font-size:11px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:3px 10px; border-radius:999px;">Classe 5</span></span>
+            <span><span style="font-size:11px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 10px; border-radius:999px;">Ativo</span></span>
+            <span style="display:flex; justify-content:flex-end; gap:4px;"><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#6e6a63;">visibility</span></span><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#6e6a63;">edit</span></span><span style="width:30px;height:30px;border-radius:8px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:16px; color:#9b958c;">more_vert</span></span></span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;"><span style="font-size:12px; color:#9b958c;">Página 1 de 15 · 142 registros</span><div style="display:flex; gap:5px;"><span style="width:30px;height:30px;border-radius:8px;background:#5B7F5E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">1</span><span style="width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid #E0D5C2;display:flex;align-items:center;justify-content:center;font-size:12px;color:#6e6a63;">2</span><span style="width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid #E0D5C2;display:flex;align-items:center;justify-content:center;font-size:12px;color:#6e6a63;">3</span></div></div>
+      </div>
+    </div>
+
+    <!-- spec -->
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/pessoa/aluno/aluno-list/aluno-list.component.{html,ts}</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Filtro por situação → chips com contagem</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">existe:</span> <code style="color:#D9BC86;">filtroSituacao()</code> + <code style="color:#D9BC86;">mudarSituacao()</code> (hoje é um <code style="color:#D9BC86;">&lt;select&gt;</code>) <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">trocar:</span> select → chips usando o pipe <code style="color:#D9BC86;">situacaoAluno:'css'</code> p/ cor; add <code style="color:#D9BC86;">contagemPorSituacao()</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO computed</span></div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Coluna “Responsável” + ações visíveis</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">resp.:</span> subtítulo no avatar com <code style="color:#D9BC86;">aluno.responsavelPrincipal?.nome</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO no DTO</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">ações:</span> botões diretos Ver/Editar + <code style="color:#D9BC86;">more_vert</code> só p/ Transferir/Desligar (mantém <code style="color:#D9BC86;">toggleMenu</code>)</div>
+            <div><span style="color:#8fae91; font-weight:700;">manter:</span> <code style="color:#D9BC86;">verDetalhe()</code>, paginação, skeleton, empty-state <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 MATRÍCULA WIZARD ============ -->
+  <section style="max-width:1500px; margin:64px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">05</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Pessoas · Matrícula (wizard)</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">O passo-a-passo clicável com barra de progresso já é ótimo. Melhorias: usar largura total (não só 2xl estreito), painel de resumo fixo à direita e validação visível por etapa.</p>
+
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/pessoas/alunos/novo</span></div>
+      <div style="padding:28px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;"><span style="width:36px;height:36px;border-radius:10px;background:#F5F0E8;border:1px solid #E0D5C2;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:19px; color:#6e6a63;">arrow_back</span></span><div><h1 style="font-family:'Lora',serif; font-size:22px; color:#252321; font-weight:600; margin:0;">Novo aluno</h1><p style="font-size:12px; color:#9b958c; margin:2px 0 0;">Clique em qualquer etapa para navegar</p></div></div>
+
+        <!-- steps -->
+        <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:20px;">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:7px; flex:1;"><span style="width:38px;height:38px;border-radius:50%;background:#5B7F5E;color:#fff;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px;">check</span></span><span style="font-size:12px; color:#6e6a63; font-weight:600;">Dados pessoais</span></div>
+            <div style="flex:.5; height:2px; background:#5B7F5E; margin-bottom:24px;"></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:7px; flex:1;"><span style="width:38px;height:38px;border-radius:50%;background:#5B7F5E;color:#fff;display:flex;align-items:center;justify-content:center; box-shadow:0 0 0 4px #DCE7DD;"><span class="ms" style="font-size:18px;">favorite</span></span><span style="font-size:12px; color:#252321; font-weight:700;">Saúde</span></div>
+            <div style="flex:.5; height:2px; background:#E0D5C2; margin-bottom:24px;"></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:7px; flex:1;"><span style="width:38px;height:38px;border-radius:50%;background:#EFE8DB;color:#9b8a6a;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px;">group</span></span><span style="font-size:12px; color:#9b958c;">Responsáveis</span></div>
+            <div style="flex:.5; height:2px; background:#E0D5C2; margin-bottom:24px;"></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:7px; flex:1;"><span style="width:38px;height:38px;border-radius:50%;background:#EFE8DB;color:#9b8a6a;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px;">school</span></span><span style="font-size:12px; color:#9b958c;">Turma</span></div>
+            <div style="flex:.5; height:2px; background:#E0D5C2; margin-bottom:24px;"></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:7px; flex:1;"><span style="width:38px;height:38px;border-radius:50%;background:#EFE8DB;color:#9b8a6a;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px;">fact_check</span></span><span style="font-size:12px; color:#9b958c;">Revisão</span></div>
+          </div>
+          <div style="height:6px; background:#F3EEE4; border-radius:4px; margin-top:16px; overflow:hidden;"><div style="width:40%; height:100%; background:#5B7F5E;"></div></div>
+        </div>
+
+        <!-- form + summary -->
+        <div style="display:grid; grid-template-columns:1.7fr 1fr; gap:16px; margin-top:16px;">
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:22px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;"><h2 style="font-family:'Nunito'; font-size:16px; font-weight:700; color:#252321; margin:0;">Dados de saúde</h2><span style="font-size:11px; color:#9b958c; background:#F5F0E8; padding:3px 10px; border-radius:999px;">* obrigatórios</span></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+              <div><div style="font-size:12px; font-weight:600; color:#6e6a63; margin-bottom:5px;">Tipo sanguíneo</div><div style="background:#F8F5EF; border:1px solid #E0D5C2; border-radius:9px; padding:9px 12px; font-size:13px; color:#3a3835;">O+</div></div>
+              <div><div style="font-size:12px; font-weight:600; color:#6e6a63; margin-bottom:5px;">Plano de saúde</div><div style="background:#F8F5EF; border:1px solid #E0D5C2; border-radius:9px; padding:9px 12px; font-size:13px; color:#bcb5a8;">Opcional</div></div>
+              <div style="grid-column:1/3;"><div style="font-size:12px; font-weight:600; color:#6e6a63; margin-bottom:5px;">Alergias e restrições</div><div style="background:#F8F5EF; border:1px solid #E0D5C2; border-radius:9px; padding:9px 12px; font-size:13px; color:#bcb5a8; min-height:56px;">Descreva alergias alimentares, medicamentosas…</div></div>
+              <div style="grid-column:1/3;"><div style="font-size:12px; font-weight:600; color:#6e6a63; margin-bottom:5px;">Medicação contínua</div><div style="background:#F8F5EF; border:1px solid #E0D5C2; border-radius:9px; padding:9px 12px; font-size:13px; color:#bcb5a8;">Opcional</div></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:20px; padding-top:18px; border-top:1px solid #F0EADF;"><button style="cursor:pointer; background:#EFE8DB; color:#4a4742; border:1px solid #E0D5C2; font-family:inherit; font-size:13px; font-weight:700; padding:10px 18px; border-radius:11px;">Voltar</button><button style="cursor:pointer; background:#5B7F5E; color:#fff; border:none; font-family:inherit; font-size:13px; font-weight:700; padding:10px 18px; border-radius:11px; display:flex; align-items:center; gap:6px;">Próximo <span class="ms" style="font-size:16px;">arrow_forward</span></button></div>
+          </div>
+          <!-- summary -->
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:20px; height:fit-content;">
+            <div style="font-size:13px; font-weight:700; color:#3a3835; margin-bottom:14px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:16px; color:#8fae91;">summarize</span> Resumo</div>
+            <div style="display:flex; align-items:center; gap:11px; padding-bottom:13px; border-bottom:1px solid #F0EADF;"><span style="width:44px;height:44px;border-radius:13px;background:#DCE7DD;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:24px; color:#4A6B4D;">child_care</span></span><div><div style="font-size:14px; font-weight:700; color:#252321;">Maria Silva Santos</div><div style="font-size:11px; color:#9b958c;">7 anos · nasc. 12/03/2018</div></div></div>
+            <div style="display:flex; flex-direction:column; gap:9px; margin-top:13px;">
+              <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#6e6a63;"><span class="ms" style="font-size:15px; color:#5B7F5E;">check_circle</span> Dados pessoais completos</div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#8a6d3b; font-weight:600;"><span class="ms" style="font-size:15px; color:#C4A265;">pending</span> Saúde — em preenchimento</div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#bcb5a8;"><span class="ms" style="font-size:15px;">radio_button_unchecked</span> Responsáveis</div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#bcb5a8;"><span class="ms" style="font-size:15px;">radio_button_unchecked</span> Turma</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/pessoa/aluno/aluno-wizard/aluno-wizard.component.{html,ts}</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Layout largura total + resumo fixo</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">trocar:</span> <code style="color:#D9BC86;">max-w-2xl mx-auto</code> → grid <code style="color:#D9BC86;">lg:grid-cols-[1.7fr_1fr]</code> (form + painel resumo)</div>
+            <div><span style="color:#8fae91; font-weight:700;">resumo:</span> lê <code style="color:#D9BC86;">formPasso1..N.value</code> + <code style="color:#D9BC86;">progresso</code> e <code style="color:#D9BC86;">passoComErro(i)</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">manter:</span> passos clicáveis, <code style="color:#D9BC86;">irParaPasso()</code>, barra <code style="color:#D9BC86;">[style.width.%]="progresso"</code></div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Etapas (já implementadas)</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">passos[]:</span> Dados pessoais · Saúde · Responsáveis · Turma · Revisão <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">forms:</span> <code style="color:#D9BC86;">formPasso1</code>…<code style="color:#D9BC86;">formPasso5</code>, <code style="color:#D9BC86;">form-input-error</code>, <code style="color:#D9BC86;">form-error</code></div>
+            <div><span style="color:#8fae91; font-weight:700;">CEP:</span> reusar <code style="color:#D9BC86;">busca-cep.service</code> no passo Responsáveis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 ALUNO FICHA ============ -->
+  <section style="max-width:1500px; margin:64px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">06</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Pessoas · Aluno (ficha)</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">Hoje as abas Frequência/Boletim/Financeiro mostram “em construção”. Proposta: header de perfil mais rico e abas com conteúdo real puxando dos módulos existentes.</p>
+
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/pessoas/alunos/42</span></div>
+      <div style="padding:28px;">
+        <!-- profile header -->
+        <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:20px; display:flex; align-items:center; gap:18px;">
+          <span style="width:64px;height:64px;border-radius:18px;background:#DCE7DD;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="ms" style="font-size:34px; color:#4A6B4D;">child_care</span></span>
+          <div style="flex:1;">
+            <div style="display:flex; align-items:center; gap:10px;"><h1 style="font-family:'Lora',serif; font-size:22px; color:#252321; font-weight:600; margin:0;">Maria Silva Santos</h1><span style="font-size:11px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 10px; border-radius:999px;">Ativo</span></div>
+            <div style="display:flex; gap:16px; margin-top:8px; flex-wrap:wrap;"><span style="font-size:12px; color:#6e6a63; display:flex; align-items:center; gap:5px;"><span class="ms" style="font-size:15px; color:#8fae91;">school</span> Classe 3</span><span style="font-size:12px; color:#6e6a63; display:flex; align-items:center; gap:5px;"><span class="ms" style="font-size:15px; color:#C4A265;">cake</span> 7 anos</span><span style="font-size:12px; color:#6e6a63; display:flex; align-items:center; gap:5px; font-family:'JetBrains Mono',monospace;"><span class="ms" style="font-size:15px; color:#9b958c;">badge</span> 2025-0042</span></div>
+          </div>
+          <button style="cursor:pointer; background:#EFE8DB; color:#4a4742; border:1px solid #E0D5C2; font-family:inherit; font-size:13px; font-weight:700; padding:9px 16px; border-radius:11px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">edit</span> Editar</button>
+        </div>
+
+        <!-- tabs -->
+        <div style="display:flex; gap:4px; margin-top:18px; border-bottom:1px solid #E0D5C2;">
+          <span style="font-size:13px; font-weight:700; color:#384E3A; padding:11px 16px; border-bottom:2px solid #5B7F5E; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">person</span> Perfil</span>
+          <span style="font-size:13px; font-weight:600; color:#9b958c; padding:11px 16px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">event_available</span> Frequência</span>
+          <span style="font-size:13px; font-weight:600; color:#9b958c; padding:11px 16px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">auto_stories</span> Pedagógico</span>
+          <span style="font-size:13px; font-weight:600; color:#9b958c; padding:11px 16px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">payments</span> Financeiro</span>
+        </div>
+
+        <!-- tab content -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:18px;">
+            <div style="font-size:13px; font-weight:700; color:#3a3835; margin-bottom:12px;">Dados pessoais</div>
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              <div><div style="font-size:11px; color:#9b958c;">Nascimento</div><div style="font-size:13px; color:#3a3835;">12/03/2018</div></div>
+              <div><div style="font-size:11px; color:#9b958c;">CPF</div><div style="font-size:13px; color:#3a3835; font-family:'JetBrains Mono',monospace;">123.456.789-00</div></div>
+              <div><div style="font-size:11px; color:#9b958c;">E-mail responsável</div><div style="font-size:13px; color:#3a3835;">ana.santos@email.com</div></div>
+            </div>
+          </div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:18px;">
+            <div style="font-size:13px; font-weight:700; color:#3a3835; margin-bottom:12px;">Dados de saúde</div>
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              <div><div style="font-size:11px; color:#9b958c;">Tipo sanguíneo</div><span style="font-size:11px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:2px 9px; border-radius:999px;">O+</span></div>
+              <div><div style="font-size:11px; color:#9b958c;">Alergias</div><div style="font-size:13px; color:#3a3835;">Amendoim, lactose</div></div>
+              <div><div style="font-size:11px; color:#9b958c;">Plano de saúde</div><div style="font-size:13px; color:#3a3835;">Unimed</div></div>
+            </div>
+          </div>
+          <div style="grid-column:1/3; background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:18px;">
+            <div style="font-size:13px; font-weight:700; color:#3a3835; margin-bottom:12px;">Responsáveis</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:11px;">
+              <div style="background:#F8F5EF; border:1px solid #E0D5C2; border-radius:11px; padding:13px;"><div style="font-size:13px; font-weight:700; color:#3a3835;">Ana Santos</div><div style="font-size:11px; color:#9b958c;">Mãe</div><div style="display:flex; gap:6px; margin-top:8px;"><span style="font-size:10px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:2px 8px; border-radius:999px;">✓ Autorizada buscar</span><span style="font-size:10px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:2px 8px; border-radius:999px;">⚡ Emergência</span></div></div>
+              <div style="background:#F8F5EF; border:1px solid #E0D5C2; border-radius:11px; padding:13px;"><div style="font-size:13px; font-weight:700; color:#3a3835;">Roberto Santos</div><div style="font-size:11px; color:#9b958c;">Pai</div><div style="display:flex; gap:6px; margin-top:8px;"><span style="font-size:10px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:2px 8px; border-radius:999px;">✓ Autorizado buscar</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/pessoa/aluno/aluno-detalhe/aluno-detalhe.component.{html,ts}</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Manter (já existe)</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div>Header de perfil, badge <code style="color:#D9BC86;">situacaoAluno:'css'</code>, <code style="color:#D9BC86;">calcularIdade()</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div>Tabs com <code style="color:#D9BC86;">tabAtiva</code> signal + array <code style="color:#D9BC86;">tabs</code></div>
+            <div>Aba Perfil completa (Dados pessoais, Saúde, Responsáveis)</div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Implementar abas “em construção”</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">Pedagógico:</span> listar <code style="color:#D9BC86;">observacao.service</code> filtrado por aluno <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO binding</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">Financeiro:</span> parcelas do aluno via <code style="color:#D9BC86;">parcela.service</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO binding</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">Frequência:</span> placeholder até existir endpoint <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO endpoint</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 USUÁRIOS ============ -->
+  <section style="max-width:1500px; margin:64px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">07</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Usuários &amp; permissões</h2>
+      <span style="font-size:11px; font-weight:800; background:#F6E0DC; color:#C0564B; padding:4px 11px; border-radius:999px; align-self:center;">⚠ MAIOR INCONSISTÊNCIA</span>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:880px; margin:0 0 22px;">Esta tela hoje destoa de todo o resto: usa <code style="font-size:11px; background:#fff; border:1px solid #E0D5C2; padding:1px 5px; border-radius:5px;">Playfair Display</code> em vez de Lora, <code style="font-size:11px; background:#fff; border:1px solid #E0D5C2; padding:1px 5px; border-radius:5px;">mat-spinner</code> em vez de skeleton, wrapper próprio com <code style="font-size:11px; background:#fff; border:1px solid #E0D5C2; padding:1px 5px; border-radius:5px;">p-6</code> e classes de cor cruas. Prioridade de padronização.</p>
+
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/usuarios</span></div>
+      <div style="padding:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+          <div><h1 style="font-family:'Lora',serif; font-size:24px; color:#252321; font-weight:600; margin:0;">Gestão de usuários</h1><p style="font-size:13px; color:#9b958c; margin:4px 0 0;">Cadastre e gerencie quem acessa o sistema</p></div>
+          <div style="display:flex; gap:10px;">
+            <div style="display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #E0D5C2; border-radius:11px; padding:9px 14px; width:250px;"><span class="ms" style="font-size:18px; color:#9b958c;">search</span><span style="font-size:13px; color:#bcb5a8;">Buscar nome, e-mail ou perfil…</span></div>
+            <button style="cursor:pointer; background:#5B7F5E; color:#fff; border:none; font-family:inherit; font-size:13px; font-weight:700; padding:9px 16px; border-radius:11px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px;">person_add</span> Novo usuário</button>
+          </div>
+        </div>
+
+        <!-- role filter -->
+        <div style="display:flex; gap:8px; margin-top:18px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:700; background:#5B7F5E; color:#fff; padding:7px 14px; border-radius:999px;">Todos · 18</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E6C9C0; color:#C0564B; padding:7px 14px; border-radius:999px;">Admin · 2</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #C8DCC9; color:#4A6B4D; padding:7px 14px; border-radius:999px;">Secretaria · 4</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #C7DCE8; color:#2c6a8f; padding:7px 14px; border-radius:999px;">Professor · 10</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #EAD6AE; color:#8a6d3b; padding:7px 14px; border-radius:999px;">Pais · 2</span>
+        </div>
+
+        <!-- user cards grid -->
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:16px;">
+          <!-- card -->
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="display:flex; align-items:center; gap:11px;"><span style="width:42px;height:42px;border-radius:50%;background:#5B7F5E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;">H</span><div><div style="font-size:14px; font-weight:700; color:#252321;">Helena Martins</div><div style="font-size:11px; color:#9b958c;">helena@aroeira.edu.br</div></div></div>
+              <span style="font-size:10px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 9px; border-radius:999px;">Ativo</span>
+            </div>
+            <div style="display:flex; gap:6px; margin-top:13px; flex-wrap:wrap;"><span style="font-size:10px; font-weight:700; background:#F6E0DC; color:#C0564B; padding:3px 9px; border-radius:999px;">Admin</span><span style="font-size:10px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 9px; border-radius:999px;">Secretaria</span></div>
+            <div style="display:flex; align-items:center; gap:14px; margin-top:14px; padding-top:13px; border-top:1px solid #F0EADF;">
+              <span style="font-size:12px; color:#6e6a63; font-weight:600; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:15px;">edit</span> Editar</span>
+              <span style="font-size:12px; color:#6e6a63; font-weight:600; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:15px;">key</span> Senha</span>
+              <span style="font-size:12px; color:#C0564B; font-weight:600; display:flex; align-items:center; gap:4px; margin-left:auto;"><span class="ms" style="font-size:15px;">toggle_off</span></span>
+            </div>
+          </div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="display:flex; align-items:center; gap:11px;"><span style="width:42px;height:42px;border-radius:50%;background:#3f8fbf;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;">C</span><div><div style="font-size:14px; font-weight:700; color:#252321;">Carlos Souza</div><div style="font-size:11px; color:#9b958c;">carlos@aroeira.edu.br</div></div></div>
+              <span style="font-size:10px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 9px; border-radius:999px;">Ativo</span>
+            </div>
+            <div style="display:flex; gap:6px; margin-top:13px; flex-wrap:wrap;"><span style="font-size:10px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:3px 9px; border-radius:999px;">Professor</span></div>
+            <div style="display:flex; align-items:center; gap:14px; margin-top:14px; padding-top:13px; border-top:1px solid #F0EADF;">
+              <span style="font-size:12px; color:#6e6a63; font-weight:600; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:15px;">edit</span> Editar</span>
+              <span style="font-size:12px; color:#6e6a63; font-weight:600; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:15px;">key</span> Senha</span>
+              <span style="font-size:12px; color:#C0564B; font-weight:600; display:flex; align-items:center; gap:4px; margin-left:auto;"><span class="ms" style="font-size:15px;">toggle_off</span></span>
+            </div>
+          </div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:18px; opacity:.75;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="display:flex; align-items:center; gap:11px;"><span style="width:42px;height:42px;border-radius:50%;background:#bcb5a8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;">P</span><div><div style="font-size:14px; font-weight:700; color:#252321;">Paula Costa</div><div style="font-size:11px; color:#9b958c;">paula@email.com</div></div></div>
+              <span style="font-size:10px; font-weight:700; background:#F6E0DC; color:#C0564B; padding:3px 9px; border-radius:999px;">Inativo</span>
+            </div>
+            <div style="display:flex; gap:6px; margin-top:13px; flex-wrap:wrap;"><span style="font-size:10px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px;">Pais</span></div>
+            <div style="display:flex; align-items:center; gap:14px; margin-top:14px; padding-top:13px; border-top:1px solid #F0EADF;">
+              <span style="font-size:12px; color:#6e6a63; font-weight:600; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:15px;">edit</span> Editar</span>
+              <span style="font-size:12px; color:#4A6B4D; font-weight:600; display:flex; align-items:center; gap:4px; margin-left:auto;"><span class="ms" style="font-size:15px;">toggle_on</span> Ativar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/usuario/usuario-list/usuario-list.component.{html,ts} · usuario-form/*</span></div>
+      <div style="background:#3a2f24; border:1px solid #5a4a2a; border-radius:11px; padding:13px 16px; font-size:12px; color:#e8d6b0; display:flex; gap:9px; margin-bottom:14px;"><span class="ms" style="font-size:16px; color:#D9BC86;">priority_high</span><div><strong>Correções de consistência (alta prioridade):</strong> remover <code style="color:#fff;">style="font-family:'Playfair Display'"</code> → usar <code style="color:#fff;">font-serif</code> (Lora); remover wrapper <code style="color:#fff;">min-h-screen bg-waldorf-cream/30 p-6</code> (o main-layout já dá padding); trocar <code style="color:#fff;">mat-spinner</code> por <code style="color:#fff;">.skeleton</code>; trocar <code style="color:#fff;">bg-green-100/red-100</code> por <code style="color:#fff;">.badge-success/.badge-danger</code>.</div></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Filtro por perfil + busca</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">existe:</span> <code style="color:#D9BC86;">filtro</code> + <code style="color:#D9BC86;">aplicarFiltro()</code>, <code style="color:#D9BC86;">getPerfilColor/Label()</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">add:</span> chips por perfil com <code style="color:#D9BC86;">contagemPorPerfil()</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO</span></div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Ações (já implementadas)</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><code style="color:#D9BC86;">editar()</code>, <code style="color:#D9BC86;">resetarSenha()</code>, <code style="color:#D9BC86;">toggleAtivo()</code>, <code style="color:#D9BC86;">deletar()</code>, <code style="color:#D9BC86;">isAdmin()</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">form:</span> migrar <code style="color:#D9BC86;">usuario-form</code> para slide-panel + checkboxes de perfis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 08 CONTRATOS ============ -->
+  <section style="max-width:1500px; margin:64px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">08</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Financeiro · Contratos</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">Mesma família visual de Parcelas: chips com contagem, progresso de parcelas pagas e status de inadimplência destacado.</p>
+
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/financeiro/contratos</span></div>
+      <div style="padding:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h1 style="font-family:'Lora',serif; font-size:24px; color:#252321; font-weight:600; margin:0;">Contratos</h1>
+          <div style="display:flex; gap:10px;"><div style="display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #E0D5C2; border-radius:11px; padding:9px 14px; width:240px;"><span class="ms" style="font-size:18px; color:#9b958c;">search</span><span style="font-size:13px; color:#bcb5a8;">Buscar por aluno…</span></div><button style="cursor:pointer; background:#5B7F5E; color:#fff; border:none; font-family:inherit; font-size:13px; font-weight:700; padding:9px 16px; border-radius:11px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px;">add</span> Novo contrato</button></div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:18px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:700; background:#5B7F5E; color:#fff; padding:7px 14px; border-radius:999px;">Todos · 132</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #C8DCC9; color:#4A6B4D; padding:7px 14px; border-radius:999px;">Ativo · 124</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E6C9C0; color:#C0564B; padding:7px 14px; border-radius:999px;">Inadimplente · 5</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #EAD6AE; color:#8a6d3b; padding:7px 14px; border-radius:999px;">Suspenso · 2</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:7px 14px; border-radius:999px;">Encerrado · 1</span>
+        </div>
+        <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; margin-top:14px; overflow:hidden;">
+          <div style="display:grid; grid-template-columns:1.6fr 1fr 1fr 1.3fr 1fr 80px; background:#F5F0E8; border-bottom:1px solid #E0D5C2; padding:12px 18px; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#9b958c; gap:14px; align-items:center;"><span>Aluno</span><span>Turma</span><span style="text-align:right;">Mensalidade</span><span>Parcelas pagas</span><span>Status</span><span style="text-align:right;">Ação</span></div>
+          <div style="display:grid; grid-template-columns:1.6fr 1fr 1fr 1.3fr 1fr 80px; padding:13px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:14px;"><span style="font-size:13px; font-weight:700; color:#3a3835;">Maria Silva Santos</span><span><span style="font-size:11px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:3px 10px; border-radius:999px;">Classe 3</span></span><span style="font-size:13px; font-weight:700; color:#3a3835; text-align:right; font-family:'JetBrains Mono',monospace;">1.200,00</span><div><div style="font-size:11px; color:#9b958c; margin-bottom:3px;">8 / 12</div><div style="height:5px; background:#F0EADF; border-radius:3px; overflow:hidden;"><div style="width:66%; height:100%; background:#5B7F5E;"></div></div></div><span><span style="font-size:11px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 10px; border-radius:999px;">Ativo</span></span><span style="text-align:right;"><span style="font-size:11px; font-weight:700; color:#5B7F5E;">Ver</span></span></div>
+          <div style="display:grid; grid-template-columns:1.6fr 1fr 1fr 1.3fr 1fr 80px; padding:13px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:14px; border-left:3px solid #C0564B; background:#FDF6F4;"><span style="font-size:13px; font-weight:700; color:#3a3835;">Pedro Lima Oliveira</span><span><span style="font-size:11px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:3px 10px; border-radius:999px;">Classe 5</span></span><span style="font-size:13px; font-weight:700; color:#3a3835; text-align:right; font-family:'JetBrains Mono',monospace;">1.200,00</span><div><div style="font-size:11px; color:#C0564B; margin-bottom:3px; font-weight:700;">4 / 12 · 2 vencidas</div><div style="height:5px; background:#F0EADF; border-radius:3px; overflow:hidden;"><div style="width:33%; height:100%; background:#C0564B;"></div></div></div><span><span style="font-size:11px; font-weight:700; background:#F6E0DC; color:#C0564B; padding:3px 10px; border-radius:999px;">Inadimplente</span></span><span style="text-align:right;"><span style="font-size:11px; font-weight:700; color:#5B7F5E;">Ver</span></span></div>
+          <div style="display:grid; grid-template-columns:1.6fr 1fr 1fr 1.3fr 1fr 80px; padding:13px 18px; align-items:center; gap:14px;"><span style="font-size:13px; font-weight:700; color:#3a3835;">Ana Costa Reis</span><span><span style="font-size:11px; font-weight:700; background:#DCEAF3; color:#2c6a8f; padding:3px 10px; border-radius:999px;">Classe 5</span></span><span style="font-size:13px; font-weight:700; color:#3a3835; text-align:right; font-family:'JetBrains Mono',monospace;">980,00</span><div><div style="font-size:11px; color:#9b958c; margin-bottom:3px;">11 / 12</div><div style="height:5px; background:#F0EADF; border-radius:3px; overflow:hidden;"><div style="width:91%; height:100%; background:#5B7F5E;"></div></div></div><span><span style="font-size:11px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 10px; border-radius:999px;">Ativo</span></span><span style="text-align:right;"><span style="font-size:11px; font-weight:700; color:#5B7F5E;">Ver</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/financeiro/contrato/contrato-list/contrato-list.component.{html,ts}</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Chips de status com contagem</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;"><div><span style="color:#8fae91; font-weight:700;">existe:</span> <code style="color:#D9BC86;">filtroStatus()</code> (hoje <code style="color:#D9BC86;">&lt;select&gt;</code>), pipe <code style="color:#D9BC86;">statusContrato:'css'</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div><div><span style="color:#8fae91; font-weight:700;">trocar:</span> select → chips + <code style="color:#D9BC86;">contagemPorStatus()</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO</span></div></div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Coluna de progresso de parcelas</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;"><div><span style="color:#8fae91; font-weight:700;">add:</span> <code style="color:#D9BC86;">c.parcelasPagas / c.totalParcelas</code> + barra <code style="color:#D9BC86;">[style.width.%]</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO no DTO</span></div><div><span style="color:#8fae91; font-weight:700;">acento:</span> linha inadimplente com <code style="color:#D9BC86;">border-l-red-500</code> (já há <code style="color:#D9BC86;">totalParcelas</code>)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 09 LGPD ============ -->
+  <section style="max-width:1500px; margin:64px auto 0; padding:0 40px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">09</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">LGPD · Consentimentos</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">Compliance fica mais legível com cards-resumo no topo (aceitos / pendentes / revogados) e a tabela mantendo busca e filtros existentes.</p>
+
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/lgpd/consentimentos</span></div>
+      <div style="padding:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+          <div><h1 style="font-family:'Lora',serif; font-size:24px; color:#252321; font-weight:600; margin:0;">Consentimentos LGPD</h1><p style="font-size:13px; color:#9b958c; margin:4px 0 0;">Registro de consentimentos dos responsáveis</p></div>
+          <div style="display:flex; gap:8px;"><span style="font-size:12px; font-weight:600; color:#4a4742; background:#EFE8DB; border:1px solid #E0D5C2; padding:9px 14px; border-radius:11px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">inbox</span> Solicitações</span><span style="font-size:12px; font-weight:600; color:#6e6a63; padding:9px 14px; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">assessment</span> Relatório</span></div>
+        </div>
+
+        <!-- summary cards -->
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:13px; margin-top:18px;">
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:13px; padding:15px 17px;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#9b958c;">Total</div><div style="font-size:24px; font-weight:800; color:#252321; margin-top:3px;">284</div></div>
+          <div style="background:#EEF3EE; border:1px solid #C8DCC9; border-radius:13px; padding:15px 17px;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#4A6B4D;">Aceitos</div><div style="font-size:24px; font-weight:800; color:#4A6B4D; margin-top:3px;">271</div></div>
+          <div style="background:#FCF4E6; border:1px solid #EAD6AE; border-radius:13px; padding:15px 17px;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#8a6d3b;">Pendentes</div><div style="font-size:24px; font-weight:800; color:#8a6d3b; margin-top:3px;">11</div></div>
+          <div style="background:#FBEEEB; border:1px solid #E6C9C0; border-radius:13px; padding:15px 17px;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#C0564B;">Revogados</div><div style="font-size:24px; font-weight:800; color:#C0564B; margin-top:3px;">2</div></div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:700; background:#5B7F5E; color:#fff; padding:6px 13px; border-radius:999px;">Todos</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:6px 13px; border-radius:999px;">Aceito</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:6px 13px; border-radius:999px;">Pendente</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:6px 13px; border-radius:999px;">Revogado</span>
+        </div>
+
+        <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; margin-top:14px; overflow:hidden;">
+          <div style="display:grid; grid-template-columns:1.4fr 1.4fr 1fr 1fr 1fr .7fr; background:#F5F0E8; border-bottom:1px solid #E0D5C2; padding:11px 18px; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#9b958c; gap:12px;"><span>Aluno</span><span>Responsável</span><span>Tipo</span><span>Status</span><span>Aceite</span><span>Versão</span></div>
+          <div style="display:grid; grid-template-columns:1.4fr 1.4fr 1fr 1fr 1fr .7fr; padding:12px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:12px; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Maria Silva</span><span style="color:#6e6a63;">Ana Santos</span><span style="color:#6e6a63;">Imagem</span><span><span style="font-size:10px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:2px 9px; border-radius:999px;">Aceito</span></span><span style="color:#9b958c; font-size:12px;">02/02/2025</span><span style="color:#bcb5a8; font-size:12px; font-family:'JetBrains Mono',monospace;">v2.1</span></div>
+          <div style="display:grid; grid-template-columns:1.4fr 1.4fr 1fr 1fr 1fr .7fr; padding:12px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:12px; font-size:13px;"><span style="font-weight:700; color:#3a3835;">João Pereira</span><span style="color:#6e6a63;">Carlos Lima</span><span style="color:#6e6a63;">Dados</span><span><span style="font-size:10px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:2px 9px; border-radius:999px;">Pendente</span></span><span style="color:#bcb5a8; font-size:12px;">—</span><span style="color:#bcb5a8; font-size:12px; font-family:'JetBrains Mono',monospace;">v2.1</span></div>
+          <div style="display:grid; grid-template-columns:1.4fr 1.4fr 1fr 1fr 1fr .7fr; padding:12px 18px; align-items:center; gap:12px; font-size:13px;"><span style="font-weight:700; color:#3a3835;">Lucas Reis</span><span style="color:#6e6a63;">Paula Costa</span><span style="color:#6e6a63;">Imagem</span><span><span style="font-size:10px; font-weight:700; background:#F6E0DC; color:#C0564B; padding:2px 9px; border-radius:999px;">Revogado</span></span><span style="color:#9b958c; font-size:12px;">15/01/2025</span><span style="color:#bcb5a8; font-size:12px; font-family:'JetBrains Mono',monospace;">v2.0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/lgpd/consentimento/consentimento-list/* · solicitacao/* · relatorio/*</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Cards-resumo no topo</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;"><div><span style="color:#8fae91; font-weight:700;">add:</span> <code style="color:#D9BC86;">resumoConsentimentos()</code> → {total, aceitos, pendentes, revogados} <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO computed</span></div><div><span style="color:#8fae91; font-weight:700;">manter:</span> <code style="color:#D9BC86;">statusOpcoes</code>, <code style="color:#D9BC86;">filtrar()</code>, <code style="color:#D9BC86;">filtroStatus()</code>, pipes de status <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div></div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Consistência da tabela</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;"><div><span style="color:#8fae91; font-weight:700;">trocar:</span> markup cru de <code style="color:#D9BC86;">&lt;table&gt;</code> pelas classes <code style="color:#D9BC86;">.table-header</code> / <code style="color:#D9BC86;">.table-cell</code> (igual às outras listas)</div><div><span style="color:#8fae91; font-weight:700;">badge:</span> trocar ternário inline pelos pipes <code style="color:#D9BC86;">statusConsentimento:'css'</code> já existentes</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PADRÕES PARA AS DEMAIS ============ -->
+  <section style="max-width:1500px; margin:72px auto 0; padding:0 40px;">
+    <div style="background:#252321; border-radius:24px; padding:40px 44px; color:#F5F0E8;">
+      <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(196,162,101,.18); color:#D9BC86; font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:6px 13px; border-radius:999px;">Telas “PADRÃO ↓”</div>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#fff; font-size:28px; margin:16px 0 6px;">As demais não precisam de redesenho próprio</h2>
+      <p style="font-size:14px; color:#cdc6b9; max-width:820px; margin:0 0 26px;">Professores, Turmas, Épocas, Comunidade, Notificações e os dashboards de Professor/Pais devem apenas <strong style="color:#fff;">aplicar os padrões já especificados</strong>. Use este mapa:</p>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:14px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:8px; color:#8fae91; font-weight:700; font-size:13px; margin-bottom:10px;"><span class="ms" style="font-size:17px;">table_rows</span> Listas</div>
+          <div style="font-size:12.5px; color:#cdc6b9; line-height:1.7;">Professores, Turmas, Épocas → padrão <strong style="color:#fff;">Parcelas/Alunos</strong>: busca + chips com contagem + tabela <code style="color:#D9BC86; font-size:11px;">.table-*</code> + paginação.</div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:14px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:8px; color:#D9BC86; font-weight:700; font-size:13px; margin-bottom:10px;"><span class="ms" style="font-size:17px;">view_agenda</span> Feeds / cards</div>
+          <div style="font-size:12.5px; color:#cdc6b9; line-height:1.7;">Mural, Comunicados, Notificações → padrão <strong style="color:#fff;">Observações</strong>: card <code style="color:#D9BC86; font-size:11px;">.card</code> com faixa de cor por tipo + filtros coloridos.</div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:14px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:8px; color:#D4956A; font-weight:700; font-size:13px; margin-bottom:10px;"><span class="ms" style="font-size:17px;">space_dashboard</span> Dashboards perfil</div>
+          <div style="font-size:12.5px; color:#cdc6b9; line-height:1.7;">Professor &amp; Pais → padrão <strong style="color:#fff;">Dashboard Secretaria</strong>: faixa de atenção + KPIs com cor semântica relevantes ao perfil.</div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:14px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:8px; color:#8fae91; font-weight:700; font-size:13px; margin-bottom:10px;"><span class="ms" style="font-size:17px;">edit_square</span> Formulários</div>
+          <div style="font-size:12.5px; color:#cdc6b9; line-height:1.7;">Todos os forms (Comunicado, Época, Usuário…) → <strong style="color:#fff;">slide-panel</strong> do <code style="color:#D9BC86; font-size:11px;">turma-list</code>.</div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:14px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:8px; color:#D9BC86; font-weight:700; font-size:13px; margin-bottom:10px;"><span class="ms" style="font-size:17px;">style</span> Consistência</div>
+          <div style="font-size:12.5px; color:#cdc6b9; line-height:1.7;">Varrer por <code style="color:#D9BC86; font-size:11px;">Playfair Display</code>, <code style="color:#D9BC86; font-size:11px;">mat-spinner</code>, <code style="color:#D9BC86; font-size:11px;">p-6</code> avulso e cores cruas — substituir pelos tokens do design system.</div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:14px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:8px; color:#D4956A; font-weight:700; font-size:13px; margin-bottom:10px;"><span class="ms" style="font-size:17px;">login</span> Login</div>
+          <div style="font-size:12.5px; color:#cdc6b9; line-height:1.7;">Já consistente. Apenas garantir <code style="color:#D9BC86; font-size:11px;">font-serif</code> no título e estados de erro com <code style="color:#D9BC86; font-size:11px;">.form-error</code>.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>

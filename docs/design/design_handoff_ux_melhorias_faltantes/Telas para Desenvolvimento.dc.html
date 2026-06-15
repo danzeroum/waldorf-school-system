@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .ms { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; line-height: 1; white-space: nowrap; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
+  code { font-family: 'JetBrains Mono', monospace; }
+</style>
+</helmet>
+
+<div style="font-family:'Nunito',system-ui,sans-serif; background:#EAE3D6; color:#3a3835; min-height:100vh; padding:0 0 110px;">
+
+  <!-- ============ HERO ============ -->
+  <header style="max-width:1500px; margin:0 auto; padding:56px 40px 34px;">
+    <div style="display:inline-flex; align-items:center; gap:8px; background:#252321; color:#D9BC86; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding:7px 14px; border-radius:999px;">
+      <span class="ms" style="font-size:15px;">terminal</span> Handoff de desenvolvimento
+    </div>
+    <h1 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:46px; line-height:1.12; margin:20px 0 0; letter-spacing:-.01em; max-width:920px;">Telas prontas para implementar</h1>
+    <p style="font-size:18px; line-height:1.6; color:#6e6a63; max-width:780px; margin:16px 0 0;">Cada tela em tamanho real, dentro do shell do app, com uma <strong style="color:#3a3835;">ficha técnica</strong> abaixo: arquivo a editar, classes do design system, bindings Angular (signals/métodos) e o que precisa no backend. Tudo na paleta e tipografia atuais.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:26px;">
+      <a href="#shell" style="text-decoration:none; font-size:13px; font-weight:700; color:#384E3A; background:#fff; border:1px solid #C8DCC9; padding:9px 16px; border-radius:999px; display:inline-flex; align-items:center; gap:6px;"><span class="ms" style="font-size:15px;">dashboard</span> Shell &amp; navegação</a>
+      <a href="#dash" style="text-decoration:none; font-size:13px; font-weight:700; color:#384E3A; background:#fff; border:1px solid #C8DCC9; padding:9px 16px; border-radius:999px; display:inline-flex; align-items:center; gap:6px;"><span class="ms" style="font-size:15px;">space_dashboard</span> Dashboard</a>
+      <a href="#parcelas" style="text-decoration:none; font-size:13px; font-weight:700; color:#384E3A; background:#fff; border:1px solid #C8DCC9; padding:9px 16px; border-radius:999px; display:inline-flex; align-items:center; gap:6px;"><span class="ms" style="font-size:15px;">receipt_long</span> Parcelas</a>
+      <a href="#obs" style="text-decoration:none; font-size:13px; font-weight:700; color:#384E3A; background:#fff; border:1px solid #C8DCC9; padding:9px 16px; border-radius:999px; display:inline-flex; align-items:center; gap:6px;"><span class="ms" style="font-size:15px;">visibility</span> Observações</a>
+    </div>
+  </header>
+
+  <!-- legenda de leitura -->
+  <div style="max-width:1500px; margin:0 auto; padding:0 40px;">
+    <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:16px 20px; display:flex; flex-wrap:wrap; gap:24px; align-items:center;">
+      <span style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:#9b958c;">Como ler</span>
+      <span style="display:flex; align-items:center; gap:8px; font-size:13px; color:#6e6a63;"><span style="width:22px;height:22px;border-radius:7px;background:#DCE7DD;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:13px;color:#4A6B4D;">brush</span></span> Tela renderizada</span>
+      <span style="display:flex; align-items:center; gap:8px; font-size:13px; color:#6e6a63;"><span style="width:22px;height:22px;border-radius:7px;background:#252321;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:13px;color:#D9BC86;">code</span></span> Ficha de implementação</span>
+      <span style="display:flex; align-items:center; gap:8px; font-size:13px; color:#6e6a63;"><span style="font-size:10px; font-weight:800; background:#DCE7DD; color:#4A6B4D; padding:3px 8px; border-radius:999px;">EXISTE</span> já no código</span>
+      <span style="display:flex; align-items:center; gap:8px; font-size:13px; color:#6e6a63;"><span style="font-size:10px; font-weight:800; background:#F3E8CF; color:#8a6d3b; padding:3px 8px; border-radius:999px;">NOVO</span> precisa criar</span>
+    </div>
+  </div>
+
+  <!-- ============ SHELL ============ -->
+  <section id="shell" style="max-width:1500px; margin:56px auto 0; padding:0 40px; scroll-margin-top:24px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">00</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Shell &amp; navegação</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">Mantém-se a estrutura atual (sidebar colapsável + header). Ajustes: estado ativo mais claro, badge de notificações e busca global <code style="font-size:11px; background:#fff; border:1px solid #E0D5C2; padding:1px 5px; border-radius:5px;">⌘K</code>.</p>
+
+    <!-- shell render -->
+    <div style="background:#fff; border:1px solid #E0D5C2; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="display:flex; height:560px;">
+        <!-- SIDEBAR -->
+        <aside style="width:230px; background:#fff; border-right:1px solid #E0D5C2; display:flex; flex-direction:column; flex-shrink:0;">
+          <div style="padding:18px 18px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #F0EADF;">
+            <div style="width:36px;height:36px;border-radius:11px;background:#5B7F5E; display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:20px;color:#fff;">park</span></div>
+            <div><div style="font-family:'Lora',serif; font-weight:700; font-size:15px; color:#252321; line-height:1;">Quintal Aroeira</div><div style="font-size:10px; color:#9b958c; margin-top:3px;">Pedagogia Waldorf</div></div>
+          </div>
+          <div style="flex:1; overflow:hidden; padding:12px 12px;">
+            <div style="font-size:9px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#bcb5a8; padding:6px 10px;">Principal</div>
+            <div style="display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:10px; background:#DCE7DD; color:#384E3A; font-weight:700; font-size:13px;"><span class="ms" style="font-size:18px;">dashboard</span> Dashboard</div>
+            <div style="font-size:9px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#bcb5a8; padding:12px 10px 6px;">Gestão</div>
+            <div style="display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:10px; color:#6e6a63; font-weight:600; font-size:13px;"><span class="ms" style="font-size:18px;">people</span> Pessoas <span class="ms" style="font-size:16px; margin-left:auto; color:#cbc4b7;">expand_more</span></div>
+            <div style="display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:10px; color:#6e6a63; font-weight:600; font-size:13px;"><span class="ms" style="font-size:18px;">auto_stories</span> Pedagogia <span class="ms" style="font-size:16px; margin-left:auto; color:#cbc4b7;">expand_more</span></div>
+            <div style="display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:10px; color:#6e6a63; font-weight:600; font-size:13px;"><span class="ms" style="font-size:18px;">payments</span> Financeiro <span class="ms" style="font-size:16px; margin-left:auto; color:#cbc4b7;">expand_more</span></div>
+            <div style="font-size:9px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#bcb5a8; padding:12px 10px 6px;">Comunicação</div>
+            <div style="display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:10px; color:#6e6a63; font-weight:600; font-size:13px;"><span class="ms" style="font-size:18px;">forum</span> Comunidade</div>
+            <div style="display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:10px; color:#6e6a63; font-weight:600; font-size:13px;"><span class="ms" style="font-size:18px;">notifications</span> Notificações <span style="margin-left:auto; font-size:10px; font-weight:800; background:#C0564B; color:#fff; padding:1px 7px; border-radius:999px;">3</span></div>
+          </div>
+          <div style="padding:12px; border-top:1px solid #F0EADF; display:flex; align-items:center; gap:10px;"><span style="width:30px;height:30px;border-radius:50%;background:#5B7F5E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;">HM</span><div style="line-height:1.2;"><div style="font-size:12px; font-weight:700; color:#3a3835;">Helena M.</div><div style="font-size:10px; color:#9b958c;">Secretaria</div></div></div>
+        </aside>
+        <!-- MAIN -->
+        <div style="flex:1; display:flex; flex-direction:column; background:#F5F0E8;">
+          <header style="height:56px; background:#fff; border-bottom:1px solid #E0D5C2; display:flex; align-items:center; padding:0 18px; gap:14px; flex-shrink:0;">
+            <span class="ms" style="font-size:20px; color:#9b958c;">menu</span>
+            <div style="font-size:13px; color:#9b958c;">Dashboard</div>
+            <div style="flex:1; display:flex; justify-content:center;"><div style="display:flex; align-items:center; gap:8px; background:#F5F0E8; border:1px solid #E0D5C2; border-radius:10px; padding:7px 13px; width:300px;"><span class="ms" style="font-size:16px; color:#9b958c;">search</span><span style="font-size:12px; color:#bcb5a8; flex:1;">Buscar alunos, contratos…</span><span style="font-size:10px; font-weight:700; color:#9b958c; background:#fff; border:1px solid #E0D5C2; border-radius:5px; padding:1px 6px;">⌘K</span></div></div>
+            <span class="ms" style="font-size:20px; color:#6e6a63;">notifications</span>
+            <span style="width:32px;height:32px;border-radius:50%;background:#5B7F5E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">HM</span>
+          </header>
+          <div style="flex:1; padding:22px; display:flex; align-items:center; justify-content:center;">
+            <div style="text-align:center; color:#bcb5a8;"><span class="ms" style="font-size:40px;">space_dashboard</span><div style="font-size:13px; margin-top:8px;">Área de conteúdo → as 3 telas abaixo</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- shell spec -->
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/layout/{sidebar,header}/*.component.html · styles.scss</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+        <div>
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#8fae91; margin-bottom:9px;">Manter</div>
+          <ul style="margin:0; padding-left:18px; color:#cdc6b9; font-size:13px; line-height:1.7;">
+            <li>Estrutura <code style="color:#D9BC86; font-size:11px;">sidebar-container</code> 260/68px e auto-expand do grupo ativo</li>
+            <li><code style="color:#D9BC86; font-size:11px;">secoesFiltradas()</code> por perfil — sem mudança</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#D9BC86; margin-bottom:9px;">Ajustar</div>
+          <ul style="margin:0; padding-left:18px; color:#cdc6b9; font-size:13px; line-height:1.7;">
+            <li>Item ativo: fundo <code style="color:#D9BC86; font-size:11px;">bg-waldorf-green-100</code> + texto <code style="color:#D9BC86; font-size:11px;">text-waldorf-green-700</code> + peso 700</li>
+            <li>Busca ⌘K no header → abrir command palette global <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:2px 7px; border-radius:999px;">NOVO</span></li>
+            <li>Badge do bell vindo de <code style="color:#D9BC86; font-size:11px;">notificacoesNaoLidas()</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:2px 7px; border-radius:999px;">NOVO</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 01 DASHBOARD ============ -->
+  <section id="dash" style="max-width:1500px; margin:64px auto 0; padding:0 40px; scroll-margin-top:24px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">01</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Dashboard da Secretaria</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">Faixa de atenção, 3 KPIs principais com cor semântica, métricas secundárias e bloco de atividade + gráfico.</p>
+
+    <!-- content frame -->
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/dashboard</span></div>
+      <div style="padding:28px;">
+        <!-- greeting -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+          <div>
+            <h1 style="font-family:'Lora',serif; font-size:26px; color:#252321; font-weight:600; margin:0;">Bom dia, Helena</h1>
+            <p style="font-size:13px; color:#9b958c; margin:4px 0 0;">sexta-feira, 13 de junho de 2025 · Ano letivo 2025</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button style="border:none; cursor:pointer; background:#5B7F5E; color:#fff; font-family:inherit; font-size:13px; font-weight:700; padding:10px 16px; border-radius:12px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px;">person_add</span> Novo aluno</button>
+            <button style="cursor:pointer; background:#EFE8DB; color:#4a4742; border:1px solid #E0D5C2; font-family:inherit; font-size:13px; font-weight:700; padding:10px 16px; border-radius:12px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px;">assignment_add</span> Nova matrícula</button>
+          </div>
+        </div>
+
+        <!-- attention strip -->
+        <div style="background:linear-gradient(100deg,#FBEEEB,#FCF4E6); border:1px solid #E6C9C0; border-radius:16px; padding:16px 20px; margin-top:22px; display:flex; align-items:center; gap:16px;">
+          <span style="width:38px;height:38px;border-radius:11px;background:#C0564B; display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="ms" style="font-size:22px;color:#fff;">priority_high</span></span>
+          <div style="flex:1;">
+            <div style="font-size:14px; font-weight:800; color:#9a4339;">Precisa da sua atenção</div>
+            <div style="display:flex; gap:18px; margin-top:5px; flex-wrap:wrap;">
+              <span style="font-size:12px; color:#7a6f5f; display:flex; align-items:center; gap:5px;"><strong style="color:#C0564B;">5</strong> inadimplentes</span>
+              <span style="font-size:12px; color:#7a6f5f; display:flex; align-items:center; gap:5px;"><strong style="color:#C0564B;">3</strong> contratos vencendo</span>
+              <span style="font-size:12px; color:#7a6f5f; display:flex; align-items:center; gap:5px;"><strong style="color:#8a6d3b;">2</strong> termos LGPD pendentes</span>
+            </div>
+          </div>
+          <button style="cursor:pointer; background:#C0564B; color:#fff; border:none; font-family:inherit; font-size:12px; font-weight:700; padding:9px 15px; border-radius:10px;">Resolver agora</button>
+        </div>
+
+        <!-- 3 primary KPIs -->
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px;">
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:20px; border-top:4px solid #5B7F5E;">
+            <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#9b958c;">Alunos ativos</span><span style="width:34px;height:34px;border-radius:10px;background:#DCE7DD;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:19px; color:#4A6B4D;">school</span></span></div>
+            <div style="font-weight:800; font-size:38px; color:#252321; margin-top:8px; line-height:1;">142</div>
+            <div style="font-size:12px; color:#4A6B4D; font-weight:700; margin-top:7px; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:14px;">trending_up</span> +6 este mês</div>
+          </div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:20px; border-top:4px solid #C4A265;">
+            <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#9b958c;">A receber (2025)</span><span style="width:34px;height:34px;border-radius:10px;background:#F3E8CF;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:19px; color:#8a6d3b;">savings</span></span></div>
+            <div style="font-weight:800; font-size:30px; color:#252321; margin-top:13px; line-height:1;">R$ 84.200</div>
+            <div style="height:7px; background:#F3E8CF; border-radius:4px; margin-top:11px; overflow:hidden;"><div style="width:68%; height:100%; background:#C4A265;"></div></div>
+            <div style="font-size:12px; color:#9b958c; margin-top:5px;"><strong style="color:#8a6d3b;">68%</strong> recebido · R$ 57.000</div>
+          </div>
+          <div style="background:#fff; border:1px solid #E6C9C0; border-radius:16px; padding:20px; border-top:4px solid #C0564B;">
+            <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#C0564B;">Inadimplência</span><span style="width:34px;height:34px;border-radius:10px;background:#F6E0DC;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:19px; color:#C0564B;">trending_up</span></span></div>
+            <div style="font-weight:800; font-size:38px; color:#C0564B; margin-top:8px; line-height:1;">3,5%</div>
+            <div style="font-size:12px; color:#9a4339; font-weight:700; margin-top:7px;">5 alunos · R$ 4.100 em atraso</div>
+          </div>
+        </div>
+
+        <!-- secondary metrics -->
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px;">
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px 18px; display:flex; align-items:center; gap:13px;"><span style="width:32px;height:32px;border-radius:9px;background:#F3E8CF;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px; color:#8a6d3b;">assignment_late</span></span><div><div style="font-weight:800; font-size:22px; color:#252321; line-height:1;">7</div><div style="font-size:11px; color:#9b958c; margin-top:3px;">Matrículas pendentes</div></div></div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px 18px; display:flex; align-items:center; gap:13px;"><span style="width:32px;height:32px;border-radius:9px;background:#F6E0DC;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px; color:#C0564B;">event_busy</span></span><div><div style="font-weight:800; font-size:22px; color:#252321; line-height:1;">3</div><div style="font-size:11px; color:#9b958c; margin-top:3px;">Contratos vencendo (30d)</div></div></div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:14px; padding:15px 18px; display:flex; align-items:center; gap:13px;"><span style="width:32px;height:32px;border-radius:9px;background:#F3E8CF;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:18px; color:#8a6d3b;">policy</span></span><div><div style="font-weight:800; font-size:22px; color:#252321; line-height:1;">2</div><div style="font-size:11px; color:#9b958c; margin-top:3px;">Consentimentos LGPD pendentes</div></div></div>
+        </div>
+
+        <!-- activity + chart -->
+        <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:16px; margin-top:16px;">
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;"><div style="font-weight:700; font-size:14px; color:#3a3835; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px; color:#8fae91;">history</span> Atividade recente</div><span style="font-size:12px; color:#5B7F5E; font-weight:700;">Ver tudo</span></div>
+            <div>
+              <div style="display:flex; gap:11px; padding:10px 0; border-bottom:1px solid #F0EADF;"><span style="width:8px;height:8px;border-radius:50%;background:#5B7F5E;margin-top:5px;flex-shrink:0;"></span><div style="flex:1;"><div style="font-size:13px; color:#3a3835; font-weight:600;">Nova matrícula registrada · João Pereira</div><div style="font-size:11px; color:#bcb5a8; margin-top:1px;">há 2 horas · Secretaria</div></div></div>
+              <div style="display:flex; gap:11px; padding:10px 0; border-bottom:1px solid #F0EADF;"><span style="width:8px;height:8px;border-radius:50%;background:#C4A265;margin-top:5px;flex-shrink:0;"></span><div style="flex:1;"><div style="font-size:13px; color:#3a3835; font-weight:600;">Pagamento de R$ 1.200 confirmado · Maria Silva</div><div style="font-size:11px; color:#bcb5a8; margin-top:1px;">há 4 horas · Financeiro</div></div></div>
+              <div style="display:flex; gap:11px; padding:10px 0; border-bottom:1px solid #F0EADF;"><span style="width:8px;height:8px;border-radius:50%;background:#7C5AA0;margin-top:5px;flex-shrink:0;"></span><div style="flex:1;"><div style="font-size:13px; color:#3a3835; font-weight:600;">Observação pedagógica criada · Classe 3</div><div style="font-size:11px; color:#bcb5a8; margin-top:1px;">ontem · Pedagogia</div></div></div>
+              <div style="display:flex; gap:11px; padding:10px 0;"><span style="width:8px;height:8px;border-radius:50%;background:#3f8fbf;margin-top:5px;flex-shrink:0;"></span><div style="flex:1;"><div style="font-size:13px; color:#3a3835; font-weight:600;">Comunicado enviado aos pais · Festa Junina</div><div style="font-size:11px; color:#bcb5a8; margin-top:1px;">ontem · Comunidade</div></div></div>
+            </div>
+          </div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:20px;">
+            <div style="font-weight:700; font-size:14px; color:#3a3835; margin-bottom:18px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px; color:#8fae91;">bar_chart</span> Recebimento · 6 meses</div>
+            <div style="display:flex; align-items:flex-end; gap:11px; height:120px;">
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:100%; background:#DCE7DD; border-radius:5px 5px 0 0; height:52px;"></div><span style="font-size:10px; color:#bcb5a8;">Jan</span></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:100%; background:#DCE7DD; border-radius:5px 5px 0 0; height:68px;"></div><span style="font-size:10px; color:#bcb5a8;">Fev</span></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:100%; background:#DCE7DD; border-radius:5px 5px 0 0; height:60px;"></div><span style="font-size:10px; color:#bcb5a8;">Mar</span></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:100%; background:#8fae91; border-radius:5px 5px 0 0; height:86px;"></div><span style="font-size:10px; color:#bcb5a8;">Abr</span></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:100%; background:#8fae91; border-radius:5px 5px 0 0; height:78px;"></div><span style="font-size:10px; color:#bcb5a8;">Mai</span></div>
+              <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:100%; background:#5B7F5E; border-radius:5px 5px 0 0; height:100px;"></div><span style="font-size:10px; color:#6e6a63; font-weight:700;">Jun</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEV SPEC dashboard -->
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/dashboard/containers/secretaria-dashboard/secretaria-dashboard.component.{html,ts}</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+        <!-- block: attention strip -->
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Faixa “precisa de atenção”</div>
+          <div style="font-size:12px; color:#cdc6b9; line-height:1.6;">Wrapper <code style="color:#D9BC86;">div.card</code> com gradiente; renderizar só quando há pendências.</div>
+          <div style="margin-top:10px; font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">*ngIf:</span> <code style="color:#D9BC86;">temPendencias()</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO computed</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">dados:</span> <code style="color:#D9BC86;">metricas().mensalidadesAtrasadas</code>, <code style="color:#D9BC86;">.contratosVencendo</code>, <code style="color:#D9BC86;">.lgpdPendentes</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">ação:</span> botão → <code style="color:#D9BC86;">router.navigate(['/financeiro/parcelas'],{queryParams:{status:'VENCIDA'}})</code></div>
+          </div>
+        </div>
+
+        <!-- block: KPIs -->
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">KPIs principais (3) + secundários (3)</div>
+          <div style="font-size:12px; color:#cdc6b9; line-height:1.6;">Cada card = <code style="color:#D9BC86;">.card</code> com <code style="color:#D9BC86;">border-t-4</code> da cor semântica.</div>
+          <div style="margin-top:10px; font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">cores:</span> verde <code style="color:#D9BC86;">border-waldorf-green-500</code> · dourado <code style="color:#D9BC86;">border-waldorf-amber-500</code> · risco <code style="color:#D9BC86;">border-red-500</code></div>
+            <div><span style="color:#8fae91; font-weight:700;">valor:</span> <code style="color:#D9BC86;">{{ metricas().totalAlunosAtivos }}</code> · <code style="color:#D9BC86;">formatarMoeda(.valorAReceber)</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">barra %:</span> <code style="color:#D9BC86;">[style.width.%]="percentualRecebido"</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO computed</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">tendência:</span> <code style="color:#D9BC86;">metricas().alunosNovosMes</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO no DTO</span></div>
+          </div>
+        </div>
+
+        <!-- block: activity -->
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Atividade recente</div>
+          <div style="font-size:12px; color:#cdc6b9; line-height:1.6;">Timeline em <code style="color:#D9BC86;">.card</code>; ponto colorido por origem do evento.</div>
+          <div style="margin-top:10px; font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">*ngFor:</span> <code style="color:#D9BC86;">let a of atividades()</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">incluir:</span> <code style="color:#D9BC86;">a.origem</code> (módulo) + cor mapeada <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO campo</span></div>
+          </div>
+        </div>
+
+        <!-- block: chart -->
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Gráfico de recebimento</div>
+          <div style="font-size:12px; color:#cdc6b9; line-height:1.6;">Barras CSS (sem lib) ou ngx-charts se já houver no projeto.</div>
+          <div style="margin-top:10px; font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">dados:</span> <code style="color:#D9BC86;">recebimentoMensal(): {mes,valor}[]</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO endpoint</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">altura:</span> <code style="color:#D9BC86;">[style.height.px]="valor/max*120"</code></div>
+          </div>
+        </div>
+
+      </div>
+      <div style="margin-top:14px; background:#3a2f24; border:1px solid #5a4a2a; border-radius:11px; padding:13px 16px; font-size:12px; color:#e8d6b0; display:flex; gap:9px;"><span class="ms" style="font-size:16px; color:#D9BC86;">priority_high</span><div>Aposentar o <code style="color:#fff;">dashboard.component.html</code> genérico (usa <code style="color:#fff;">mat-card</code>/cinza) — manter apenas os dashboards por perfil já estilizados no design system.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ 02 PARCELAS ============ -->
+  <section id="parcelas" style="max-width:1500px; margin:64px auto 0; padding:0 40px; scroll-margin-top:24px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">02</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Financeiro · Parcelas</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">Busca, barra de totais, chips com contagem, seleção múltipla com ações em lote, vencimento relativo e paginação.</p>
+
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/financeiro/parcelas</span></div>
+      <div style="padding:28px;">
+        <!-- header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+          <h1 style="font-family:'Lora',serif; font-size:24px; color:#252321; font-weight:600; margin:0;">Parcelas</h1>
+          <div style="display:flex; gap:10px;">
+            <div style="display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #E0D5C2; border-radius:11px; padding:9px 14px; width:260px;"><span class="ms" style="font-size:18px; color:#9b958c;">search</span><span style="font-size:13px; color:#bcb5a8;">Buscar por aluno…</span></div>
+            <button style="cursor:pointer; background:#EFE8DB; color:#4a4742; border:1px solid #E0D5C2; font-family:inherit; font-size:13px; font-weight:700; padding:9px 15px; border-radius:11px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px;">download</span> Exportar</button>
+          </div>
+        </div>
+
+        <!-- totals -->
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:13px; margin-top:20px;">
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:13px; padding:15px 17px;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#9b958c;">Total</div><div style="font-size:22px; font-weight:800; color:#252321; margin-top:4px;">R$ 84.200</div></div>
+          <div style="background:#EEF3EE; border:1px solid #C8DCC9; border-radius:13px; padding:15px 17px;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#4A6B4D;">Recebido</div><div style="font-size:22px; font-weight:800; color:#4A6B4D; margin-top:4px;">R$ 57.000</div></div>
+          <div style="background:#FCF4E6; border:1px solid #EAD6AE; border-radius:13px; padding:15px 17px;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#8a6d3b;">Pendente</div><div style="font-size:22px; font-weight:800; color:#8a6d3b; margin-top:4px;">R$ 23.100</div></div>
+          <div style="background:#FBEEEB; border:1px solid #E6C9C0; border-radius:13px; padding:15px 17px;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#C0564B;">Vencido</div><div style="font-size:22px; font-weight:800; color:#C0564B; margin-top:4px;">R$ 4.100</div></div>
+        </div>
+
+        <!-- filter chips -->
+        <div style="display:flex; gap:8px; margin-top:18px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:700; background:#5B7F5E; color:#fff; padding:7px 14px; border-radius:999px;">Todas · 68</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:7px 14px; border-radius:999px;">Pendente · 19</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E6C9C0; color:#C0564B; padding:7px 14px; border-radius:999px;">Vencida · 5</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E0D5C2; color:#6e6a63; padding:7px 14px; border-radius:999px;">Paga · 44</span>
+        </div>
+
+        <!-- bulk bar -->
+        <div style="display:flex; align-items:center; gap:16px; background:#252321; border-radius:13px; padding:11px 18px; margin-top:16px;">
+          <span style="font-size:13px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px; color:#8fae91;">check_box</span> 2 selecionadas</span>
+          <div style="width:1px; height:18px; background:#46423c;"></div>
+          <button style="cursor:pointer; background:none; border:none; font-family:inherit; font-size:13px; font-weight:600; color:#D9BC86; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">send</span> Enviar cobrança</button>
+          <button style="cursor:pointer; background:none; border:none; font-family:inherit; font-size:13px; font-weight:600; color:#8fae91; display:flex; align-items:center; gap:6px;"><span class="ms" style="font-size:16px;">payments</span> Baixar selecionadas</button>
+          <span style="margin-left:auto; font-size:12px; color:#9b958c; cursor:pointer;">Limpar</span>
+        </div>
+
+        <!-- table -->
+        <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; margin-top:14px; overflow:hidden;">
+          <div style="display:grid; grid-template-columns:24px 2fr 1.1fr 1fr 1fr 90px; background:#F5F0E8; border-bottom:1px solid #E0D5C2; padding:12px 18px; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#9b958c; align-items:center; gap:14px;"><span></span><span>Aluno</span><span>Vencimento</span><span>Status</span><span style="text-align:right;">Valor</span><span style="text-align:right;">Ação</span></div>
+          <!-- vencida -->
+          <div style="display:grid; grid-template-columns:24px 2fr 1.1fr 1fr 1fr 90px; padding:13px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:14px; border-left:3px solid #C0564B; background:#FDF6F4;">
+            <span style="width:17px;height:17px;border-radius:5px;background:#C0564B; display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:13px;color:#fff;">check</span></span>
+            <div style="display:flex; align-items:center; gap:11px;"><span style="width:32px;height:32px;border-radius:50%;background:#F3E0DC; display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#C0564B;">PL</span><div><div style="font-size:13px;font-weight:700;color:#3a3835;">Pedro Lima</div><div style="font-size:11px;color:#9b958c;">Mensalidade Abril</div></div></div>
+            <span style="font-size:11px; font-weight:700; background:#F6E0DC; color:#C0564B; padding:3px 10px; border-radius:999px; width:fit-content;">há 42 dias</span>
+            <span style="font-size:11px; font-weight:700; background:#F6E0DC; color:#C0564B; padding:3px 10px; border-radius:999px; width:fit-content;">Vencida</span>
+            <span style="font-size:14px; font-weight:800; color:#C0564B; text-align:right; font-family:'JetBrains Mono',monospace;">1.200,00</span>
+            <span style="text-align:right;"><button style="cursor:pointer; font-size:11px; font-weight:700; background:#5B7F5E; color:#fff; border:none; font-family:inherit; padding:6px 13px; border-radius:8px;">Baixar</button></span>
+          </div>
+          <!-- pendente -->
+          <div style="display:grid; grid-template-columns:24px 2fr 1.1fr 1fr 1fr 90px; padding:13px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:14px;">
+            <span style="width:17px;height:17px;border-radius:5px;background:#5B7F5E; display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:13px;color:#fff;">check</span></span>
+            <div style="display:flex; align-items:center; gap:11px;"><span style="width:32px;height:32px;border-radius:50%;background:#DCE7DD; display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#4A6B4D;">MS</span><div><div style="font-size:13px;font-weight:700;color:#3a3835;">Maria Silva</div><div style="font-size:11px;color:#9b958c;">Mensalidade Maio</div></div></div>
+            <span style="font-size:11px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:3px 10px; border-radius:999px; width:fit-content;">vence em 3 dias</span>
+            <span style="font-size:11px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:3px 10px; border-radius:999px; width:fit-content;">Pendente</span>
+            <span style="font-size:14px; font-weight:800; color:#3a3835; text-align:right; font-family:'JetBrains Mono',monospace;">1.200,00</span>
+            <span style="text-align:right;"><button style="cursor:pointer; font-size:11px; font-weight:700; background:#5B7F5E; color:#fff; border:none; font-family:inherit; padding:6px 13px; border-radius:8px;">Baixar</button></span>
+          </div>
+          <!-- pendente 2 -->
+          <div style="display:grid; grid-template-columns:24px 2fr 1.1fr 1fr 1fr 90px; padding:13px 18px; border-bottom:1px solid #F0EADF; align-items:center; gap:14px;">
+            <span style="width:17px;height:17px;border:1.5px solid #D4C5AC;border-radius:5px;"></span>
+            <div style="display:flex; align-items:center; gap:11px;"><span style="width:32px;height:32px;border-radius:50%;background:#DCE7DD; display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#4A6B4D;">AC</span><div><div style="font-size:13px;font-weight:700;color:#3a3835;">Ana Costa</div><div style="font-size:11px;color:#9b958c;">Material didático</div></div></div>
+            <span style="font-size:11px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:3px 10px; border-radius:999px; width:fit-content;">vence em 9 dias</span>
+            <span style="font-size:11px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:3px 10px; border-radius:999px; width:fit-content;">Pendente</span>
+            <span style="font-size:14px; font-weight:800; color:#3a3835; text-align:right; font-family:'JetBrains Mono',monospace;">380,00</span>
+            <span style="text-align:right;"><button style="cursor:pointer; font-size:11px; font-weight:700; background:#5B7F5E; color:#fff; border:none; font-family:inherit; padding:6px 13px; border-radius:8px;">Baixar</button></span>
+          </div>
+          <!-- paga -->
+          <div style="display:grid; grid-template-columns:24px 2fr 1.1fr 1fr 1fr 90px; padding:13px 18px; align-items:center; gap:14px;">
+            <span style="width:17px;height:17px;border:1.5px solid #D4C5AC;border-radius:5px;"></span>
+            <div style="display:flex; align-items:center; gap:11px;"><span style="width:32px;height:32px;border-radius:50%;background:#DCE7DD; display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#4A6B4D;">LR</span><div><div style="font-size:13px;font-weight:700;color:#3a3835;">Lucas Reis</div><div style="font-size:11px;color:#9b958c;">Mensalidade Maio</div></div></div>
+            <span style="font-size:11px; color:#9b958c;">02/05/2025</span>
+            <span style="font-size:11px; font-weight:700; background:#DCE7DD; color:#4A6B4D; padding:3px 10px; border-radius:999px; width:fit-content;">Paga</span>
+            <span style="font-size:14px; font-weight:800; color:#9b958c; text-align:right; font-family:'JetBrains Mono',monospace;">1.200,00</span>
+            <span style="text-align:right; display:flex; justify-content:flex-end; align-items:center; gap:5px;"><span class="ms" style="font-size:18px; color:#8fae91;">check_circle</span></span>
+          </div>
+        </div>
+
+        <!-- pagination -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+          <span style="font-size:12px; color:#9b958c;">Mostrando 1–10 de 68 parcelas</span>
+          <div style="display:flex; gap:5px;">
+            <span style="width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid #E0D5C2;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:17px;color:#9b958c;">chevron_left</span></span>
+            <span style="width:30px;height:30px;border-radius:8px;background:#5B7F5E;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">1</span>
+            <span style="width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid #E0D5C2;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#6e6a63;">2</span>
+            <span style="width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid #E0D5C2;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#6e6a63;">3</span>
+            <span style="width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid #E0D5C2;display:flex;align-items:center;justify-content:center;"><span class="ms" style="font-size:17px;color:#6e6a63;">chevron_right</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEV SPEC parcelas -->
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/financeiro/parcela/parcela-list/parcela-list.component.{html,ts}</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Busca + barra de totais</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">busca:</span> <code style="color:#D9BC86;">termoBusca = signal('')</code> + filtro client-side ou query <code style="color:#D9BC86;">?aluno=</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">totais:</span> reusar <code style="color:#D9BC86;">ResumoFinanceiro</code> do dashboard (totalReceita/Recebido/Pendente/Vencido) <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Chips de status com contagem</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">existe:</span> <code style="color:#D9BC86;">filtroStatus()</code> + <code style="color:#D9BC86;">carregar()</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">add:</span> <code style="color:#D9BC86;">contagemPorStatus()</code> → <code style="color:#D9BC86;">{PENDENTE,VENCIDA,PAGA}</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">classe:</span> manter <code style="color:#D9BC86;">statusParcela</code> pipe p/ cor</div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Seleção + ações em lote</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">estado:</span> <code style="color:#D9BC86;">selecionadas = signal&lt;Set&lt;number&gt;&gt;(new Set())</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">barra:</span> <code style="color:#D9BC86;">*ngIf="selecionadas().size > 0"</code></div>
+            <div><span style="color:#8fae91; font-weight:700;">ações:</span> <code style="color:#D9BC86;">baixarLote()</code>, <code style="color:#D9BC86;">enviarCobranca()</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO endpoint</span></div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Linha: avatar, vencimento relativo, paginação</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">avatar:</span> iniciais de <code style="color:#D9BC86;">p.alunoNome</code> (pipe <code style="color:#D9BC86;">iniciais</code>) <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO pipe</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">data rel.:</span> <code style="color:#D9BC86;">vencimentoRelativo(p.dataVencimento)</code> → “há 42 dias / vence em 3d” <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO pipe</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">acento:</span> <code style="color:#D9BC86;">[class.border-l-red]="p.status==='VENCIDA'"</code></div>
+            <div><span style="color:#8fae91; font-weight:700;">paginar:</span> <code style="color:#D9BC86;">pagina = signal(0)</code>, <code style="color:#D9BC86;">?page=&size=</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px; background:#2f3a2f; border:1px solid #45563f; border-radius:11px; padding:13px 16px; font-size:12px; color:#cfe6cf; display:flex; gap:9px;"><span class="ms" style="font-size:16px; color:#8fae91;">check_circle</span><div>O modal de baixa (<code style="color:#fff;">baixaAberta()</code> / <code style="color:#fff;">formBaixa</code> / <code style="color:#fff;">confirmarBaixa()</code>) já existe — reutilizar sem mudanças, inclusive para o “Baixar selecionadas” iterando o Set.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ 03 OBSERVAÇÕES ============ -->
+  <section id="obs" style="max-width:1500px; margin:64px auto 0; padding:0 40px; scroll-margin-top:24px;">
+    <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:4px;">
+      <span style="font-family:'Lora',serif; font-size:32px; font-weight:700; color:#C4A265; line-height:1;">03</span>
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:26px; margin:0;">Pedagogia · Observações</h2>
+    </div>
+    <p style="font-size:14px; color:#6e6a63; max-width:820px; margin:0 0 22px;">Contexto de aluno/época, filtros coloridos por aspecto com contagem, cards com faixa de cor e formulário em slide-panel (padrão de Turmas).</p>
+
+    <div style="background:#F5F0E8; border:1px solid #5B7F5E; border-radius:20px; overflow:hidden; box-shadow:0 20px 50px -30px rgba(56,78,58,.4);">
+      <div style="background:#fff; border-bottom:1px solid #E0D5C2; padding:10px 18px; display:flex; align-items:center; gap:8px;"><span style="width:9px;height:9px;border-radius:50%;background:#8fae91;"></span><span style="width:9px;height:9px;border-radius:50%;background:#C4A265;"></span><span style="width:9px;height:9px;border-radius:50%;background:#D4956A;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#9b958c; margin-left:8px;">/pedagogia/observacoes</span></div>
+      <div style="padding:28px;">
+        <!-- header -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+          <div>
+            <h1 style="font-family:'Lora',serif; font-size:24px; color:#252321; font-weight:600; margin:0;">Observações pedagógicas</h1>
+            <p style="font-size:13px; color:#9b958c; margin:4px 0 0;">12 registros · Classe 3 · Época de Matemática</p>
+          </div>
+          <button style="cursor:pointer; background:#5B7F5E; color:#fff; border:none; font-family:inherit; font-size:13px; font-weight:700; padding:10px 16px; border-radius:12px; display:flex; align-items:center; gap:7px;"><span class="ms" style="font-size:17px;">add</span> Nova observação</button>
+        </div>
+
+        <!-- context selectors -->
+        <div style="display:flex; gap:11px; margin-top:20px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:200px; background:#fff; border:1px solid #E0D5C2; border-radius:12px; padding:11px 15px; display:flex; align-items:center; justify-content:space-between;"><span style="font-size:13px; color:#3a3835; font-weight:600; display:flex; align-items:center; gap:8px;"><span class="ms" style="font-size:17px; color:#8fae91;">groups</span> Classe 3</span><span class="ms" style="font-size:18px; color:#bcb5a8;">expand_more</span></div>
+          <div style="flex:1; min-width:200px; background:#fff; border:1px solid #E0D5C2; border-radius:12px; padding:11px 15px; display:flex; align-items:center; justify-content:space-between;"><span style="font-size:13px; color:#3a3835; font-weight:600; display:flex; align-items:center; gap:8px;"><span class="ms" style="font-size:17px; color:#5B7F5E;">person</span> Maria Silva</span><span class="ms" style="font-size:18px; color:#bcb5a8;">expand_more</span></div>
+          <div style="flex:1; min-width:200px; background:#fff; border:1px solid #E0D5C2; border-radius:12px; padding:11px 15px; display:flex; align-items:center; justify-content:space-between;"><span style="font-size:13px; color:#3a3835; font-weight:600; display:flex; align-items:center; gap:8px;"><span class="ms" style="font-size:17px; color:#C4A265;">event_note</span> Época de Matemática</span><span class="ms" style="font-size:18px; color:#bcb5a8;">expand_more</span></div>
+        </div>
+
+        <!-- aspect chips (7 Waldorf aspects, real colors) -->
+        <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:700; background:#5B7F5E; color:#fff; padding:6px 13px; border-radius:999px;">Todos · 12</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #C8DCC9; color:#15803d; padding:6px 13px; border-radius:999px; display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#15803d;"></span>Físico · 4</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #C7DCE8; color:#1d4ed8; padding:6px 13px; border-radius:999px; display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#1d4ed8;"></span>Anímico · 3</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #CBD0EC; color:#4338ca; padding:6px 13px; border-radius:999px; display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#4338ca;"></span>Espiritual · 0</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #EBD3B8; color:#c2410c; padding:6px 13px; border-radius:999px; display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#c2410c;"></span>Cognitivo · 5</span>
+          <span style="font-size:12px; font-weight:600; background:#fff; border:1px solid #E6DAF0; color:#7c3aed; padding:6px 13px; border-radius:999px; display:flex; align-items:center; gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#7c3aed;"></span>Artístico · 0</span>
+        </div>
+
+        <!-- observation cards -->
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:18px;">
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:18px; border-left:4px solid #15803d;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:9px;"><span style="font-size:11px; font-weight:700; background:#dcfce7; color:#15803d; padding:3px 10px; border-radius:999px;">Físico</span><span style="font-size:12px; color:#6e6a63; display:flex; align-items:center; gap:4px;"><span style="width:22px;height:22px;border-radius:50%;background:#DCE7DD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#4A6B4D;">MS</span> Maria Silva</span></div>
+              <span style="font-size:12px; color:#bcb5a8;">12 jun 2025</span>
+            </div>
+            <p style="font-size:13.5px; color:#4a4742; line-height:1.6; margin:11px 0 0;">Demonstrou boa coordenação motora nas atividades de ritmo. Participou ativamente da roda e manteve atenção durante toda a aula principal.</p>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:13px; padding-top:12px; border-top:1px solid #F0EADF;">
+              <span style="font-size:11px; color:#9b958c; display:flex; align-items:center; gap:5px;"><span class="ms" style="font-size:14px; color:#C4A265;">timeline</span> Época de Matemática · Prof. Helena</span>
+              <div style="display:flex; gap:12px;"><span style="font-size:12px; color:#6e6a63; font-weight:600; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:15px;">edit</span> Editar</span><span style="font-size:12px; color:#C0564B; font-weight:600; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:15px;">delete</span> Excluir</span></div>
+            </div>
+          </div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:18px; border-left:4px solid #1d4ed8;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:9px;"><span style="font-size:11px; font-weight:700; background:#dbeafe; color:#1d4ed8; padding:3px 10px; border-radius:999px;">Anímico</span><span style="font-size:12px; color:#6e6a63; display:flex; align-items:center; gap:4px;"><span style="width:22px;height:22px;border-radius:50%;background:#DCE7DD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#4A6B4D;">MS</span> Maria Silva</span><span style="font-size:10px; font-weight:700; background:#F3E8CF; color:#8a6d3b; padding:3px 9px; border-radius:999px; display:flex; align-items:center; gap:4px;"><span class="ms" style="font-size:12px;">lock</span> Privada</span></div>
+              <span style="font-size:12px; color:#bcb5a8;">10 jun 2025</span>
+            </div>
+            <p style="font-size:13.5px; color:#4a4742; line-height:1.6; margin:11px 0 0;">Apresentou maior abertura emocional nas atividades em grupo. Demonstrou empatia ao ajudar um colega com dificuldade na tarefa.</p>
+          </div>
+          <div style="background:#fff; border:1px solid #E0D5C2; border-radius:16px; padding:18px; border-left:4px solid #c2410c;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:9px;"><span style="font-size:11px; font-weight:700; background:#ffedd5; color:#c2410c; padding:3px 10px; border-radius:999px;">Cognitivo</span><span style="font-size:12px; color:#6e6a63; display:flex; align-items:center; gap:4px;"><span style="width:22px;height:22px;border-radius:50%;background:#DCE7DD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#4A6B4D;">MS</span> Maria Silva</span></div>
+              <span style="font-size:12px; color:#bcb5a8;">08 jun 2025</span>
+            </div>
+            <p style="font-size:13.5px; color:#4a4742; line-height:1.6; margin:11px 0 0;">Avançou na compreensão das operações de multiplicação. Ainda requer apoio na fixação da tabuada do 7.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEV SPEC obs -->
+    <div style="background:#252321; border-radius:18px; padding:24px 26px; margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap;"><span class="ms" style="font-size:18px; color:#D9BC86;">code</span><span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#D9BC86;">modules/pedagogia/observacao/observacao-pedagogica.component.{html,ts}</span></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Seletores de contexto</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">add signals:</span> <code style="color:#D9BC86;">turmaSel</code>, <code style="color:#D9BC86;">alunoSel</code>, <code style="color:#D9BC86;">epocaSel</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">dados:</span> dropdown de alunos da turma + épocas via <code style="color:#D9BC86;">epoca.service</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">card:</span> mostrar <code style="color:#D9BC86;">obs.professorNome</code> e <code style="color:#D9BC86;">obs.epocaTitulo</code> (já no template, hoje opcional)</div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Filtros por aspecto (cor + contagem)</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">existe:</span> <code style="color:#D9BC86;">filtroAspecto()</code> + array <code style="color:#D9BC86;">aspectos</code> + classes <code style="color:#D9BC86;">.aspect-*</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">add:</span> <code style="color:#D9BC86;">contagemPorAspecto()</code> p/ o “· N” em cada chip <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">chip ativo:</span> usar a própria cor do aspecto (não só verde)</div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Card com faixa lateral</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">borda:</span> <code style="color:#D9BC86;">[ngClass]="'border-l-4 aspect-border-'+obs.aspecto.toLowerCase()"</code> <span style="font-size:9px; font-weight:800; background:#5a4a2a; color:#F3E8CF; padding:1px 6px; border-radius:999px;">NOVO util</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">badge:</span> manter <code style="color:#D9BC86;">'aspect-'+obs.aspecto.toLowerCase()</code> + pipe <code style="color:#D9BC86;">aspecto</code> <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">ações:</span> manter <code style="color:#D9BC86;">editar(obs)</code> / <code style="color:#D9BC86;">excluir(obs)</code></div>
+          </div>
+        </div>
+        <div style="background:#312e2a; border:1px solid #46423c; border-radius:13px; padding:16px;">
+          <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">Formulário → slide-panel</div>
+          <div style="font-size:11.5px; color:#a8a194; line-height:1.7;">
+            <div><span style="color:#8fae91; font-weight:700;">trocar:</span> form inline (<code style="color:#D9BC86;">exibirForm()</code>) pelo painel lateral fixo direito</div>
+            <div><span style="color:#8fae91; font-weight:700;">reusar markup:</span> copiar do <code style="color:#D9BC86;">turma-list.component.html</code> (backdrop + <code style="color:#D9BC86;">fixed inset-y-0 right-0 w-96</code>) <span style="font-size:9px; font-weight:800; background:#2f4a30; color:#cfe6cf; padding:1px 6px; border-radius:999px;">EXISTE padrão</span></div>
+            <div><span style="color:#8fae91; font-weight:700;">manter:</span> <code style="color:#D9BC86;">form</code>, <code style="color:#D9BC86;">salvar()</code>, stepper de status (RASCUNHO→REVISADO→APROVADO)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LEGENDA CLASSES ============ -->
+  <section style="max-width:1500px; margin:64px auto 0; padding:0 40px;">
+    <div style="background:#fff; border:1px solid #E0D5C2; border-radius:20px; padding:30px 34px;">
+      <h2 style="font-family:'Lora',serif; font-weight:700; color:#252321; font-size:22px; margin:0 0 6px;">Referência rápida do design system</h2>
+      <p style="font-size:13px; color:#9b958c; margin:0 0 22px;">Classes e tokens já definidos em <code style="font-size:11px; background:#F5F0E8; padding:1px 6px; border-radius:5px;">styles.scss</code> — usar sempre estes, sem inventar novos.</p>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:24px;">
+        <div>
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#C4A265; margin-bottom:10px;">Botões</div>
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:#6e6a63;"><code style="font-size:11px;">.btn-primary</code><code style="font-size:11px;">.btn-secondary</code><code style="font-size:11px;">.btn-ghost</code><code style="font-size:11px;">.btn-icon</code><code style="font-size:11px;">.btn-danger</code></div>
+        </div>
+        <div>
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#C4A265; margin-bottom:10px;">Superfícies & form</div>
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:#6e6a63;"><code style="font-size:11px;">.card</code><code style="font-size:11px;">.card-hover</code><code style="font-size:11px;">.form-input</code><code style="font-size:11px;">.form-label</code><code style="font-size:11px;">.skeleton</code></div>
+        </div>
+        <div>
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#C4A265; margin-bottom:10px;">Badges & tabela</div>
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:#6e6a63;"><code style="font-size:11px;">.badge-success</code><code style="font-size:11px;">.badge-warning</code><code style="font-size:11px;">.badge-danger</code><code style="font-size:11px;">.table-header / -cell</code><code style="font-size:11px;">.aspect-fisico …</code></div>
+        </div>
+        <div>
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#C4A265; margin-bottom:10px;">Cores (tokens)</div>
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:#6e6a63;"><code style="font-size:11px;">waldorf-green-{100..700}</code><code style="font-size:11px;">waldorf-amber-{100..700}</code><code style="font-size:11px;">waldorf-cream-{50..300}</code><code style="font-size:11px;">waldorf-gray-{400..900}</code></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>

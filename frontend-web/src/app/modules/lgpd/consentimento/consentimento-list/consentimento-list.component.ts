@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { LgpdService, Consentimento } from '../../services/lgpd.service';
 
 @Component({
@@ -12,6 +12,16 @@ export class ConsentimentoListComponent implements OnInit {
   filtroStatus   = signal('');
 
   readonly statusOpcoes = ['', 'ACEITO', 'PENDENTE', 'RECUSADO', 'REVOGADO'];
+
+  resumoConsentimentos = computed(() => {
+    const lista = this.consentimentos();
+    return {
+      total:     lista.length,
+      aceitos:   lista.filter(c => c.status === 'ACEITO').length,
+      pendentes: lista.filter(c => c.status === 'PENDENTE').length,
+      revogados: lista.filter(c => c.status === 'REVOGADO' || c.status === 'RECUSADO').length,
+    };
+  });
 
   constructor(private lgpdService: LgpdService) {}
 
