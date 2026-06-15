@@ -8,14 +8,12 @@ services:
       MYSQL_DATABASE: ${DB_NAME:-waldorf_db}
       MYSQL_USER: ${DB_USER:-waldorf_user}
       MYSQL_PASSWORD: ${DB_PASS:-CHANGE_ME}
-    ports:
-      - "3306:3306"
+    # SEM ports expostas ao host — acesso apenas interno
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/init:/docker-entrypoint-initdb.d
     networks:
-      - waldorf-network
-    # Permite CREATE TRIGGER sem privilegio SUPER quando binary log esta ativo
+      - waldorf-internal
     command: --log_bin_trust_function_creators=1
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
@@ -27,12 +25,10 @@ services:
   redis:
     image: redis:7-alpine
     container_name: waldorf-redis
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - waldorf-network
+      - waldorf-internal
     command: redis-server --appendonly yes
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -47,13 +43,10 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBIT_USER:-waldorf}
       RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS:-CHANGE_ME}
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
-      - waldorf-network
+      - waldorf-internal
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 30s
@@ -67,13 +60,10 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-waldorf_minio}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-CHANGE_ME}
-    ports:
-      - "9000:9000"
-      - "9001:9001"
     volumes:
       - minio_data:/data
     networks:
-      - waldorf-network
+      - waldorf-internal
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -91,8 +81,8 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_NAME: waldorf_db
-      DB_USER: waldorf_user
+      DB_NAME: ${DB_NAME:-waldorf_db}
+      DB_USER: ${DB_USER:-waldorf_user}
       DB_PASS: ${DB_PASS:-CHANGE_ME}
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -101,8 +91,9 @@ services:
       RABBIT_USER: ${RABBIT_USER:-waldorf}
       RABBIT_PASS: ${RABBIT_PASS:-CHANGE_ME}
       JWT_SECRET: ${JWT_SECRET:-CHANGE_ME_USE_256_BITS_MIN}
-    ports:
-      - "8080:8080"
+    # Sem host-port: federado ao ingress central (waldorf-backend:8080 -> gateway TLS)
+    expose:
+      - "8080"
     depends_on:
       mysql:
         condition: service_healthy
@@ -111,7 +102,8 @@ services:
       rabbitmq:
         condition: service_healthy
     networks:
-      - waldorf-network
+      - waldorf-internal
+      - btv-prod-net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 30s
@@ -124,12 +116,14 @@ services:
       context: ./frontend-web
       dockerfile: Dockerfile
     container_name: waldorf-frontend
-    ports:
-      - "4200:80"
+    # Sem host-port: federado ao ingress central (waldorf-frontend:80 -> gateway TLS)
+    expose:
+      - "80"
     depends_on:
       - backend
     networks:
-      - waldorf-network
+      - waldorf-internal
+      - btv-prod-net
 
 volumes:
   mysql_data:
@@ -138,5 +132,11 @@ volumes:
   minio_data:
 
 networks:
-  waldorf-network:
+  # Rede interna isolada — apenas comunicação entre os serviços do projeto
+  waldorf-internal:
     driver: bridge
+
+  # Rede externa compartilhada com o ingress central da VPS
+  btv-prod-net:
+    external: true
+    name: btv-prod-net
